@@ -115,3 +115,4 @@ Evento: `payment`
 | `npm run db:migrate` | Migrations em desenvolvimento |
 | `npm run db:migrate:prod` | Migrations em produção |
 | `npm run db:seed` | Popular banco com dados iniciais |
+# maisbrinquedos-loja
