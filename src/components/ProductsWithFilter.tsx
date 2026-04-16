@@ -145,14 +145,9 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
 
   return (
     <div>
-      {/* Mobile: horizontal filter bar (hidden on desktop via AgeFilter internal CSS) */}
-      <div className="md:hidden mb-4">
-        <AgeFilter {...filterProps} />
-      </div>
-
-      {/* Desktop: sidebar + grid side by side */}
-      <div className="flex gap-8 items-start">
-        {/* Sidebar filter — hidden on mobile via AgeFilter internal CSS */}
+      {/* Responsive layout: column on mobile, row on desktop */}
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-start">
+        {/* AgeFilter renders HorizontalFilter on mobile, SidebarFilter on desktop */}
         <AgeFilter {...filterProps} />
 
         {/* Product grid */}
