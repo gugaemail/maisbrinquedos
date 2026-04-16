@@ -8,11 +8,11 @@ import { animate } from "animejs";
 
 export default function CartPage() {
   const { items, totalItems, totalPrice, removeItem, increment, decrement } = useCart();
-  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const pixPrice = totalPrice * 0.95;
 
-  function handleRemove(id: number) {
+  function handleRemove(id: string) {
     const el = itemRefs.current.get(id);
     if (el) {
       animate(el, {
@@ -32,21 +32,21 @@ export default function CartPage() {
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#6B7080] mb-8 font-body">
-          <Link href="/" className="hover:text-[#1A1A2E] transition-colors">Início</Link>
+        <nav className="flex items-center gap-2 text-sm text-[#6B7080] dark:text-white/60 mb-8 font-body">
+          <Link href="/" className="hover:text-[#1A1A2E] dark:hover:text-white transition-colors">Início</Link>
           <span>/</span>
-          <span className="text-[#1A1A2E]">Carrinho</span>
+          <span className="text-[#1A1A2E] dark:text-white">Carrinho</span>
         </nav>
 
-        <h1 className="text-3xl font-display font-extrabold text-[#1A1A2E] mb-8">
+        <h1 className="text-3xl font-display font-extrabold text-[#1A1A2E] dark:text-white mb-8">
           Carrinho{totalItems > 0 && <span className="text-[#6B7080] text-xl font-medium ml-3">({totalItems} {totalItems === 1 ? "item" : "itens"})</span>}
         </h1>
 
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <span className="text-6xl mb-4">🛒</span>
-            <h2 className="text-xl font-display font-bold text-[#1A1A2E] mb-2">Seu carrinho está vazio</h2>
-            <p className="text-[#6B7080] font-body mb-6">Adicione produtos e volte aqui para finalizar sua compra.</p>
+            <h2 className="text-xl font-display font-bold text-[#1A1A2E] dark:text-white mb-2">Seu carrinho está vazio</h2>
+            <p className="text-[#6B7080] dark:text-white/60 font-body mb-6">Adicione produtos e volte aqui para finalizar sua compra.</p>
             <Link href="/" className="px-6 py-3 rounded-full bg-[#0057FF] text-white font-semibold hover:bg-[#0057FF]/90 transition-colors">
               Explorar produtos
             </Link>
@@ -62,19 +62,19 @@ export default function CartPage() {
                     if (el) itemRefs.current.set(item.id, el);
                     else itemRefs.current.delete(item.id);
                   }}
-                  className="flex items-center gap-4 bg-white rounded-2xl border border-[#E2E6F0] p-4"
+                  className="flex items-center gap-4 bg-white dark:bg-white/5 rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-4"
                 >
                   {/* Emoji thumb */}
-                  <div className="w-16 h-16 rounded-xl bg-[#F0F4FF] flex items-center justify-center text-3xl shrink-0">
+                  <div className="w-16 h-16 rounded-xl bg-[#F0F4FF] dark:bg-white/5 flex items-center justify-center text-3xl shrink-0">
                     {item.emoji}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <Link href={`/produto/${item.id}`} className="text-sm font-display font-semibold text-[#1A1A2E] hover:text-[#0057FF] transition-colors line-clamp-2">
+                    <Link href={`/produto/${item.id}`} className="text-sm font-display font-semibold text-[#1A1A2E] dark:text-white hover:text-[#0057FF] transition-colors line-clamp-2">
                       {item.name}
                     </Link>
-                    <p className="text-sm font-bold text-[#1A1A2E] mt-1">
+                    <p className="text-sm font-bold text-[#1A1A2E] dark:text-white mt-1">
                       R$ {item.price.toFixed(2).replace(".", ",")}
                     </p>
                   </div>
@@ -83,15 +83,15 @@ export default function CartPage() {
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => decrement(item.id)}
-                      className="w-8 h-8 rounded-full border border-[#E2E6F0] flex items-center justify-center text-[#6B7080] hover:border-[#0057FF] hover:text-[#0057FF] transition-colors font-bold"
+                      className="w-8 h-8 rounded-full border border-[#E2E6F0] dark:border-white/15 flex items-center justify-center text-[#6B7080] dark:text-white/60 hover:border-[#0057FF] hover:text-[#0057FF] transition-colors font-bold"
                       aria-label="Diminuir"
                     >
                       −
                     </button>
-                    <span className="w-6 text-center text-sm font-semibold text-[#1A1A2E]">{item.quantity}</span>
+                    <span className="w-6 text-center text-sm font-semibold text-[#1A1A2E] dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => increment(item.id)}
-                      className="w-8 h-8 rounded-full border border-[#E2E6F0] flex items-center justify-center text-[#6B7080] hover:border-[#0057FF] hover:text-[#0057FF] transition-colors font-bold"
+                      className="w-8 h-8 rounded-full border border-[#E2E6F0] dark:border-white/15 flex items-center justify-center text-[#6B7080] dark:text-white/60 hover:border-[#0057FF] hover:text-[#0057FF] transition-colors font-bold"
                       aria-label="Aumentar"
                     >
                       +
@@ -99,7 +99,7 @@ export default function CartPage() {
                   </div>
 
                   {/* Subtotal */}
-                  <p className="text-sm font-bold text-[#1A1A2E] w-20 text-right shrink-0 hidden sm:block">
+                  <p className="text-sm font-bold text-[#1A1A2E] dark:text-white w-20 text-right shrink-0 hidden sm:block">
                     R$ {(item.price * item.quantity).toFixed(2).replace(".", ",")}
                   </p>
 
@@ -122,19 +122,19 @@ export default function CartPage() {
 
             {/* Order summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl border border-[#E2E6F0] p-6 sticky top-24">
-                <h2 className="text-lg font-display font-bold text-[#1A1A2E] mb-6">Resumo do pedido</h2>
+              <div className="bg-white dark:bg-white/5 rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 sticky top-24">
+                <h2 className="text-lg font-display font-bold text-[#1A1A2E] dark:text-white mb-6">Resumo do pedido</h2>
 
                 <div className="flex flex-col gap-3 text-sm font-body">
-                  <div className="flex justify-between text-[#6B7080]">
+                  <div className="flex justify-between text-[#6B7080] dark:text-white/60">
                     <span>Subtotal ({totalItems} {totalItems === 1 ? "item" : "itens"})</span>
                     <span>R$ {totalPrice.toFixed(2).replace(".", ",")}</span>
                   </div>
-                  <div className="flex justify-between text-[#6B7080]">
+                  <div className="flex justify-between text-[#6B7080] dark:text-white/60">
                     <span>Frete</span>
                     <span className="text-[#00C48C] font-semibold">Calcular no checkout</span>
                   </div>
-                  <div className="border-t border-[#E2E6F0] pt-3 flex justify-between font-bold text-[#1A1A2E] text-base">
+                  <div className="border-t border-[#E2E6F0] dark:border-white/10 pt-3 flex justify-between font-bold text-[#1A1A2E] dark:text-white text-base">
                     <span>Total</span>
                     <span>R$ {totalPrice.toFixed(2).replace(".", ",")}</span>
                   </div>
@@ -153,7 +153,7 @@ export default function CartPage() {
 
                 <Link
                   href="/"
-                  className="mt-3 flex items-center justify-center w-full px-6 py-3 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm font-semibold hover:border-[#0057FF]/30 hover:text-[#1A1A2E] transition-colors"
+                  className="mt-3 flex items-center justify-center w-full px-6 py-3 rounded-full border border-[#E2E6F0] dark:border-white/15 text-[#6B7080] dark:text-white/60 text-sm font-semibold hover:border-[#0057FF]/30 hover:text-[#1A1A2E] dark:hover:text-white transition-colors"
                 >
                   Continuar comprando
                 </Link>

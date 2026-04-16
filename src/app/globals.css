@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Colors */
+  /* Colors — light */
   --color-background: #F8F9FC;
   --color-primary: #0057FF;
   --color-accent: #00C48C;
@@ -24,8 +24,29 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-outfit), sans-serif;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sora), sans-serif;
+}
+
+/* Dark mode via media query */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0A0A0F;
+    --color-text: rgba(255,255,255,0.90);
+    --color-muted: rgba(255,255,255,0.40);
+  }
+}
+
+/* Also support .dark class for manual toggle */
+.dark {
+  --color-background: #0A0A0F;
+  --color-text: rgba(255,255,255,0.90);
+  --color-muted: rgba(255,255,255,0.40);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

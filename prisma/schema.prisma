@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  emoji     String
+  active    Boolean   @default(true)
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  description   String
+  price         Decimal     @db.Decimal(10, 2)
+  originalPrice Decimal?    @db.Decimal(10, 2)
+  stock         Int         @default(0)
+  tag           String?
+  features      String[]
+  images        String[]
+  active        Boolean     @default(true)
+  categoryId    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  ageRange      String?
+  productType   String?
+  orderItems    OrderItem[]
+  category      Category    @relation(fields: [categoryId], references: [id])
+}
+
+model Order {
+  id                       String      @id @default(cuid())
+  mpPreferenceId           String?
+  mpPaymentId              String?
+  status                   OrderStatus @default(PENDING)
+  payerName                String
+  payerEmail               String
+  total                    Decimal     @db.Decimal(10, 2)
+  createdAt                DateTime    @default(now())
+  updatedAt                DateTime    @updatedAt
+  consentMarketingEmail    Boolean     @default(false)
+  consentMarketingWhatsapp Boolean     @default(false)
+  isGuest                  Boolean     @default(true)
+  payerCpf                 String?
+  payerPhone               String?
+  shippingCity             String?
+  shippingComplement       String?
+  shippingNeighborhood     String?
+  shippingNumber           String?
+  shippingState            String?
+  shippingStreet           String?
+  shippingZip              String?
+  userId                   String?
+  items                    OrderItem[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String?
+  productName String
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  quantity    Int
+  order       Order    @relation(fields: [orderId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  ctaText   String?
+  ctaLink   String?
+  imageUrl  String?
+  active    Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  REFUNDED
+}

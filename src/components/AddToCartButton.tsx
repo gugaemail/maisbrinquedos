@@ -6,10 +6,11 @@ import { animate } from "animejs";
 
 interface Props {
   product: {
-    id: number;
+    id: string;
     name: string;
     price: number;
     emoji: string;
+    imageUrl?: string;
   };
 }
 
