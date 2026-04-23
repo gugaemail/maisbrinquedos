@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { AgeFilter, ActiveFilters, AgeRange, ProductType } from "./AgeFilter";
+import { SidebarFilter, HorizontalFilter, ActiveFilters, AgeRange, ProductType } from "./AgeFilter";
 
 export interface FilterableProduct {
   id: string;
@@ -143,27 +143,35 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
     filteredCount: filtered.length,
   };
 
-  return (
-    <div>
-      {/* Responsive layout: column on mobile, row on desktop */}
-      <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-start">
-        {/* AgeFilter renders HorizontalFilter on mobile, SidebarFilter on desktop */}
-        <AgeFilter {...filterProps} />
+  const productCount = (
+    <p className="text-sm text-[#6B7080] dark:text-white/60 font-body mb-4">
+      {filtered.length === products.length ? (
+        <span>{products.length} produtos</span>
+      ) : (
+        <span>
+          <span className="font-semibold text-[#1A1A2E] dark:text-white">{filtered.length}</span>{" "}
+          de {products.length} produtos
+        </span>
+      )}
+    </p>
+  );
 
-        {/* Product grid */}
+  return (
+    <div className="w-full">
+      {/* Mobile layout */}
+      <div className="md:hidden flex flex-col gap-4 w-full">
+        <HorizontalFilter {...filterProps} />
+        <div className="w-full">
+          {productCount}
+          <ProductGrid products={filtered} />
+        </div>
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden md:flex gap-8 items-start">
+        <SidebarFilter {...filterProps} />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-[#6B7080] dark:text-white/60 font-body">
-              {filtered.length === products.length ? (
-                <span>{products.length} produtos</span>
-              ) : (
-                <span>
-                  <span className="font-semibold text-[#1A1A2E] dark:text-white">{filtered.length}</span>{" "}
-                  de {products.length} produtos
-                </span>
-              )}
-            </p>
-          </div>
+          {productCount}
           <ProductGrid products={filtered} />
         </div>
       </div>

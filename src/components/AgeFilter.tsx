@@ -144,7 +144,7 @@ function HorizontalFilter({
   onClear,
 }: AgeFilterProps) {
   return (
-    <div className="md:hidden flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {hasActiveFilters(activeFilters) && (
           <button
@@ -178,6 +178,8 @@ function HorizontalFilter({
     </div>
   );
 }
+
+export { SidebarFilter, HorizontalFilter };
 
 export function AgeFilter(props: AgeFilterProps) {
   return (

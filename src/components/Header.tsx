@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { animate } from "animejs";
 import SearchBar from "@/components/SearchBar";
+import { Logo } from "@/components/brand/Logo";
 
 const nav = [
   { label: "Brinquedos", href: "/categoria/brinquedos" },
@@ -43,19 +44,15 @@ export default function Header() {
       ref={headerRef}
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 dark:bg-[#0A0A0F]/95 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_20px_rgba(0,0,0,0.4)] border-b border-[#E2E6F0]/60 dark:border-white/8 h-14"
-          : "bg-[#F8F9FC]/90 dark:bg-[#0A0A0F]/80 backdrop-blur-md border-b border-[#E2E6F0] dark:border-white/8 h-16"
+          ? "bg-[#FAFAF7]/95 backdrop-blur-md shadow-[0_2px_20px_rgba(0,0,0,0.06)] border-b border-black/8 h-14"
+          : "bg-[#FAFAF7]/90 backdrop-blur-md border-b border-black/6 h-16"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-full">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-display font-bold text-xl text-[#1A1A2E] dark:text-white group">
-          <span className="transition-transform duration-300 group-hover:scale-110">
-            <PlusIcon />
-          </span>
-          <span>
-            Mais<span className="text-[#0057FF]"> Brinquedos</span>
-          </span>
+        <Link href="/" className="flex items-center gap-1">
+          <Logo size="md" theme="light" />
+          <span className="font-body text-xs text-[#6B7080] ml-1 hidden sm:inline">brinquedos e presentes</span>
         </Link>
 
         {/* Nav desktop */}
@@ -64,10 +61,10 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="relative text-sm font-medium text-[#6B7080] dark:text-white/50 hover:text-[#1A1A2E] dark:hover:text-white transition-colors duration-200 group"
+              className="relative text-sm font-medium font-body text-[#6B7080] hover:text-[#0F0F0F] transition-colors duration-200 group"
             >
               {item.label}
-              <span className="absolute -bottom-0.5 left-0 w-0 h-[2px] bg-[#0057FF] rounded-full transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-0.5 left-0 w-0 h-[2px] bg-[#FF3D5A] rounded-full transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
         </nav>
@@ -77,14 +74,14 @@ export default function Header() {
           <SearchBar />
           <button
             onClick={openDrawer}
-            className="relative p-2 text-[#6B7080] dark:text-white/50 hover:text-[#1A1A2E] dark:hover:text-white transition-colors hover:bg-[#F0F4FF] dark:hover:bg-white/8 rounded-lg"
+            className="relative p-2 text-[#6B7080] hover:text-[#0F0F0F] transition-colors hover:bg-black/5 rounded-xl"
             aria-label="Abrir carrinho"
           >
             <CartIcon />
             {totalItems > 0 && (
               <span
                 ref={badgeRef}
-                className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#0057FF] text-white text-[10px] font-bold flex items-center justify-center shadow-[0_0_8px_rgba(0,87,255,0.5)]"
+                className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#FF3D5A] text-white text-[10px] font-bold flex items-center justify-center"
               >
                 {totalItems > 99 ? "99+" : totalItems}
               </span>
@@ -92,14 +89,14 @@ export default function Header() {
           </button>
           <Link
             href="/produtos"
-            className="hidden sm:inline-flex items-center px-4 py-2 rounded-full bg-[#0057FF] text-white text-sm font-semibold hover:bg-[#0046D4] hover:shadow-[0_4px_14px_rgba(0,87,255,0.35)] transition-all duration-200"
+            className="hidden sm:inline-flex items-center px-5 py-2 rounded-[100px] bg-[#FF3D5A] text-white text-sm font-display font-bold hover:bg-[#e62e4a] transition-colors duration-200"
           >
             Ver loja
           </Link>
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 text-[#6B7080] dark:text-white/50 hover:text-[#1A1A2E] dark:hover:text-white transition-colors"
+            className="md:hidden p-2 text-[#6B7080] hover:text-[#0F0F0F] transition-colors"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Menu"
           >
@@ -110,7 +107,7 @@ export default function Header() {
 
       {/* Mobile nav */}
       <nav
-        className={`md:hidden border-t border-[#E2E6F0] dark:border-white/8 bg-white dark:bg-[#0D0D1A] px-4 flex flex-col gap-4 shadow-lg overflow-hidden transition-[max-height,padding,opacity] duration-300 ease-in-out ${
+        className={`md:hidden border-t border-black/6 bg-[#FAFAF7] px-4 flex flex-col gap-4 shadow-lg overflow-hidden transition-[max-height,padding,opacity] duration-300 ease-in-out ${
           menuOpen ? "max-h-80 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
         }`}
       >
@@ -118,7 +115,7 @@ export default function Header() {
           <Link
             key={item.href}
             href={item.href}
-            className="text-sm font-medium text-[#1A1A2E] dark:text-white/70 hover:text-[#0057FF] transition-colors"
+            className="text-sm font-medium font-body text-[#0F0F0F] hover:text-[#FF3D5A] transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {item.label}
@@ -126,23 +123,13 @@ export default function Header() {
         ))}
         <Link
           href="/produtos"
-          className="inline-flex justify-center items-center px-4 py-2 rounded-full bg-[#0057FF] text-white text-sm font-semibold"
+          className="inline-flex justify-center items-center px-5 py-2 rounded-[100px] bg-[#FF3D5A] text-white text-sm font-display font-bold"
           onClick={() => setMenuOpen(false)}
         >
           Ver loja
         </Link>
       </nav>
     </header>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <rect x="11" y="2" width="6" height="24" rx="3" fill="#0057FF" />
-      <rect x="2" y="11" width="24" height="6" rx="3" fill="#FF3D57" />
-      <rect x="11" y="11" width="6" height="6" rx="1" fill="#FFB800" />
-    </svg>
   );
 }
 

@@ -1,34 +1,35 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Colors — light */
-  --color-background: #F8F9FC;
-  --color-primary: #0057FF;
-  --color-accent: #00C48C;
-  --color-text: #1A1A2E;
+  /* Brand colors — MAIS+ */
+  --color-brand-red: #FF3D5A;
+  --color-brand-yellow: #FFE14D;
+  --color-brand-green: #3DDC84;
+  --color-brand-blue: #3B8BFF;
+  --color-brand-black: #0F0F0F;
+  --color-off-white: #FAFAF7;
+
+  /* Semantic aliases (mantidos para compatibilidade) */
+  --color-background: #FAFAF7;
+  --color-primary: #FF3D5A;
+  --color-accent: #FFE14D;
+  --color-text: #0F0F0F;
   --color-muted: #6B7080;
 
-  /* Logo accent colors */
-  --color-logo-blue: #0057FF;
-  --color-logo-red: #FF3D57;
-  --color-logo-yellow: #FFB800;
-  --color-logo-green: #00C48C;
-  --color-logo-purple: #7B3FA0;
-
   /* Typography */
-  --font-display: var(--font-sora);
-  --font-body: var(--font-outfit);
+  --font-display: var(--font-unbounded);
+  --font-body: var(--font-plus-jakarta-sans);
 }
 
 body {
   background: var(--color-background);
   color: var(--color-text);
-  font-family: var(--font-outfit), sans-serif;
+  font-family: var(--font-plus-jakarta-sans), sans-serif;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sora), sans-serif;
+  font-family: var(--font-unbounded), sans-serif;
 }
 
 /* Dark mode via media query */
