@@ -44,10 +44,10 @@ export default function AddToCartButton({ product }: Props) {
     <button
       ref={btnRef}
       onClick={handleAdd}
-      className={`flex-1 px-6 py-4 rounded-full font-display font-bold text-base transition-colors ${
+      className={`flex-1 px-6 py-4 rounded-full border-2 font-display font-bold text-base transition-colors ${
         added
-          ? "bg-[#00C48C] text-white"
-          : "bg-[#0057FF] text-white hover:bg-[#0057FF]/90"
+          ? "bg-[#3DDC84] border-[#3DDC84] text-[#0F0F0F]"
+          : "bg-transparent border-[#0F0F0F] text-[#0F0F0F] hover:bg-[#0F0F0F] hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-[#0F0F0F]"
       }`}
     >
       {added ? "✓ Adicionado!" : "Adicionar ao carrinho"}

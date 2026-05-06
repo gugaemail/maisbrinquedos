@@ -26,12 +26,12 @@ export default async function UsuariosPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-display font-extrabold text-[#1A1A2E]">Usuários</h1>
+          <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F]">Usuários</h1>
           <p className="text-sm text-[#6B7080] font-body mt-1">Gerencie quem tem acesso ao painel</p>
         </div>
         <Link
           href="/admin/usuarios/novo"
-          className="px-5 py-2.5 rounded-full bg-[#0057FF] text-white text-sm font-display font-bold hover:bg-[#0046CC] transition-colors"
+          className="px-5 py-2.5 rounded-full bg-[#3B8BFF] text-white text-sm font-display font-bold hover:bg-[#0046CC] transition-colors"
         >
           + Novo usuário
         </Link>

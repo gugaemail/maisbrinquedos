@@ -1,23 +1,16 @@
 import Link from "next/link";
-import Header from "@/components/Header";
+import HeaderServer from "@/components/HeaderServer";
 import { Logo } from "@/components/brand/Logo";
 import HeroSection from "@/components/HeroSection";
 import BannerCarousel from "@/components/BannerCarousel";
 import ScrollRevealGrid from "@/components/ScrollRevealGrid";
-import CategoryCard from "@/components/CategoryCard";
+import CategoryCarousel from "@/components/CategoryCarousel";
 import ProductCard from "@/components/ProductCard";
 import { SocialProofSection } from "@/components/SocialProofSection";
 import { db } from "@/lib/db";
 
-const categories = [
-  { label: "Brinquedos", href: "/categoria/brinquedos", emoji: "🧸" },
-  { label: "Tech & Celular", href: "/categoria/tech", emoji: "📱" },
-  { label: "Presentes", href: "/categoria/presentes", emoji: "🎁" },
-  { label: "Novidades", href: "/categoria/novidades", emoji: "✨" },
-];
-
 export default async function Home() {
-  const [products, banners, promoSetting] = await Promise.all([
+  const [products, banners, categories, promoSetting] = await Promise.all([
     db.product.findMany({
       where: { active: true },
       include: { category: true },
@@ -25,6 +18,10 @@ export default async function Home() {
       take: 8,
     }),
     db.banner.findMany({
+      where: { active: true },
+      orderBy: { order: "asc" },
+    }),
+    db.category.findMany({
       where: { active: true },
       orderBy: { order: "asc" },
     }),
@@ -37,20 +34,16 @@ export default async function Home() {
 
   return (
     <>
-      <Header />
+      <HeaderServer />
       <main>
         {banners.length > 0 ? <BannerCarousel banners={banners} /> : <HeroSection />}
 
         {/* Categories */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-display font-bold text-[#1A1A2E] dark:text-white">Categorias</h2>
+            <h2 className="text-2xl font-display font-bold text-[#0F0F0F] dark:text-white">Categorias</h2>
           </div>
-          <ScrollRevealGrid className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((cat) => (
-              <CategoryCard key={cat.href} {...cat} />
-            ))}
-          </ScrollRevealGrid>
+          <CategoryCarousel categories={categories} />
         </section>
 
         {/* Promo banner */}
@@ -83,8 +76,8 @@ export default async function Home() {
         {/* Featured products */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-display font-bold text-[#1A1A2E] dark:text-white">Produtos em destaque</h2>
-            <Link href="/produtos" className="text-sm font-semibold text-[#0057FF] hover:underline">
+            <h2 className="text-2xl font-display font-bold text-[#0F0F0F] dark:text-white">Produtos em destaque</h2>
+            <Link href="/produtos" className="text-sm font-semibold text-[#3B8BFF] hover:underline">
               Ver todos →
             </Link>
           </div>
@@ -119,10 +112,11 @@ export default async function Home() {
           </div>
           <div className="flex flex-col gap-2 text-sm font-body">
             <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Categorias</p>
-            <Link href="/categoria/brinquedos" className="hover:text-white transition-colors">Brinquedos</Link>
-            <Link href="/categoria/tech" className="hover:text-white transition-colors">Tech & Celular</Link>
-            <Link href="/categoria/presentes" className="hover:text-white transition-colors">Presentes</Link>
-            <Link href="/categoria/novidades" className="hover:text-white transition-colors">Novidades</Link>
+            {categories.map((cat) => (
+              <Link key={cat.id} href={`/categoria/${cat.slug}`} className="hover:text-white transition-colors">
+                {cat.name}
+              </Link>
+            ))}
           </div>
           <div className="text-sm font-body flex flex-col gap-1">
             <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Info</p>

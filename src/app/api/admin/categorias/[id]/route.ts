@@ -40,6 +40,15 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
   if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await params;
+
+  const productCount = await db.product.count({ where: { categoryId: id } });
+  if (productCount > 0) {
+    return NextResponse.json(
+      { error: `Não é possível excluir: ${productCount} produto(s) vinculado(s) a esta categoria.` },
+      { status: 409 }
+    );
+  }
+
   await db.category.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

@@ -38,9 +38,9 @@ async function getKpis(since: Date) {
       : 0;
 
   const byStatus = [
-    { name: "Aprovados", value: approved.length, fill: "#00C48C" },
+    { name: "Aprovados", value: approved.length, fill: "#3DDC84" },
     { name: "Pendentes", value: orders.filter((o) => o.status === "PENDING").length, fill: "#FFB800" },
-    { name: "Rejeitados", value: rejected.length, fill: "#FF3D57" },
+    { name: "Rejeitados", value: rejected.length, fill: "#FF3D5A" },
     { name: "Cancelados", value: orders.filter((o) => o.status === "CANCELLED").length, fill: "#6B7080" },
   ].filter((s) => s.value > 0);
 
@@ -76,8 +76,8 @@ export default async function DashboardPage() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-        <KpiCard label="Receita" value={fmt(kpis.revenue)} sub="pedidos aprovados" accent="#00C48C" />
-        <KpiCard label="Pedidos" value={String(kpis.totalOrders)} sub="todos os status" accent="#0057FF" />
+        <KpiCard label="Receita" value={fmt(kpis.revenue)} sub="pedidos aprovados" accent="#3DDC84" />
+        <KpiCard label="Pedidos" value={String(kpis.totalOrders)} sub="todos os status" accent="#3B8BFF" />
         <KpiCard label="Ticket médio" value={fmt(kpis.avgTicket)} sub="pedidos aprovados" accent="#FFB800" />
         <KpiCard
           label="Taxa aprovação"
@@ -98,15 +98,15 @@ export default async function DashboardPage() {
 
       {/* Low stock */}
       {kpis.lowStock.length > 0 && (
-        <div className="mt-8 bg-[#FF3D57]/8 border border-[#FF3D57]/15 rounded-2xl p-6">
-          <h2 className="text-xs font-display font-bold text-[#FF3D57] uppercase tracking-wider mb-4">
+        <div className="mt-8 bg-[#FF3D5A]/8 border border-[#FF3D5A]/15 rounded-2xl p-6">
+          <h2 className="text-xs font-display font-bold text-[#FF3D5A] uppercase tracking-wider mb-4">
             Estoque crítico — {kpis.lowStock.length} {kpis.lowStock.length === 1 ? "produto" : "produtos"}
           </h2>
           <div className="flex flex-col gap-2">
             {kpis.lowStock.map((p) => (
               <div key={p.id} className="flex items-center justify-between text-sm font-body">
                 <span className="text-white/70">{p.name}</span>
-                <span className="font-semibold tabular-nums text-[#FF3D57]">{p.stock} un.</span>
+                <span className="font-semibold tabular-nums text-[#FF3D5A]">{p.stock} un.</span>
               </div>
             ))}
           </div>

@@ -203,23 +203,23 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
 
       {/* Features */}
       <div>
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body block mb-2">Características</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body block mb-2">Características</label>
         <div className="flex flex-col gap-2">
           {fields.map((field, i) => (
             <div key={field.id} className="flex gap-2">
               <input {...register(`features.${i}.value`)} className={`${input} flex-1`} placeholder={`Característica ${i + 1}`} />
-              <button type="button" onClick={() => remove(i)} className="text-[#FF3D57] text-sm px-2">✕</button>
+              <button type="button" onClick={() => remove(i)} className="text-[#FF3D5A] text-sm px-2">✕</button>
             </div>
           ))}
         </div>
-        <button type="button" onClick={() => append({ value: "" })} className="mt-2 text-xs text-[#0057FF] font-semibold">
+        <button type="button" onClick={() => append({ value: "" })} className="mt-2 text-xs text-[#3B8BFF] font-semibold">
           + Adicionar característica
         </button>
       </div>
 
       {/* Images */}
       <div>
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body block mb-2">Imagens</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body block mb-2">Imagens</label>
         <div className="flex flex-wrap gap-3 mb-3">
           {images.map((url, i) => (
             <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-[#E2E6F0]">
@@ -235,7 +235,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
             </div>
           ))}
         </div>
-        <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#0057FF] text-[#0057FF] text-sm font-semibold hover:bg-[#0057FF]/5 transition-colors">
+        <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#3B8BFF] text-[#3B8BFF] text-sm font-semibold hover:bg-[#3B8BFF]/5 transition-colors">
           {uploadingImage ? "Enviando..." : "+ Upload imagem"}
           <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploadingImage} />
         </label>
@@ -243,15 +243,15 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
 
       {/* Active toggle */}
       <label className="flex items-center gap-3 cursor-pointer">
-        <input {...register("active")} type="checkbox" className="w-4 h-4 accent-[#0057FF]" />
-        <span className="text-sm font-body text-[#1A1A2E]">Produto ativo (visível na loja)</span>
+        <input {...register("active")} type="checkbox" className="w-4 h-4 accent-[#3B8BFF]" />
+        <span className="text-sm font-body text-[#0F0F0F]">Produto ativo (visível na loja)</span>
       </label>
 
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-8 py-3 rounded-full bg-[#0057FF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
+          className="px-8 py-3 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
         >
           {isSubmitting ? "Salvando..." : mode === "create" ? "Criar produto" : "Salvar alterações"}
         </button>
@@ -267,14 +267,14 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
   );
 }
 
-const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#0057FF] transition-colors bg-white";
+const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors bg-white";
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-[#1A1A2E] font-body">{label}</label>
+      <label className="text-xs font-semibold text-[#0F0F0F] font-body">{label}</label>
       {children}
-      {error && <p className="text-xs text-[#FF3D57]">{error}</p>}
+      {error && <p className="text-xs text-[#FF3D5A]">{error}</p>}
     </div>
   );
 }

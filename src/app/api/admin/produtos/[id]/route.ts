@@ -43,8 +43,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const product = await db.product.update({ where: { id }, data: parsed.data });
     return NextResponse.json(product);
   } catch (err) {
-    console.error("[PATCH /api/admin/produtos/:id]", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    console.error("[PATCH /api/admin/produtos/:id]", process.env.NODE_ENV === "production" ? { code: "DB_UPDATE_FAILED" } : err);
+    return NextResponse.json({ error: "Erro interno ao atualizar produto" }, { status: 500 });
   }
 }
 

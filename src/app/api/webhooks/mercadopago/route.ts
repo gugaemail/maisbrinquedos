@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       });
     }
   } catch (err) {
-    console.error("[webhook/mercadopago] Erro ao processar pagamento:", err);
+    console.error("[webhook/mercadopago] Erro ao processar pagamento:", process.env.NODE_ENV === "production" ? { code: "WEBHOOK_PROCESS_FAILED" } : err);
     // Retorna 200 mesmo em erro para evitar retry infinito do MP,
     // mas loga para observabilidade
   }

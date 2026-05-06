@@ -41,7 +41,7 @@ export default function ProductSearch() {
         defaultValue={searchParams.get("q") ?? ""}
         onChange={handleChange}
         placeholder="Buscar produto..."
-        className="pl-9 pr-4 py-2.5 rounded-full bg-white/6 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#0057FF]/60 focus:bg-white/8 transition-all duration-200 w-72"
+        className="pl-9 pr-4 py-2.5 rounded-full bg-white/6 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#3B8BFF]/60 focus:bg-white/8 transition-all duration-200 w-72"
       />
     </div>
   );

@@ -17,7 +17,7 @@ const fmt = (n: number) => n.toLocaleString("pt-BR", { style: "currency", curren
 const CHART_STYLE = {
   tick: { fill: "rgba(255,255,255,0.35)", fontSize: 11 },
   tooltip: {
-    contentStyle: { background: "#1A1A2E", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, fontSize: 12, color: "#fff" },
+    contentStyle: { background: "#0F0F0F", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, fontSize: 12, color: "#fff" },
     itemStyle: { color: "rgba(255,255,255,0.7)" },
     cursor: { fill: "rgba(255,255,255,0.04)" },
   },
@@ -38,7 +38,7 @@ export default function DashboardCharts({ revenueByDay, byStatus, topProducts }:
               <XAxis dataKey="day" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `R$${v}`} tick={CHART_STYLE.tick} width={60} axisLine={false} tickLine={false} />
               <Tooltip {...CHART_STYLE.tooltip} formatter={(v) => fmt(Number(v))} />
-              <Line type="monotone" dataKey="revenue" stroke="#0057FF" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="revenue" stroke="#3B8BFF" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -75,7 +75,7 @@ export default function DashboardCharts({ revenueByDay, byStatus, topProducts }:
               <XAxis type="number" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
               <YAxis dataKey="name" type="category" width={180} tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
               <Tooltip {...CHART_STYLE.tooltip} />
-              <Bar dataKey="qty" fill="#0057FF" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="qty" fill="#3B8BFF" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         )}

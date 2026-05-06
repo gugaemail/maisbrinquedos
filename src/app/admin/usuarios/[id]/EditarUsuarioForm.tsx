@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#0057FF] transition-colors bg-white";
+const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors bg-white";
 
 interface User {
   id: string;
@@ -42,13 +42,13 @@ export default function EditarUsuarioForm({ user }: { user: User }) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-lg">
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">E-mail</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">E-mail</label>
         <input className={`${input} bg-[#F8F9FC] text-[#6B7080]`} value={user.email} disabled />
         <p className="text-xs text-[#6B7080]">O e-mail não pode ser alterado por aqui.</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">Nome completo</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Nome completo</label>
         <input
           className={input}
           value={name}
@@ -57,7 +57,7 @@ export default function EditarUsuarioForm({ user }: { user: User }) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">Papel</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Papel</label>
         <select
           className={input}
           value={role}
@@ -72,7 +72,7 @@ export default function EditarUsuarioForm({ user }: { user: User }) {
         <button
           type="submit"
           disabled={saving}
-          className="px-8 py-3 rounded-full bg-[#0057FF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
+          className="px-8 py-3 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
         >
           {saving ? "Salvando..." : "Salvar alterações"}
         </button>

@@ -27,7 +27,7 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
         <span className="text-5xl">🔍</span>
-        <p className="font-display font-bold text-[#1A1A2E] dark:text-white text-lg">
+        <p className="font-display font-bold text-[#0F0F0F] dark:text-white text-lg">
           Nenhum produto encontrado
         </p>
         <p className="text-[#6B7080] dark:text-white/60 text-sm font-body max-w-xs">
@@ -51,9 +51,9 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
           <Link
             key={product.id}
             href={`/produto/${product.id}`}
-            className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#0057FF]/20 transition-all duration-200"
+            className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all duration-200"
           >
-            <div className="aspect-square bg-[#F0F4FF] dark:bg-white/5 flex items-center justify-center text-5xl relative overflow-hidden">
+            <div className="aspect-square bg-[#F5F5F2] dark:bg-white/5 flex items-center justify-center text-5xl relative overflow-hidden">
               {product.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -65,7 +65,7 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
                 <span>{product.category.emoji}</span>
               )}
               {product.tag && (
-                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#0057FF] text-white text-xs font-semibold font-body">
+                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#3B8BFF] text-white text-xs font-semibold font-body">
                   {product.tag}
                 </span>
               )}
@@ -74,15 +74,15 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
               <span className="text-xs text-[#6B7080] dark:text-white/60 font-body">
                 {product.category.name}
               </span>
-              <h3 className="text-sm font-display font-semibold text-[#1A1A2E] dark:text-white leading-tight group-hover:text-[#0057FF] transition-colors duration-200">
+              <h3 className="text-sm font-display font-semibold text-[#0F0F0F] dark:text-white leading-tight group-hover:text-[#3B8BFF] transition-colors duration-200">
                 {product.name}
               </h3>
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-base font-bold text-[#1A1A2E] dark:text-white">
+                <p className="text-base font-bold text-[#0F0F0F] dark:text-white">
                   R$ {price.toFixed(2).replace(".", ",")}
                 </p>
                 {discount && (
-                  <span className="text-xs font-semibold text-[#00C48C]">
+                  <span className="text-xs font-semibold text-[#3DDC84]">
                     {discount}% OFF
                   </span>
                 )}
@@ -149,7 +149,7 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
         <span>{products.length} produtos</span>
       ) : (
         <span>
-          <span className="font-semibold text-[#1A1A2E] dark:text-white">{filtered.length}</span>{" "}
+          <span className="font-semibold text-[#0F0F0F] dark:text-white">{filtered.length}</span>{" "}
           de {products.length} produtos
         </span>
       )}

@@ -92,7 +92,7 @@ export default function SearchBar() {
         <button
           onClick={() => setIsOpen(true)}
           aria-label="Buscar produtos"
-          className="p-2 rounded-full text-[#6B7080] hover:text-[#0057FF] hover:bg-[#F0F4FF] transition-colors duration-200"
+          className="p-2 rounded-full text-[#6B7080] hover:text-[#3B8BFF] hover:bg-[#F5F5F2] transition-colors duration-200"
         >
           <SearchIcon />
         </button>
@@ -112,9 +112,9 @@ export default function SearchBar() {
             onKeyDown={handleKeyDown}
             placeholder="Buscar produtos..."
             className="w-48 sm:w-64 pl-9 pr-8 py-2 rounded-full border border-[#E2E6F0]
-                       bg-white text-sm text-[#1A1A2E] placeholder:text-[#6B7080]
-                       focus:outline-none focus:border-[#0057FF]/40 focus:ring-2
-                       focus:ring-[#0057FF]/10 transition-all duration-200"
+                       bg-white text-sm text-[#0F0F0F] placeholder:text-[#6B7080]
+                       focus:outline-none focus:border-[#3B8BFF]/40 focus:ring-2
+                       focus:ring-[#3B8BFF]/10 transition-all duration-200"
             aria-label="Buscar produtos"
             aria-autocomplete="list"
             aria-controls="search-results"
@@ -123,7 +123,7 @@ export default function SearchBar() {
           <button
             onClick={closeSearch}
             aria-label="Fechar busca"
-            className="absolute right-2 text-[#6B7080] hover:text-[#1A1A2E] transition-colors"
+            className="absolute right-2 text-[#6B7080] hover:text-[#0F0F0F] transition-colors"
           >
             <XIcon />
           </button>
@@ -149,7 +149,7 @@ export default function SearchBar() {
           {!isLoading && results.length === 0 && (
             <div className="py-6 text-center text-sm text-[#6B7080]">
               Nenhum resultado para{" "}
-              <strong className="text-[#1A1A2E]">&ldquo;{query}&rdquo;</strong>
+              <strong className="text-[#0F0F0F]">&ldquo;{query}&rdquo;</strong>
             </div>
           )}
 
@@ -162,12 +162,12 @@ export default function SearchBar() {
                   aria-selected={i === activeIndex}
                   className={`flex items-center gap-3 px-4 py-3 cursor-pointer
                              transition-colors duration-150 border-b border-[#E2E6F0] last:border-0
-                             ${i === activeIndex ? "bg-[#F0F4FF]" : "hover:bg-[#F8F9FC]"}`}
+                             ${i === activeIndex ? "bg-[#F5F5F2]" : "hover:bg-[#F8F9FC]"}`}
                   onMouseEnter={() => setActiveIndex(i)}
                   onClick={() => navigateTo(r.id)}
                 >
                   {/* Thumbnail */}
-                  <div className="w-10 h-10 rounded-lg bg-[#F0F4FF] flex-shrink-0 overflow-hidden">
+                  <div className="w-10 h-10 rounded-lg bg-[#F5F5F2] flex-shrink-0 overflow-hidden">
                     {r.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={r.imageUrl} alt={r.name} className="w-full h-full object-cover" />
@@ -178,12 +178,12 @@ export default function SearchBar() {
 
                   {/* Text */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#1A1A2E] truncate">{r.name}</p>
+                    <p className="text-sm font-semibold text-[#0F0F0F] truncate">{r.name}</p>
                     <p className="text-xs text-[#6B7080]">{r.category}</p>
                   </div>
 
                   {/* Price */}
-                  <span className="text-sm font-bold text-[#1A1A2E] flex-shrink-0">
+                  <span className="text-sm font-bold text-[#0F0F0F] flex-shrink-0">
                     R$ {r.price.toFixed(2).replace(".", ",")}
                   </span>
                 </li>

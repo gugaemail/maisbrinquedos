@@ -48,7 +48,7 @@ export default function PedidoResult({ emoji, title, description, actions }: Pro
       <span ref={emojiRef} style={{ opacity: 0, display: "inline-block" }} className="text-7xl mb-6">
         {emoji}
       </span>
-      <h1 ref={h1Ref} style={{ opacity: 0 }} className="text-3xl font-display font-extrabold text-[#1A1A2E] mb-3">
+      <h1 ref={h1Ref} style={{ opacity: 0 }} className="text-3xl font-display font-extrabold text-[#0F0F0F] mb-3">
         {title}
       </h1>
       <p ref={pRef} style={{ opacity: 0 }} className="text-[#6B7080] font-body mb-8">
@@ -61,8 +61,8 @@ export default function PedidoResult({ emoji, title, description, actions }: Pro
             href={action.href}
             className={
               action.primary
-                ? "px-6 py-3 rounded-full bg-[#0057FF] text-white font-semibold hover:bg-[#0057FF]/90 transition-colors"
-                : "px-6 py-3 rounded-full border border-[#E2E6F0] text-[#6B7080] font-semibold hover:border-[#0057FF]/30 transition-colors"
+                ? "px-6 py-3 rounded-full bg-[#3B8BFF] text-white font-semibold hover:bg-[#3B8BFF]/90 transition-colors"
+                : "px-6 py-3 rounded-full border border-[#E2E6F0] text-[#6B7080] font-semibold hover:border-[#3B8BFF]/30 transition-colors"
             }
           >
             {action.label}

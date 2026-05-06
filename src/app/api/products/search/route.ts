@@ -48,7 +48,8 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json(results);
-  } catch {
+  } catch (err) {
+    console.error("[search]", err);
     return NextResponse.json([] as SearchResult[], { status: 500 });
   }
 }

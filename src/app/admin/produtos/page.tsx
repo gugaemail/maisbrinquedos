@@ -32,7 +32,7 @@ export default async function AdminProdutosPage({
         </div>
         <Link
           href="/admin/produtos/novo"
-          className="px-5 py-2.5 rounded-full bg-[#0057FF] text-white text-sm font-semibold hover:bg-[#0046CC] hover:shadow-[0_4px_14px_rgba(0,87,255,0.4)] transition-all duration-200"
+          className="px-5 py-2.5 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold hover:bg-[#0046CC] hover:shadow-[0_4px_14px_rgba(0,87,255,0.4)] transition-all duration-200"
         >
           + Novo produto
         </Link>
@@ -59,7 +59,7 @@ export default async function AdminProdutosPage({
                   R$ {Number(p.price).toFixed(2).replace(".", ",")}
                 </td>
                 <td className="px-4 py-4 text-right tabular-nums">
-                  <span className={p.stock <= 5 ? "text-[#FF3D57] font-semibold" : "text-white/50"}>
+                  <span className={p.stock <= 5 ? "text-[#FF3D5A] font-semibold" : "text-white/50"}>
                     {p.stock}
                   </span>
                 </td>
@@ -67,7 +67,7 @@ export default async function AdminProdutosPage({
                   <span
                     className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
                       p.active
-                        ? "bg-[#00C48C]/12 text-[#00C48C]"
+                        ? "bg-[#3DDC84]/12 text-[#3DDC84]"
                         : "bg-white/8 text-white/30"
                     }`}
                   >
@@ -77,7 +77,7 @@ export default async function AdminProdutosPage({
                 <td className="px-4 py-4 text-right">
                   <Link
                     href={`/admin/produtos/${p.id}`}
-                    className="text-[#0057FF] text-xs font-semibold hover:text-blue-400 transition-colors"
+                    className="text-[#3B8BFF] text-xs font-semibold hover:text-blue-400 transition-colors"
                   >
                     Editar
                   </Link>

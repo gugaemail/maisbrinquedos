@@ -80,11 +80,11 @@ function ReviewCard({ review }: { review: Review }) {
         &ldquo;{review.text}&rdquo;
       </p>
       <div className="flex items-center gap-2 mt-auto pt-1">
-        <p className="text-sm font-semibold text-[#1A1A2E] dark:text-white/85 font-body">
+        <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white/85 font-body">
           {review.customerName}
         </p>
         {review.verified && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold font-body bg-[#00C48C]/10 text-[#00C48C] border border-[#00C48C]/20">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold font-body bg-[#3DDC84]/10 text-[#3DDC84] border border-[#3DDC84]/20">
             ✓ Compra verificada
           </span>
         )}
@@ -95,12 +95,12 @@ function ReviewCard({ review }: { review: Review }) {
 
 function MetricStrip({ metrics }: { metrics: Metric[] }) {
   return (
-    <div className="rounded-2xl bg-[#F0F4FF] dark:bg-[#0057FF]/8 border border-[#E2E6F0] dark:border-[#0057FF]/15 overflow-hidden">
+    <div className="rounded-2xl bg-[#F5F5F2] dark:bg-[#3B8BFF]/8 border border-[#E2E6F0] dark:border-[#3B8BFF]/15 overflow-hidden">
       <div className="grid grid-cols-3 divide-x divide-[#E2E6F0] dark:divide-white/8">
         {metrics.map((m) => (
           <div key={m.label} className="flex flex-col items-center justify-center gap-1 py-6 px-4 text-center">
             {m.icon && <span className="text-xl mb-1" aria-hidden="true">{m.icon}</span>}
-            <p className="text-2xl md:text-3xl font-display font-extrabold text-[#0057FF] leading-none">
+            <p className="text-2xl md:text-3xl font-display font-extrabold text-[#3B8BFF] leading-none">
               {m.value}
             </p>
             <p className="text-xs text-[#6B7080] dark:text-white/40 font-body mt-0.5">{m.label}</p>
@@ -121,7 +121,7 @@ export function SocialProofSection({
       <div className="flex flex-col gap-8">
         {/* Section heading */}
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-display font-extrabold text-[#1A1A2E] dark:text-white">
+          <h2 className="text-2xl md:text-3xl font-display font-extrabold text-[#0F0F0F] dark:text-white">
             {title}
           </h2>
           <p className="text-[#6B7080] dark:text-white/35 text-sm font-body mt-2">

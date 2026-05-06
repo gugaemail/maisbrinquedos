@@ -12,7 +12,7 @@ interface PromoBanner {
   ctaLink: string;
 }
 
-const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#FF3D5A] transition-colors bg-white";
+const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#FF3D5A] transition-colors bg-white";
 
 export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
   const [form, setForm] = useState<PromoBanner>(initial);
@@ -61,7 +61,7 @@ export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
       {/* Active toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-display font-bold text-[#1A1A2E]">Banner visível na loja</p>
+          <p className="text-sm font-display font-bold text-[#0F0F0F]">Banner visível na loja</p>
           <p className="text-xs text-[#6B7080] font-body">Desative para ocultar sem apagar as configurações</p>
         </div>
         <button
@@ -75,23 +75,23 @@ export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-2">
-          <label className="text-xs font-display font-bold text-[#1A1A2E] block mb-1">Título principal *</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Título principal *</label>
           <input value={form.title} onChange={(e) => set("title", e.target.value)} required className={inp} placeholder="Frete grátis em pedidos acima de R$ 150" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#1A1A2E] block mb-1">Label do badge</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Label do badge</label>
           <input value={form.label} onChange={(e) => set("label", e.target.value)} className={inp} placeholder="Oferta especial" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#1A1A2E] block mb-1">Descrição</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Descrição</label>
           <input value={form.description} onChange={(e) => set("description", e.target.value)} className={inp} placeholder="Entrega rápida para todo o Brasil." />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#1A1A2E] block mb-1">Texto do botão</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Texto do botão</label>
           <input value={form.ctaText} onChange={(e) => set("ctaText", e.target.value)} className={inp} placeholder="Aproveitar agora →" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#1A1A2E] block mb-1">Link do botão</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Link do botão</label>
           <input value={form.ctaLink} onChange={(e) => set("ctaLink", e.target.value)} className={inp} placeholder="/produtos" />
         </div>
       </div>

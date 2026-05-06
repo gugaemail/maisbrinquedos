@@ -53,16 +53,16 @@ export default function ConfiguracoesForm({
     toast.success("Configurações salvas!");
   }
 
-  const inp = "px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#0057FF] transition-colors w-32";
+  const inp = "px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors w-32";
 
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-8">
       <section className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-6">
-        <h2 className="text-sm font-display font-bold text-[#1A1A2E]">Pagamentos</h2>
+        <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Pagamentos</h2>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#1A1A2E]">Desconto PIX (%)</p>
+            <p className="text-sm font-semibold text-[#0F0F0F]">Desconto PIX (%)</p>
             <p className="text-xs text-[#6B7080] font-body">Percentual de desconto para pagamentos via PIX</p>
           </div>
           <input type="number" min="0" max="50" value={pix} onChange={(e) => setPix(e.target.value)} className={inp} />
@@ -70,7 +70,7 @@ export default function ConfiguracoesForm({
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#1A1A2E]">Máximo de parcelas</p>
+            <p className="text-sm font-semibold text-[#0F0F0F]">Máximo de parcelas</p>
             <p className="text-xs text-[#6B7080] font-body">Número máximo de parcelas sem juros</p>
           </div>
           <input type="number" min="1" max="24" value={installments} onChange={(e) => setInstallments(e.target.value)} className={inp} />
@@ -78,7 +78,7 @@ export default function ConfiguracoesForm({
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#1A1A2E]">Frete grátis a partir de (R$)</p>
+            <p className="text-sm font-semibold text-[#0F0F0F]">Frete grátis a partir de (R$)</p>
             <p className="text-xs text-[#6B7080] font-body">Valor mínimo para frete grátis</p>
           </div>
           <input type="number" min="0" value={shipping} onChange={(e) => setShipping(e.target.value)} className={inp} />
@@ -86,7 +86,7 @@ export default function ConfiguracoesForm({
       </section>
 
       <section className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4">
-        <h2 className="text-sm font-display font-bold text-[#1A1A2E]">Meios de pagamento</h2>
+        <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Meios de pagamento</h2>
         <p className="text-xs text-[#6B7080] font-body">Desmarque para desabilitar no checkout</p>
         <div className="flex flex-col gap-3">
           {PAYMENT_OPTIONS.map((opt) => (
@@ -95,9 +95,9 @@ export default function ConfiguracoesForm({
                 type="checkbox"
                 checked={!disabled.includes(opt.key)}
                 onChange={() => togglePayment(opt.key)}
-                className="w-4 h-4 accent-[#0057FF]"
+                className="w-4 h-4 accent-[#3B8BFF]"
               />
-              <span className="text-sm font-body text-[#1A1A2E]">{opt.label}</span>
+              <span className="text-sm font-body text-[#0F0F0F]">{opt.label}</span>
             </label>
           ))}
         </div>
@@ -106,7 +106,7 @@ export default function ConfiguracoesForm({
       <button
         type="submit"
         disabled={saving}
-        className="self-start px-8 py-3 rounded-full bg-[#0057FF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
+        className="self-start px-8 py-3 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
       >
         {saving ? "Salvando..." : "Salvar configurações"}
       </button>

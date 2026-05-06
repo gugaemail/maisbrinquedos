@@ -15,7 +15,7 @@ export default async function EditarProdutoPage({ params }: { params: Promise<{ 
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-display font-extrabold text-[#1A1A2E]">Editar produto</h1>
+        <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F]">Editar produto</h1>
         <DeleteProductButton id={product.id} />
       </div>
       <ProductForm

@@ -14,12 +14,12 @@ interface CheckoutAuthProps {
 
 function SocialLoadingOverlay({ provider }: { provider: "Google" | "Apple" }) {
   return (
-    <div className="absolute inset-0 rounded-2xl flex items-center justify-center gap-2.5 bg-white/90 dark:bg-[#1A1A2E]/90 backdrop-blur-sm z-10">
-      <svg className="w-4 h-4 text-[#0057FF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <div className="absolute inset-0 rounded-2xl flex items-center justify-center gap-2.5 bg-white/90 dark:bg-[#0F0F0F]/90 backdrop-blur-sm z-10">
+      <svg className="w-4 h-4 text-[#3B8BFF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
         <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
         <path d="M12 2a10 10 0 0 1 10 10" />
       </svg>
-      <span className="text-sm font-body text-[#1A1A2E] dark:text-white">
+      <span className="text-sm font-body text-[#0F0F0F] dark:text-white">
         Redirecionando para o {provider}…
       </span>
     </div>
@@ -50,23 +50,23 @@ function OptionCard({
       disabled={loading}
       className="group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left
         border-[#E2E6F0] dark:border-white/10 bg-white dark:bg-white/5
-        hover:border-[#0057FF] hover:bg-[#0057FF]/5 hover:shadow-[0_0_0_2px_rgba(0,87,255,0.15)]
+        hover:border-[#3B8BFF] hover:bg-[#3B8BFF]/5 hover:shadow-[0_0_0_2px_rgba(0,87,255,0.15)]
         disabled:opacity-60 disabled:cursor-wait
         transition-all duration-200 cursor-pointer"
     >
       <span className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center
-        bg-[#F0F4FF] dark:bg-white/10 text-[#0057FF] dark:text-white
-        group-hover:bg-[#0057FF] group-hover:text-white transition-colors duration-200">
+        bg-[#F5F5F2] dark:bg-white/10 text-[#3B8BFF] dark:text-white
+        group-hover:bg-[#3B8BFF] group-hover:text-white transition-colors duration-200">
         {icon}
       </span>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-display font-bold text-[#1A1A2E] dark:text-white">
+          <span className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">
             {title}
           </span>
           {badge && (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full font-body bg-[#00C48C]/10 text-[#00C48C]">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full font-body bg-[#3DDC84]/10 text-[#3DDC84]">
               {badge}
             </span>
           )}
@@ -84,7 +84,7 @@ function OptionCard({
         strokeLinecap="round"
         strokeLinejoin="round"
         className="w-4 h-4 flex-shrink-0 text-[#C4C9D9] dark:text-white/20
-          group-hover:text-[#0057FF] group-hover:translate-x-0.5 transition-all duration-200"
+          group-hover:text-[#3B8BFF] group-hover:translate-x-0.5 transition-all duration-200"
       >
         <path d="m9 18 6-6-6-6" />
       </svg>
@@ -147,7 +147,7 @@ export default function CheckoutAuth({ onSelect }: CheckoutAuthProps) {
         <button
           type="button"
           onClick={() => { setView("options"); setAuthError(""); }}
-          className="flex items-center gap-1.5 text-sm text-[#6B7080] dark:text-white/50 hover:text-[#0057FF] transition-colors font-body mb-6"
+          className="flex items-center gap-1.5 text-sm text-[#6B7080] dark:text-white/50 hover:text-[#3B8BFF] transition-colors font-body mb-6"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
             <path d="m15 18-6-6 6-6" />
@@ -164,12 +164,12 @@ export default function CheckoutAuth({ onSelect }: CheckoutAuthProps) {
       {googleLoading && <SocialLoadingOverlay provider="Google" />}
 
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#0057FF]/10 mb-4">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#0057FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#3B8BFF]/10 mb-4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B8BFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         </div>
-        <h2 className="text-2xl font-display font-extrabold text-[#1A1A2E] dark:text-white mb-1">
+        <h2 className="text-2xl font-display font-extrabold text-[#0F0F0F] dark:text-white mb-1">
           Como deseja continuar?
         </h2>
         <p className="text-sm text-[#6B7080] dark:text-white/50 font-body">
@@ -178,7 +178,7 @@ export default function CheckoutAuth({ onSelect }: CheckoutAuthProps) {
       </div>
 
       {authError && (
-        <div className="mb-4 px-4 py-3 rounded-xl bg-[#FF3D57]/10 border border-[#FF3D57]/20 text-sm text-[#FF3D57] font-body">
+        <div className="mb-4 px-4 py-3 rounded-xl bg-[#FF3D5A]/10 border border-[#FF3D5A]/20 text-sm text-[#FF3D5A] font-body">
           {authError}
         </div>
       )}
@@ -210,9 +210,9 @@ export default function CheckoutAuth({ onSelect }: CheckoutAuthProps) {
 
       <p className="text-center text-xs text-[#6B7080] dark:text-white/40 font-body mt-6 leading-relaxed">
         Ao continuar, você concorda com nossos{" "}
-        <a href="/termos" className="underline hover:text-[#0057FF] transition-colors">Termos de Uso</a>
+        <a href="/termos" className="underline hover:text-[#3B8BFF] transition-colors">Termos de Uso</a>
         {" "}e{" "}
-        <a href="/privacidade" className="underline hover:text-[#0057FF] transition-colors">Política de Privacidade</a>.
+        <a href="/privacidade" className="underline hover:text-[#3B8BFF] transition-colors">Política de Privacidade</a>.
       </p>
     </div>
   );

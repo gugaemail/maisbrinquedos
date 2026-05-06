@@ -7,14 +7,10 @@ import { animate } from "animejs";
 import SearchBar from "@/components/SearchBar";
 import { Logo } from "@/components/brand/Logo";
 
-const nav = [
-  { label: "Brinquedos", href: "/categoria/brinquedos" },
-  { label: "Tech & Celular", href: "/categoria/tech" },
-  { label: "Presentes", href: "/categoria/presentes" },
-  { label: "Novidades", href: "/categoria/novidades" },
-];
+interface CategoryProp { name: string; slug: string }
 
-export default function Header() {
+export default function Header({ categories = [] }: { categories?: CategoryProp[] }) {
+  const nav = categories.map((c) => ({ label: c.name, href: `/categoria/${c.slug}` }));
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { totalItems, openDrawer } = useCart();

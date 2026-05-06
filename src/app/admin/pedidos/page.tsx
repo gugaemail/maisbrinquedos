@@ -3,8 +3,8 @@ import Link from "next/link";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   PENDING:   { label: "Pendente",    color: "bg-[#FFB800]/12 text-[#FFB800]" },
-  APPROVED:  { label: "Aprovado",   color: "bg-[#00C48C]/12 text-[#00C48C]" },
-  REJECTED:  { label: "Rejeitado",  color: "bg-[#FF3D57]/12 text-[#FF3D57]" },
+  APPROVED:  { label: "Aprovado",   color: "bg-[#3DDC84]/12 text-[#3DDC84]" },
+  REJECTED:  { label: "Rejeitado",  color: "bg-[#FF3D5A]/12 text-[#FF3D5A]" },
   CANCELLED: { label: "Cancelado",  color: "bg-white/8 text-white/35" },
   REFUNDED:  { label: "Reembolsado",color: "bg-[#7B3FA0]/12 text-[#7B3FA0]" },
 };
@@ -65,7 +65,7 @@ export default async function PedidosPage() {
                     {o.createdAt.toLocaleDateString("pt-BR")}
                   </td>
                   <td className="px-4 py-4 text-right">
-                    <Link href={`/admin/pedidos/${o.id}`} className="text-[#0057FF] text-xs font-semibold hover:text-blue-400 transition-colors">
+                    <Link href={`/admin/pedidos/${o.id}`} className="text-[#3B8BFF] text-xs font-semibold hover:text-blue-400 transition-colors">
                       Ver
                     </Link>
                   </td>

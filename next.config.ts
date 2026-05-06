@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
@@ -8,6 +10,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.tcdn.com.br",
+      },
+      {
+        protocol: "https",
+        hostname: "*.tcdn.com.br",
       },
     ],
   },
@@ -36,10 +46,10 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://connect.facebook.net https://sdk.mercadopago.com",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://connect.facebook.net https://sdk.mercadopago.com`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://www.google-analytics.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.tcdn.com.br https://www.google-analytics.com",
               "connect-src 'self' https://*.supabase.co https://api.mercadopago.com https://www.google-analytics.com https://analytics.google.com",
               "frame-src https://sdk.mercadopago.com",
               "object-src 'none'",

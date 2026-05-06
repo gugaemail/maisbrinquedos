@@ -9,8 +9,9 @@
   --color-brand-black: #0F0F0F;
   --color-off-white: #FAFAF7;
 
-  /* Semantic aliases (mantidos para compatibilidade) */
+  /* Semantic aliases */
   --color-background: #FAFAF7;
+  --color-surface-dark: #0A0A0F;
   --color-primary: #FF3D5A;
   --color-accent: #FFE14D;
   --color-text: #0F0F0F;
@@ -50,4 +51,21 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #ebebeb 25%, #d8d8d8 50%, #ebebeb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, #1a1a2a 25%, #252535 50%, #1a1a2a 75%);
+  background-size: 200% 100%;
 }

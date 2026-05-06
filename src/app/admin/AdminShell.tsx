@@ -127,9 +127,9 @@ export default function AdminShell({ children, role, userName }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0D0D1A]">
+    <div className="min-h-screen flex bg-[#0A0A0F]">
       {/* Sidebar */}
-      <aside className="w-56 shrink-0 bg-[#0D0D1A] border-r border-white/8 flex flex-col min-h-screen">
+      <aside className="w-56 shrink-0 bg-[#0A0A0F] border-r border-white/8 flex flex-col min-h-screen">
         {/* Brand */}
         <div className="px-5 py-5 border-b border-white/8">
           <p className="font-display font-bold text-white text-sm leading-tight tracking-tight">Mais Brinquedos</p>
@@ -150,7 +150,7 @@ export default function AdminShell({ children, role, userName }: Props) {
                 }`}
               >
                 {active && (
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[#0057FF]" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[#3B8BFF]" />
                 )}
                 <item.Icon />
                 {item.label}
@@ -176,7 +176,7 @@ export default function AdminShell({ children, role, userName }: Props) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto bg-[#0D0D1A]">
+      <main className="flex-1 overflow-auto bg-[#0A0A0F]">
         <Toaster richColors position="top-right" />
         {children}
       </main>

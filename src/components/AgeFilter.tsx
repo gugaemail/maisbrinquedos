@@ -46,8 +46,8 @@ function Chip({
       className={[
         "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-sm font-semibold font-body whitespace-nowrap transition-all duration-200 cursor-pointer",
         active
-          ? "bg-[#0057FF] text-white border-[#0057FF] shadow-sm"
-          : "bg-white dark:bg-white/5 text-[#6B7080] dark:text-white/70 border-[#E2E6F0] dark:border-white/15 hover:border-[#0057FF]/40 hover:text-[#0057FF]",
+          ? "bg-[#3B8BFF] text-white border-[#3B8BFF] shadow-sm"
+          : "bg-white dark:bg-white/5 text-[#6B7080] dark:text-white/70 border-[#E2E6F0] dark:border-white/15 hover:border-[#3B8BFF]/40 hover:text-[#3B8BFF]",
       ].join(" ")}
     >
       {children}
@@ -72,11 +72,11 @@ function SidebarFilter({
     <aside className="w-56 shrink-0 sticky top-24 self-start hidden md:block">
       <div className="rounded-2xl border border-[#E2E6F0] dark:border-white/10 bg-white dark:bg-white/5 p-5 flex flex-col gap-5">
         <div className="flex items-center justify-between">
-          <span className="font-display font-bold text-[#1A1A2E] dark:text-white text-sm">Filtros</span>
+          <span className="font-display font-bold text-[#0F0F0F] dark:text-white text-sm">Filtros</span>
           {hasActiveFilters(activeFilters) && (
             <button
               onClick={onClear}
-              className="text-xs text-[#0057FF] font-semibold hover:underline font-body cursor-pointer"
+              className="text-xs text-[#3B8BFF] font-semibold hover:underline font-body cursor-pointer"
             >
               Limpar
             </button>
@@ -127,7 +127,7 @@ function SidebarFilter({
           <>
             <div className="h-px bg-[#E2E6F0] dark:bg-white/10" />
             <p className="text-xs text-[#6B7080] dark:text-white/60 font-body text-center">
-              <span className="font-bold text-[#1A1A2E] dark:text-white">{filteredCount}</span> de {totalProducts} produtos
+              <span className="font-bold text-[#0F0F0F] dark:text-white">{filteredCount}</span> de {totalProducts} produtos
             </p>
           </>
         )}
@@ -149,7 +149,7 @@ function HorizontalFilter({
         {hasActiveFilters(activeFilters) && (
           <button
             onClick={onClear}
-            className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#FF3D57]/40 text-[#FF3D57] text-sm font-semibold font-body whitespace-nowrap transition-all duration-200 cursor-pointer hover:bg-[#FF3D57]/5 shrink-0"
+            className="inline-flex items-center px-3.5 py-1.5 rounded-full border border-[#FF3D5A]/40 text-[#FF3D5A] text-sm font-semibold font-body whitespace-nowrap transition-all duration-200 cursor-pointer hover:bg-[#FF3D5A]/5 shrink-0"
           >
             ✕ Limpar
           </button>

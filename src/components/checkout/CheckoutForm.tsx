@@ -108,9 +108,9 @@ function StepIndicator({ current }: { current: number }) {
               w-8 h-8 rounded-full flex items-center justify-center text-sm font-display font-bold
               transition-all duration-300
               ${i < current
-                ? "bg-[#0057FF] text-white"
+                ? "bg-[#3B8BFF] text-white"
                 : i === current
-                  ? "bg-[#0057FF] text-white ring-4 ring-[#0057FF]/20"
+                  ? "bg-[#3B8BFF] text-white ring-4 ring-[#3B8BFF]/20"
                   : "bg-[#E2E6F0] dark:bg-white/10 text-[#6B7080] dark:text-white/40"
               }
             `}>
@@ -124,7 +124,7 @@ function StepIndicator({ current }: { current: number }) {
             </div>
             <span className={`
               text-[10px] font-body mt-1 text-center leading-tight hidden sm:block
-              ${i === current ? "text-[#0057FF] font-semibold" : "text-[#6B7080] dark:text-white/40"}
+              ${i === current ? "text-[#3B8BFF] font-semibold" : "text-[#6B7080] dark:text-white/40"}
             `}>
               {label}
             </span>
@@ -132,7 +132,7 @@ function StepIndicator({ current }: { current: number }) {
           {i < STEPS.length - 1 && (
             <div className={`
               flex-1 h-0.5 mx-2 mb-4 sm:mb-5 transition-all duration-300
-              ${i < current ? "bg-[#0057FF]" : "bg-[#E2E6F0] dark:bg-white/10"}
+              ${i < current ? "bg-[#3B8BFF]" : "bg-[#E2E6F0] dark:bg-white/10"}
             `} />
           )}
         </div>
@@ -158,7 +158,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={htmlFor} className="text-sm font-semibold text-[#1A1A2E] dark:text-white/80 font-body">
+      <label htmlFor={htmlFor} className="text-sm font-semibold text-[#0F0F0F] dark:text-white/80 font-body">
         {label}
       </label>
       {children}
@@ -166,7 +166,7 @@ function Field({
         <p className="text-xs text-[#6B7080] dark:text-white/40 font-body">{hint}</p>
       )}
       {error && (
-        <p className="text-xs text-[#FF3D57] font-body flex items-center gap-1">
+        <p className="text-xs text-[#FF3D5A] font-body flex items-center gap-1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 flex-shrink-0">
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
@@ -181,11 +181,11 @@ function Field({
 
 const inputClass = (hasError?: boolean) => `
   px-4 py-3 rounded-xl border text-sm font-body
-  bg-white dark:bg-white/5 text-[#1A1A2E] dark:text-white
+  bg-white dark:bg-white/5 text-[#0F0F0F] dark:text-white
   focus:outline-none transition-colors placeholder:text-[#C4C9D9] dark:placeholder:text-white/20
   ${hasError
-    ? "border-[#FF3D57] focus:border-[#FF3D57]"
-    : "border-[#E2E6F0] dark:border-white/10 focus:border-[#0057FF]"
+    ? "border-[#FF3D5A] focus:border-[#FF3D5A]"
+    : "border-[#E2E6F0] dark:border-white/10 focus:border-[#3B8BFF]"
   }
 `;
 
@@ -217,7 +217,7 @@ function StepPersonal({
   return (
     <form onSubmit={handleSubmit(onNext)} className="flex flex-col gap-5">
       <p className="text-xs font-body text-[#6B7080] dark:text-white/50 bg-[#F8F9FC] dark:bg-white/5 rounded-xl px-4 py-3 leading-relaxed">
-        <strong className="text-[#1A1A2E] dark:text-white">Base legal LGPD:</strong> estes dados são necessários
+        <strong className="text-[#0F0F0F] dark:text-white">Base legal LGPD:</strong> estes dados são necessários
         para emissão de nota fiscal e entrega do pedido (Art. 7º, V — execução de contrato).
       </p>
 
@@ -272,8 +272,8 @@ function StepPersonal({
       </Field>
 
       {authMode === "guest" && (
-        <div className="rounded-xl bg-[#F0F4FF] dark:bg-[#0057FF]/10 border border-[#0057FF]/10 px-4 py-3">
-          <p className="text-xs font-body text-[#1A1A2E] dark:text-white/70 leading-relaxed">
+        <div className="rounded-xl bg-[#F5F5F2] dark:bg-[#3B8BFF]/10 border border-[#3B8BFF]/10 px-4 py-3">
+          <p className="text-xs font-body text-[#0F0F0F] dark:text-white/70 leading-relaxed">
             Após a compra, enviaremos um link para você criar uma senha e acompanhar seus pedidos facilmente.
           </p>
         </div>
@@ -281,7 +281,7 @@ function StepPersonal({
 
       <button
         type="submit"
-        className="w-full px-6 py-4 rounded-full bg-[#0057FF] text-white font-display font-bold text-base hover:bg-[#0046D4] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] transition-all duration-200"
+        className="w-full px-6 py-4 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-base hover:bg-[#2a6fd6] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] transition-all duration-200"
       >
         Próximo — Endereço →
       </button>
@@ -348,7 +348,7 @@ function StepAddress({
               />
               {cepStatus === "loading" && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <svg className="w-4 h-4 text-[#0057FF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg className="w-4 h-4 text-[#3B8BFF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
                     <path d="M12 2a10 10 0 0 1 10 10" />
                   </svg>
@@ -356,14 +356,14 @@ function StepAddress({
               )}
               {cepStatus === "found" && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <svg className="w-4 h-4 text-[#00C48C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg className="w-4 h-4 text-[#3DDC84]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </span>
               )}
             </div>
             {cepStatus === "not_found" && (
-              <p className="text-xs text-[#FF3D57] font-body mt-1">CEP não encontrado</p>
+              <p className="text-xs text-[#FF3D5A] font-body mt-1">CEP não encontrado</p>
             )}
           </Field>
         </div>
@@ -407,13 +407,13 @@ function StepAddress({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 px-6 py-4 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#1A1A2E] dark:text-white font-display font-semibold text-base hover:border-[#0057FF] hover:text-[#0057FF] transition-all duration-200"
+          className="flex-1 px-6 py-4 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#0F0F0F] dark:text-white font-display font-semibold text-base hover:border-[#3B8BFF] hover:text-[#3B8BFF] transition-all duration-200"
         >
           ← Voltar
         </button>
         <button
           type="submit"
-          className="flex-[2] px-6 py-4 rounded-full bg-[#0057FF] text-white font-display font-bold text-base hover:bg-[#0046D4] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] transition-all duration-200"
+          className="flex-[2] px-6 py-4 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-base hover:bg-[#2a6fd6] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] transition-all duration-200"
         >
           Revisar pedido →
         </button>
@@ -455,7 +455,7 @@ function StepConsent({
       {/* Data review */}
       <div className="rounded-2xl border border-[#E2E6F0] dark:border-white/10 overflow-hidden">
         <div className="px-5 py-3 bg-[#F8F9FC] dark:bg-white/5 border-b border-[#E2E6F0] dark:border-white/10">
-          <p className="text-sm font-display font-bold text-[#1A1A2E] dark:text-white">Dados informados</p>
+          <p className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Dados informados</p>
         </div>
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
           <ReviewRow label="Nome" value={personal.name} />
@@ -481,10 +481,10 @@ function StepConsent({
           {...register("termsAccepted")}
         >
           Li e aceito os{" "}
-          <a href="/termos" className="text-[#0057FF] underline hover:no-underline" target="_blank">Termos de Uso</a>
+          <a href="/termos" className="text-[#3B8BFF] underline hover:no-underline" target="_blank">Termos de Uso</a>
           {" "}e a{" "}
-          <a href="/privacidade" className="text-[#0057FF] underline hover:no-underline" target="_blank">Política de Privacidade</a>.
-          {" "}<span className="text-[#FF3D57]">*</span>
+          <a href="/privacidade" className="text-[#3B8BFF] underline hover:no-underline" target="_blank">Política de Privacidade</a>.
+          {" "}<span className="text-[#FF3D5A]">*</span>
         </CheckboxField>
 
         <CheckboxField
@@ -515,14 +515,14 @@ function StepConsent({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 px-6 py-4 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#1A1A2E] dark:text-white font-display font-semibold text-base hover:border-[#0057FF] hover:text-[#0057FF] transition-all duration-200"
+          className="flex-1 px-6 py-4 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#0F0F0F] dark:text-white font-display font-semibold text-base hover:border-[#3B8BFF] hover:text-[#3B8BFF] transition-all duration-200"
         >
           ← Voltar
         </button>
         <button
           type="submit"
           disabled={isLoading}
-          className="flex-[2] px-6 py-4 rounded-full bg-[#0057FF] text-white font-display font-bold text-base hover:bg-[#0046D4] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2.5"
+          className="flex-[2] px-6 py-4 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-base hover:bg-[#2a6fd6] hover:shadow-[0_4px_20px_rgba(0,87,255,0.4)] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2.5"
         >
           {isLoading ? (
             <>
@@ -545,7 +545,7 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-[10px] font-body font-semibold uppercase tracking-wide text-[#6B7080] dark:text-white/40">{label}</p>
-      <p className="text-sm font-body text-[#1A1A2E] dark:text-white mt-0.5">{value}</p>
+      <p className="text-sm font-body text-[#0F0F0F] dark:text-white mt-0.5">{value}</p>
     </div>
   );
 }
@@ -562,15 +562,15 @@ const CheckboxField = React.forwardRef<
         ref={ref}
         id={id}
         type="checkbox"
-        className="mt-0.5 w-4 h-4 rounded border-[#C4C9D9] accent-[#0057FF] flex-shrink-0 cursor-pointer"
+        className="mt-0.5 w-4 h-4 rounded border-[#C4C9D9] accent-[#3B8BFF] flex-shrink-0 cursor-pointer"
         {...props}
       />
-      <span className="text-sm font-body text-[#1A1A2E] dark:text-white/80 leading-relaxed group-hover:text-[#0057FF] transition-colors">
+      <span className="text-sm font-body text-[#0F0F0F] dark:text-white/80 leading-relaxed group-hover:text-[#3B8BFF] transition-colors">
         {children}
       </span>
     </label>
     {error && (
-      <p className="text-xs text-[#FF3D57] font-body mt-1 ml-7">{error}</p>
+      <p className="text-xs text-[#FF3D5A] font-body mt-1 ml-7">{error}</p>
     )}
   </div>
 ));
@@ -626,7 +626,7 @@ export default function CheckoutForm({ authMode, prefill, onSubmit }: CheckoutFo
       <StepIndicator current={step} />
 
       <p className="text-xs font-body text-[#6B7080] dark:text-white/40 mb-6">
-        Etapa {step + 1} de {STEPS.length} — <span className="font-semibold text-[#1A1A2E] dark:text-white">{STEPS[step]}</span>
+        Etapa {step + 1} de {STEPS.length} — <span className="font-semibold text-[#0F0F0F] dark:text-white">{STEPS[step]}</span>
       </p>
 
       {step === 0 && (

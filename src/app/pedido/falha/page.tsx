@@ -1,10 +1,10 @@
-import Header from "@/components/Header";
+import HeaderServer from "@/components/HeaderServer";
 import PedidoResult from "@/components/PedidoResult";
 
 export default function PedidoFalha() {
   return (
     <>
-      <Header />
+      <HeaderServer />
       <PedidoResult
         emoji="😞"
         title="Pagamento não aprovado"

@@ -24,7 +24,7 @@ export default async function EditarUsuarioPage({ params }: { params: Promise<{ 
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-display font-extrabold text-[#1A1A2E]">Editar usuário</h1>
+        <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F]">Editar usuário</h1>
         <p className="text-sm text-[#6B7080] font-body mt-1">{user.email}</p>
       </div>
       <EditarUsuarioForm user={user} />

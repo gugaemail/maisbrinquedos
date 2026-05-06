@@ -15,7 +15,7 @@ interface User {
 }
 
 const roleBadge: Record<string, string> = {
-  admin: "bg-[#0057FF]/10 text-[#0057FF]",
+  admin: "bg-[#3B8BFF]/10 text-[#3B8BFF]",
   operator: "bg-[#6B7080]/10 text-[#6B7080]",
 };
 
@@ -71,7 +71,7 @@ export default function UsuariosList({ users }: { users: User[] }) {
         <tbody className="divide-y divide-[#E2E6F0]">
           {users.map((u) => (
             <tr key={u.id} className="hover:bg-[#F8F9FC] transition-colors">
-              <td className="px-6 py-4 font-semibold text-[#1A1A2E]">{u.name || "—"}</td>
+              <td className="px-6 py-4 font-semibold text-[#0F0F0F]">{u.name || "—"}</td>
               <td className="px-6 py-4 text-[#6B7080]">{u.email}</td>
               <td className="px-6 py-4">
                 <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${roleBadge[u.role]}`}>
@@ -84,14 +84,14 @@ export default function UsuariosList({ users }: { users: User[] }) {
                 <div className="flex items-center gap-3 justify-end">
                   <Link
                     href={`/admin/usuarios/${u.id}`}
-                    className="text-xs text-[#0057FF] font-semibold hover:underline"
+                    className="text-xs text-[#3B8BFF] font-semibold hover:underline"
                   >
                     Editar
                   </Link>
                   <button
                     onClick={() => handleDelete(u.id, u.name)}
                     disabled={deleting === u.id}
-                    className="text-xs text-[#FF3D57] font-semibold hover:underline disabled:opacity-50"
+                    className="text-xs text-[#FF3D5A] font-semibold hover:underline disabled:opacity-50"
                   >
                     {deleting === u.id ? "Excluindo..." : "Excluir"}
                   </button>

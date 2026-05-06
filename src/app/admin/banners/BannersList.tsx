@@ -24,7 +24,7 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#0057FF] transition-colors";
+  const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors";
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -105,16 +105,16 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
               )
             )}
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-[#1A1A2E]">{b.title}</p>
+              <p className="font-semibold text-[#0F0F0F]">{b.title}</p>
               {b.subtitle && <p className="text-sm text-[#6B7080] truncate">{b.subtitle}</p>}
               {b.ctaLink && <p className="text-xs text-[#6B7080] truncate font-mono">{b.ctaLink}</p>}
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <button onClick={() => handleToggle(b.id, b.active)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${b.active ? "bg-[#00C48C]/10 text-[#00C48C]" : "bg-[#6B7080]/10 text-[#6B7080]"}`}>
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${b.active ? "bg-[#3DDC84]/10 text-[#3DDC84]" : "bg-[#6B7080]/10 text-[#6B7080]"}`}>
                 {b.active ? "Ativo" : "Inativo"}
               </button>
-              <button onClick={() => handleDelete(b.id)} className="text-[#FF3D57] text-xs font-semibold hover:underline">
+              <button onClick={() => handleDelete(b.id)} className="text-[#FF3D5A] text-xs font-semibold hover:underline">
                 Excluir
               </button>
             </div>
@@ -127,26 +127,26 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
 
       {creating ? (
         <form onSubmit={handleCreate} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4">
-          <h2 className="text-sm font-display font-bold text-[#1A1A2E]">Novo banner</h2>
+          <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Novo banner</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#1A1A2E] block mb-1">Título *</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Título *</label>
               <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#1A1A2E] block mb-1">Subtítulo</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Subtítulo</label>
               <input value={form.subtitle} onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))} className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#1A1A2E] block mb-1">Texto do botão</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Texto do botão</label>
               <input value={form.ctaText} onChange={(e) => setForm((f) => ({ ...f, ctaText: e.target.value }))} className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#1A1A2E] block mb-1">Link do botão</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Link do botão</label>
               <input value={form.ctaLink} onChange={(e) => setForm((f) => ({ ...f, ctaLink: e.target.value }))} className={inp} placeholder="/produtos" />
             </div>
             <div className="col-span-2">
-              <label className="text-xs font-semibold text-[#1A1A2E] block mb-1">Imagem / GIF / Vídeo do banner</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Imagem / GIF / Vídeo do banner</label>
               {preview ? (
                 <div className="relative w-full h-40 rounded-xl overflow-hidden border border-[#E2E6F0] bg-[#F7F8FC]">
                   {preview.includes("blob:") && fileInputRef.current?.files?.[0]?.type === "video/mp4" || form.imageUrl.endsWith(".mp4") ? (
@@ -157,14 +157,14 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
                   )}
                   {uploading && (
                     <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
-                      <span className="text-xs font-semibold text-[#0057FF] animate-pulse">Enviando...</span>
+                      <span className="text-xs font-semibold text-[#3B8BFF] animate-pulse">Enviando...</span>
                     </div>
                   )}
                   {!uploading && (
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 bg-white rounded-full px-2 py-0.5 text-xs font-semibold text-[#FF3D57] border border-[#E2E6F0] hover:bg-[#FFF0F2] transition-colors"
+                      className="absolute top-2 right-2 bg-white rounded-full px-2 py-0.5 text-xs font-semibold text-[#FF3D5A] border border-[#E2E6F0] hover:bg-[#FFF0F2] transition-colors"
                     >
                       Remover
                     </button>
@@ -174,7 +174,7 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-32 rounded-xl border-2 border-dashed border-[#C7CEDE] flex flex-col items-center justify-center gap-1 hover:border-[#0057FF] hover:bg-[#F0F5FF] transition-colors cursor-pointer"
+                  className="w-full h-32 rounded-xl border-2 border-dashed border-[#C7CEDE] flex flex-col items-center justify-center gap-1 hover:border-[#3B8BFF] hover:bg-[#F0F5FF] transition-colors cursor-pointer"
                 >
                   <svg className="w-6 h-6 text-[#6B7080]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -193,14 +193,14 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
             </div>
           </div>
           <div className="flex gap-3">
-            <button type="submit" disabled={uploading} className="px-6 py-2.5 rounded-full bg-[#0057FF] text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" disabled={uploading} className="px-6 py-2.5 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
               {uploading ? "Aguardando upload..." : "Criar"}
             </button>
             <button type="button" onClick={() => { setCreating(false); setPreview(null); setForm(blankForm); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="px-6 py-2.5 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm">Cancelar</button>
           </div>
         </form>
       ) : (
-        <button onClick={() => setCreating(true)} className="px-6 py-3 rounded-full bg-[#0057FF] text-white text-sm font-semibold hover:bg-[#0046CC] transition-colors">
+        <button onClick={() => setCreating(true)} className="px-6 py-3 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold hover:bg-[#0046CC] transition-colors">
           + Novo banner
         </button>
       )}

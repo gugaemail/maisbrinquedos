@@ -18,7 +18,7 @@ export default function DeleteProductButton({ id }: { id: string }) {
   return (
     <button
       onClick={handleDelete}
-      className="px-4 py-2 rounded-full border border-[#FF3D57] text-[#FF3D57] text-sm font-semibold hover:bg-[#FF3D57]/5 transition-colors"
+      className="px-4 py-2 rounded-full border border-[#FF3D5A] text-[#FF3D5A] text-sm font-semibold hover:bg-[#FF3D5A]/5 transition-colors"
     >
       Excluir produto
     </button>

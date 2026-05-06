@@ -93,7 +93,7 @@ export default function HeroSection() {
 
         {/* Right: category cards */}
         <div className="flex-1 flex justify-center items-center">
-          <div ref={gridRef} className="grid grid-cols-2 gap-4 w-72 md:w-80">
+          <div ref={gridRef} className="grid grid-cols-2 gap-4 w-72 md:w-80 lg:w-96 xl:w-[420px]">
             {PRODUCT_CARDS.map((card) => (
               <div
                 key={card.label}

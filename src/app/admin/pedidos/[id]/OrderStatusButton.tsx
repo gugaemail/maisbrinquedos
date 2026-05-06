@@ -3,7 +3,13 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const STATUSES = ["PENDING", "APPROVED", "REJECTED", "CANCELLED", "REFUNDED"] as const;
+const STATUSES: { value: string; label: string }[] = [
+  { value: "PENDING",   label: "Pendente" },
+  { value: "APPROVED",  label: "Aprovado" },
+  { value: "REJECTED",  label: "Rejeitado" },
+  { value: "CANCELLED", label: "Cancelado" },
+  { value: "REFUNDED",  label: "Reembolsado" },
+];
 
 export default function OrderStatusButton({ orderId, currentStatus }: { orderId: string; currentStatus: string }) {
   const router = useRouter();
@@ -23,18 +29,18 @@ export default function OrderStatusButton({ orderId, currentStatus }: { orderId:
     <div>
       <p className="text-xs font-semibold text-[#6B7080] font-body mb-3">Alterar status manualmente</p>
       <div className="flex flex-wrap gap-2">
-        {STATUSES.map((s) => (
+        {STATUSES.map(({ value, label }) => (
           <button
-            key={s}
-            disabled={s === currentStatus}
-            onClick={() => handleChange(s)}
+            key={value}
+            disabled={value === currentStatus}
+            onClick={() => handleChange(value)}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-              s === currentStatus
-                ? "bg-[#0057FF] text-white cursor-default"
+              value === currentStatus
+                ? "bg-[#3B8BFF] text-white cursor-default"
                 : "border border-[#E2E6F0] text-[#6B7080] hover:bg-[#F8F9FC]"
             }`}
           >
-            {s}
+            {label}
           </button>
         ))}
       </div>

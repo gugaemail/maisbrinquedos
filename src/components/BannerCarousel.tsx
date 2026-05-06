@@ -74,7 +74,7 @@ export default function BannerCarousel({ banners }: { banners: Banner[] }) {
             <div className="pt-2">
               <Link
                 href={banner.ctaLink}
-                className="inline-block px-8 py-3.5 rounded-full bg-[#0057FF] text-white font-semibold hover:bg-[#0046CC] transition-colors"
+                className="inline-block px-8 py-3.5 rounded-full bg-[#3B8BFF] text-white font-semibold hover:bg-[#0046CC] transition-colors"
               >
                 {banner.ctaText}
               </Link>

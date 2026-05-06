@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#1A1A2E] outline-none focus:border-[#0057FF] transition-colors bg-white";
+const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors bg-white";
 
 export default function NovoUsuarioForm() {
   const router = useRouter();
@@ -45,18 +45,18 @@ export default function NovoUsuarioForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-lg">
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">Nome completo</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Nome completo</label>
         <input
           className={input}
           placeholder="Ex: Maria Silva"
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
         />
-        {errors.name && <p className="text-xs text-[#FF3D57]">{errors.name}</p>}
+        {errors.name && <p className="text-xs text-[#FF3D5A]">{errors.name}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">E-mail</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">E-mail</label>
         <input
           type="email"
           className={input}
@@ -64,11 +64,11 @@ export default function NovoUsuarioForm() {
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
         />
-        {errors.email && <p className="text-xs text-[#FF3D57]">{errors.email}</p>}
+        {errors.email && <p className="text-xs text-[#FF3D5A]">{errors.email}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">Senha temporária</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Senha temporária</label>
         <input
           type="password"
           className={input}
@@ -76,12 +76,12 @@ export default function NovoUsuarioForm() {
           value={form.password}
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
         />
-        {errors.password && <p className="text-xs text-[#FF3D57]">{errors.password}</p>}
+        {errors.password && <p className="text-xs text-[#FF3D5A]">{errors.password}</p>}
         <p className="text-xs text-[#6B7080]">O usuário poderá alterar a senha após o primeiro acesso.</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#1A1A2E] font-body">Papel</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Papel</label>
         <select
           className={input}
           value={form.role}
@@ -96,7 +96,7 @@ export default function NovoUsuarioForm() {
         <button
           type="submit"
           disabled={saving}
-          className="px-8 py-3 rounded-full bg-[#0057FF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
+          className="px-8 py-3 rounded-full bg-[#3B8BFF] text-white font-display font-bold text-sm hover:bg-[#0046CC] transition-colors disabled:opacity-60"
         >
           {saving ? "Criando..." : "Criar usuário"}
         </button>

@@ -1,24 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MercadoPagoConfig, Preference } from "mercadopago";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { db } from "@/lib/db";
 
-// ATENÇÃO: rate limiter in-memory — funciona apenas em dev ou instância única.
-// Em produção serverless (Vercel), cada instância tem seu próprio Map.
-// Para proteção real, substituir por Upstash Redis + @upstash/ratelimit.
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 60_000;
+// Upstash Redis rate limiter (distributed, works on serverless).
+// Falls back to a no-op in dev when UPSTASH_REDIS_REST_URL is not set.
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(5, "1 m"),
+    prefix: "rl:checkout",
+  });
+}
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= RATE_LIMIT) return false;
-  entry.count++;
-  return true;
+async function checkRateLimit(ip: string): Promise<boolean> {
+  if (!ratelimit) return true;
+  const { success } = await ratelimit.limit(ip);
+  return success;
 }
 
 const client = new MercadoPagoConfig({
@@ -58,7 +58,7 @@ const MAX_ITEMS = 50;
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (!checkRateLimit(ip)) {
+  if (!(await checkRateLimit(ip))) {
     return NextResponse.json({ error: "Muitas tentativas. Aguarde um momento." }, { status: 429 });
   }
 
@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
       where: { id: order.id },
       data: { status: "CANCELLED" },
     });
-    console.error("[checkout] Falha ao criar preferência MP:", err);
+    console.error("[checkout] Falha ao criar preferência MP:", process.env.NODE_ENV === "production" ? { code: "MP_PREF_FAILED" } : err);
     return NextResponse.json({ error: "Falha ao iniciar pagamento. Tente novamente." }, { status: 502 });
   }
 
