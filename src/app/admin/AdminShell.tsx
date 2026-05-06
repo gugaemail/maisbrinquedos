@@ -68,6 +68,17 @@ function IconUsers() {
   );
 }
 
+function IconShipping() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="1" y="3" width="15" height="13" rx="1.5" />
+      <path d="M16 8h4l3 5v3h-7V8z" />
+      <circle cx="5.5" cy="18.5" r="2.5" />
+      <circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  );
+}
+
 function IconSettings() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -93,8 +104,9 @@ const allNavItems = [
   { href: "/admin/pedidos",      label: "Pedidos",      Icon: IconOrders,     roles: ["admin", "operator"] },
   { href: "/admin/banners",      label: "Banners",      Icon: IconBanners,    roles: ["admin", "operator"] },
   { href: "/admin/categorias",   label: "Categorias",   Icon: IconCategories, roles: ["admin", "operator"] },
-  { href: "/admin/usuarios",     label: "Usuários",     Icon: IconUsers,      roles: ["admin"] },
-  { href: "/admin/configuracoes",label: "Configurações",Icon: IconSettings,   roles: ["admin"] },
+  { href: "/admin/frete",         label: "Frete",         Icon: IconShipping,   roles: ["admin"] },
+  { href: "/admin/usuarios",     label: "Usuários",      Icon: IconUsers,      roles: ["admin"] },
+  { href: "/admin/configuracoes",label: "Configurações", Icon: IconSettings,   roles: ["admin"] },
 ];
 
 interface Props {
