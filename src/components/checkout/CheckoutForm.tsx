@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCEP } from "@/hooks/useCEP";
+import { useShipping } from "@/hooks/useShipping";
+import type { ShippingOption } from "@/app/api/shipping/calculate/route";
 import type { AuthMode } from "./CheckoutAuth";
 
 // ─── Zod schemas por etapa ────────────────────────────────────────────────────
@@ -40,11 +42,13 @@ const consentSchema = z.object({
 export type PersonalData = z.infer<typeof personalSchema>;
 export type AddressData = z.infer<typeof addressSchema>;
 export type ConsentData = z.infer<typeof consentSchema>;
+export type { ShippingOption };
 
 export interface CheckoutData {
   personal: PersonalData;
   address: AddressData;
   consent: ConsentData;
+  shipping: ShippingOption;
 }
 
 // ─── CPF validation ───────────────────────────────────────────────────────────
@@ -293,14 +297,18 @@ function StepPersonal({
 
 function StepAddress({
   defaultValues,
+  cartItems,
   onNext,
   onBack,
 }: {
   defaultValues?: Partial<AddressData>;
-  onNext: (data: AddressData) => void;
+  cartItems: { id: string; quantity: number }[];
+  onNext: (data: AddressData, shipping: ShippingOption) => void;
   onBack: () => void;
 }) {
   const { fetchCEP, status: cepStatus } = useCEP();
+  const [selectedShipping, setSelectedShipping] = useState<ShippingOption | null>(null);
+  const [shippingError, setShippingError] = useState("");
 
   const {
     register,
@@ -314,6 +322,7 @@ function StepAddress({
   });
 
   const zipValue = watch("zip") ?? "";
+  const { options: shippingOptions, loading: shippingLoading, error: shippingFetchError } = useShipping(zipValue, cartItems);
 
   async function handleCEPBlur(value: string) {
     const clean = value.replace(/\D/g, "");
@@ -326,10 +335,20 @@ function StepAddress({
       setValue("city", found.city, { shouldValidate: true });
       setValue("state", found.state, { shouldValidate: true });
     }
+    setSelectedShipping(null);
+  }
+
+  function handleSubmitWithShipping(data: AddressData) {
+    if (!selectedShipping) {
+      setShippingError("Selecione uma modalidade de frete para continuar.");
+      return;
+    }
+    setShippingError("");
+    onNext(data, selectedShipping);
   }
 
   return (
-    <form onSubmit={handleSubmit(onNext)} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit(handleSubmitWithShipping)} className="flex flex-col gap-5">
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2 sm:col-span-1">
           <Field label="CEP" htmlFor="zip" error={errors.zip?.message}>
@@ -403,6 +422,17 @@ function StepAddress({
         </div>
       </div>
 
+      {/* ── Shipping selector ── */}
+      <ShippingSelector
+        options={shippingOptions}
+        loading={shippingLoading}
+        fetchError={shippingFetchError}
+        selected={selectedShipping}
+        onSelect={(opt) => { setSelectedShipping(opt); setShippingError(""); }}
+        validationError={shippingError}
+        cepReady={zipValue.replace(/\D/g, "").length === 8}
+      />
+
       <div className="flex gap-3 mt-2">
         <button
           type="button"
@@ -422,17 +452,105 @@ function StepAddress({
   );
 }
 
+// ─── Shipping selector component ──────────────────────────────────────────────
+
+function ShippingSelector({
+  options,
+  loading,
+  fetchError,
+  selected,
+  onSelect,
+  validationError,
+  cepReady,
+}: {
+  options: ShippingOption[];
+  loading: boolean;
+  fetchError: string | null;
+  selected: ShippingOption | null;
+  onSelect: (opt: ShippingOption) => void;
+  validationError: string;
+  cepReady: boolean;
+}) {
+  if (!cepReady) return null;
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white/80 font-body">Modalidade de entrega</p>
+
+      {loading && (
+        <div className="flex items-center gap-2 text-xs text-[#6B7080] font-body px-4 py-3 rounded-xl border border-[#E2E6F0] dark:border-white/10">
+          <svg className="w-4 h-4 text-[#3B8BFF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <circle cx="12" cy="12" r="10" strokeOpacity="0.2" />
+            <path d="M12 2a10 10 0 0 1 10 10" />
+          </svg>
+          Calculando opções de frete…
+        </div>
+      )}
+
+      {!loading && fetchError && (
+        <p className="text-xs text-[#FF3D5A] font-body px-1">{fetchError}</p>
+      )}
+
+      {!loading && !fetchError && options.map((opt) => (
+        <button
+          key={opt.method}
+          type="button"
+          onClick={() => onSelect(opt)}
+          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-body text-left transition-all duration-150
+            ${selected?.method === opt.method
+              ? "border-[#3B8BFF] bg-[#3B8BFF]/5 dark:bg-[#3B8BFF]/10"
+              : "border-[#E2E6F0] dark:border-white/10 hover:border-[#3B8BFF]/50"
+            }`}
+        >
+          <div className="flex items-center gap-3">
+            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center
+              ${selected?.method === opt.method ? "border-[#3B8BFF]" : "border-[#C4C9D9] dark:border-white/20"}`}>
+              {selected?.method === opt.method && (
+                <div className="w-2 h-2 rounded-full bg-[#3B8BFF]" />
+              )}
+            </div>
+            <div>
+              <p className="font-semibold text-[#0F0F0F] dark:text-white">{opt.label}</p>
+              <p className="text-xs text-[#6B7080] dark:text-white/50">
+                {opt.days === 1 ? "Entrega em 1 dia útil" : `Entrega em até ${opt.days} dias úteis`}
+              </p>
+            </div>
+          </div>
+          <span className="font-bold text-[#0F0F0F] dark:text-white ml-4 flex-shrink-0">
+            {opt.price === 0 ? (
+              <span className="text-[#3DDC84]">Grátis</span>
+            ) : (
+              `R$ ${opt.price.toFixed(2).replace(".", ",")}`
+            )}
+          </span>
+        </button>
+      ))}
+
+      {validationError && (
+        <p className="text-xs text-[#FF3D5A] font-body flex items-center gap-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 flex-shrink-0">
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          {validationError}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // ─── Step 3: Consent + Review ─────────────────────────────────────────────────
 
 function StepConsent({
   personal,
   address,
+  shipping,
   onNext,
   onBack,
   isLoading,
 }: {
   personal: PersonalData;
   address: AddressData;
+  shipping: ShippingOption;
   onNext: (consent: ConsentData) => void;
   onBack: () => void;
   isLoading: boolean;
@@ -466,6 +584,12 @@ function StepConsent({
             <ReviewRow
               label="Endereço"
               value={`${address.street}, ${address.number}${address.complement ? ` — ${address.complement}` : ""}, ${address.neighborhood}, ${address.city}/${address.state} — ${address.zip}`}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <ReviewRow
+              label="Entrega"
+              value={`${shipping.label} — R$ ${shipping.price.toFixed(2).replace(".", ",")} (${shipping.days === 1 ? "1 dia útil" : `até ${shipping.days} dias úteis`})`}
             />
           </div>
         </div>
@@ -590,13 +714,15 @@ function SecuritySeal({ icon, label }: { icon: string; label: string }) {
 interface CheckoutFormProps {
   authMode: AuthMode;
   prefill?: Partial<PersonalData>;
+  cartItems: { id: string; quantity: number }[];
   onSubmit: (data: CheckoutData) => Promise<void>;
 }
 
-export default function CheckoutForm({ authMode, prefill, onSubmit }: CheckoutFormProps) {
+export default function CheckoutForm({ authMode, prefill, cartItems, onSubmit }: CheckoutFormProps) {
   const [step, setStep] = useState(0);
   const [personal, setPersonal] = useState<PersonalData | null>(null);
   const [address, setAddress] = useState<AddressData | null>(null);
+  const [shipping, setShipping] = useState<ShippingOption | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   function handlePersonalNext(data: PersonalData) {
@@ -605,17 +731,18 @@ export default function CheckoutForm({ authMode, prefill, onSubmit }: CheckoutFo
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleAddressNext(data: AddressData) {
+  function handleAddressNext(data: AddressData, selectedShipping: ShippingOption) {
     setAddress(data);
+    setShipping(selectedShipping);
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function handleConsentNext(consent: ConsentData) {
-    if (!personal || !address) return;
+    if (!personal || !address || !shipping) return;
     setIsLoading(true);
     try {
-      await onSubmit({ personal, address, consent });
+      await onSubmit({ personal, address, consent, shipping });
     } finally {
       setIsLoading(false);
     }
@@ -639,14 +766,16 @@ export default function CheckoutForm({ authMode, prefill, onSubmit }: CheckoutFo
       {step === 1 && (
         <StepAddress
           defaultValues={address ?? undefined}
+          cartItems={cartItems}
           onNext={handleAddressNext}
           onBack={() => setStep(0)}
         />
       )}
-      {step === 2 && personal && address && (
+      {step === 2 && personal && address && shipping && (
         <StepConsent
           personal={personal}
           address={address}
+          shipping={shipping}
           onNext={handleConsentNext}
           onBack={() => setStep(1)}
           isLoading={isLoading}

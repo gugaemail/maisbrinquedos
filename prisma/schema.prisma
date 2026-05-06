@@ -36,6 +36,10 @@ model Product {
   updatedAt     DateTime    @updatedAt
   ageRange      String?
   productType   String?
+  weightGrams   Int?
+  heightCm      Int?
+  widthCm       Int?
+  depthCm       Int?
   orderItems    OrderItem[]
   category      Category    @relation(fields: [categoryId], references: [id])
 }
@@ -62,6 +66,9 @@ model Order {
   shippingState            String?
   shippingStreet           String?
   shippingZip              String?
+  shippingMethod           String?
+  shippingCost             Decimal?    @db.Decimal(10, 2)
+  trackingCode             String?
   userId                   String?
   items                    OrderItem[]
 }
@@ -94,6 +101,18 @@ model Setting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model ShippingZone {
+  id           String   @id @default(cuid())
+  name         String
+  cepStart     String
+  cepEnd       String
+  price        Decimal  @db.Decimal(10, 2)
+  deliveryDays Int      @default(1)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum OrderStatus {

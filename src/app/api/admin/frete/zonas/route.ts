@@ -3,24 +3,13 @@ import { db } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { z } from "zod";
 
-const schema = z.object({
-  name: z.string().min(2),
-  slug: z.string().min(2).regex(/^[a-z0-9-]+$/),
-  description: z.string().min(10),
+const zoneSchema = z.object({
+  name: z.string().min(1),
+  cepStart: z.string().length(8),
+  cepEnd: z.string().length(8),
   price: z.number().positive(),
-  originalPrice: z.number().positive().nullable().optional(),
-  stock: z.number().int().min(0),
-  tag: z.string().optional().nullable(),
-  ageRange: z.string().optional().nullable(),
-  productType: z.string().optional().nullable(),
-  weightGrams: z.number().int().min(0).optional().nullable(),
-  heightCm: z.number().int().min(0).optional().nullable(),
-  widthCm: z.number().int().min(0).optional().nullable(),
-  depthCm: z.number().int().min(0).optional().nullable(),
-  categoryId: z.string().min(1),
-  active: z.boolean(),
-  features: z.array(z.string()),
-  images: z.array(z.string()),
+  deliveryDays: z.number().int().positive().default(1),
+  active: z.boolean().default(true),
 });
 
 async function requireAdmin() {
@@ -32,6 +21,14 @@ async function requireAdmin() {
   return user;
 }
 
+export async function GET() {
+  const user = await requireAdmin();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const zones = await db.shippingZone.findMany({ orderBy: { cepStart: "asc" } });
+  return NextResponse.json(zones);
+}
+
 export async function POST(request: NextRequest) {
   const user = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -39,9 +36,9 @@ export async function POST(request: NextRequest) {
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
 
-  const parsed = schema.safeParse(body);
+  const parsed = zoneSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const product = await db.product.create({ data: parsed.data });
-  return NextResponse.json(product, { status: 201 });
+  const zone = await db.shippingZone.create({ data: parsed.data });
+  return NextResponse.json(zone, { status: 201 });
 }

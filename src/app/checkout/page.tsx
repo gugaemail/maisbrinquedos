@@ -38,16 +38,19 @@ function CartEmpty() {
 
 function OrderSummary({
   items,
-  totalPrice,
+  subtotal,
+  shippingCost,
   collapsed,
   onToggle,
 }: {
   items: ReturnType<typeof useCart>["items"];
-  totalPrice: number;
+  subtotal: number;
+  shippingCost: number | null;
   collapsed: boolean;
   onToggle: () => void;
 }) {
-  const pixPrice = totalPrice * 0.95;
+  const total = subtotal + (shippingCost ?? 0);
+  const pixPrice = subtotal * 0.95 + (shippingCost ?? 0);
 
   return (
     <div className="bg-white dark:bg-white/5 rounded-2xl border border-[#E2E6F0] dark:border-white/10 overflow-hidden h-fit">
@@ -62,7 +65,7 @@ function OrderSummary({
         </h2>
         <div className="flex items-center gap-3 md:hidden">
           <span className="text-base font-display font-bold text-[#3B8BFF]">
-            R$ {totalPrice.toFixed(2).replace(".", ",")}
+            R$ {total.toFixed(2).replace(".", ",")}
           </span>
           <svg
             viewBox="0 0 24 24"
@@ -108,15 +111,21 @@ function OrderSummary({
         <div className="border-t border-[#E2E6F0] dark:border-white/10 mx-6 mt-3 pt-4 pb-6 flex flex-col gap-2 text-sm font-body">
           <div className="flex justify-between text-[#6B7080] dark:text-white/50">
             <span>Subtotal</span>
-            <span>R$ {totalPrice.toFixed(2).replace(".", ",")}</span>
+            <span>R$ {subtotal.toFixed(2).replace(".", ",")}</span>
           </div>
           <div className="flex justify-between text-[#6B7080] dark:text-white/50">
             <span>Frete</span>
-            <span className="text-[#3DDC84]">A calcular</span>
+            {shippingCost === null ? (
+              <span className="text-[#3DDC84]">A calcular</span>
+            ) : shippingCost === 0 ? (
+              <span className="text-[#3DDC84]">Grátis</span>
+            ) : (
+              <span>R$ {shippingCost.toFixed(2).replace(".", ",")}</span>
+            )}
           </div>
           <div className="flex justify-between font-bold text-[#0F0F0F] dark:text-white text-base mt-1">
             <span>Total</span>
-            <span>R$ {totalPrice.toFixed(2).replace(".", ",")}</span>
+            <span>R$ {total.toFixed(2).replace(".", ",")}</span>
           </div>
           <div className="flex justify-between text-[#3DDC84] font-semibold text-xs mt-0.5">
             <span>⚡ No PIX (5% OFF)</span>
@@ -138,6 +147,7 @@ function CheckoutPageInner() {
   const [authMode, setAuthMode] = useState<AuthMode | null>(null);
   const [error, setError] = useState("");
   const [summaryColl, setSummaryColl] = useState(true);
+  const [shippingCost, setShippingCost] = useState<number | null>(null);
 
   // If user is already authenticated, skip the auth screen
   useEffect(() => {
@@ -162,6 +172,7 @@ function CheckoutPageInner() {
 
   async function handleFormSubmit(data: CheckoutData) {
     setError("");
+    setShippingCost(data.shipping.price);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -182,6 +193,8 @@ function CheckoutPageInner() {
             neighborhood: data.address.neighborhood,
             city: data.address.city,
             state: data.address.state,
+            method: data.shipping.method,
+            cost: data.shipping.price,
           },
           consent: {
             marketingEmail: data.consent.consentMarketingEmail,
@@ -249,6 +262,7 @@ function CheckoutPageInner() {
                 <CheckoutForm
                   authMode={authMode}
                   prefill={prefill}
+                  cartItems={items.map((i) => ({ id: i.id, quantity: i.quantity }))}
                   onSubmit={handleFormSubmit}
                 />
               </div>
@@ -259,7 +273,8 @@ function CheckoutPageInner() {
           <div className="md:sticky md:top-6">
             <OrderSummary
               items={items}
-              totalPrice={totalPrice}
+              subtotal={totalPrice}
+              shippingCost={shippingCost}
               collapsed={summaryColl}
               onToggle={() => setSummaryColl((v) => !v)}
             />

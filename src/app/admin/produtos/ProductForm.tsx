@@ -31,6 +31,10 @@ const schema = z.object({
   categoryId: z.string().min(1, "Selecione uma categoria"),
   active: z.boolean(),
   features: z.array(z.object({ value: z.string() })),
+  weightGrams: z.coerce.number().int().min(0).optional().or(z.literal("")),
+  heightCm: z.coerce.number().int().min(0).optional().or(z.literal("")),
+  widthCm: z.coerce.number().int().min(0).optional().or(z.literal("")),
+  depthCm: z.coerce.number().int().min(0).optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -42,7 +46,16 @@ interface Category {
 
 interface Props {
   categories: Category[];
-  defaultValues?: Partial<FormValues> & { id?: string; images?: string[]; ageRange?: string | null; productType?: string | null };
+  defaultValues?: Partial<FormValues> & {
+    id?: string;
+    images?: string[];
+    ageRange?: string | null;
+    productType?: string | null;
+    weightGrams?: number | null;
+    heightCm?: number | null;
+    widthCm?: number | null;
+    depthCm?: number | null;
+  };
   mode: "create" | "edit";
 }
 
@@ -69,6 +82,10 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
       categoryId: defaultValues?.categoryId ?? "",
       active: defaultValues?.active ?? true,
       features: defaultValues?.features ?? [{ value: "" }],
+      weightGrams: defaultValues?.weightGrams ?? "",
+      heightCm: defaultValues?.heightCm ?? "",
+      widthCm: defaultValues?.widthCm ?? "",
+      depthCm: defaultValues?.depthCm ?? "",
     },
   });
 
@@ -105,6 +122,10 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
       productType: data.productType === "" ? null : data.productType,
       features: data.features.map((f) => f.value).filter(Boolean),
       images,
+      weightGrams: data.weightGrams === "" || data.weightGrams === undefined ? null : Number(data.weightGrams),
+      heightCm: data.heightCm === "" || data.heightCm === undefined ? null : Number(data.heightCm),
+      widthCm: data.widthCm === "" || data.widthCm === undefined ? null : Number(data.widthCm),
+      depthCm: data.depthCm === "" || data.depthCm === undefined ? null : Number(data.depthCm),
     };
 
     const url = mode === "create" ? "/api/admin/produtos" : `/api/admin/produtos/${defaultValues?.id}`;
@@ -199,6 +220,26 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
             <option value="classico">🎲 Clássico</option>
           </select>
         </Field>
+      </div>
+
+      {/* Shipping dimensions */}
+      <div>
+        <p className="text-xs font-semibold text-[#0F0F0F] font-body mb-1">Dimensões para cálculo de frete</p>
+        <p className="text-xs text-[#6B7080] mb-3">Necessário para cotação via Melhor Envio / Correios. Deixe em branco para usar padrão global.</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <Field label="Peso (g)">
+            <input {...register("weightGrams")} type="number" min="0" step="1" className={input} placeholder="Ex: 500" />
+          </Field>
+          <Field label="Altura (cm)">
+            <input {...register("heightCm")} type="number" min="0" step="1" className={input} placeholder="Ex: 20" />
+          </Field>
+          <Field label="Largura (cm)">
+            <input {...register("widthCm")} type="number" min="0" step="1" className={input} placeholder="Ex: 15" />
+          </Field>
+          <Field label="Comprimento (cm)">
+            <input {...register("depthCm")} type="number" min="0" step="1" className={input} placeholder="Ex: 10" />
+          </Field>
+        </div>
       </div>
 
       {/* Features */}

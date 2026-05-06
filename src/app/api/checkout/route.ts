@@ -46,6 +46,8 @@ interface CheckoutBody {
     neighborhood?: string;
     city?: string;
     state?: string;
+    method?: string;
+    cost?: number;
   };
   consent?: {
     marketingEmail?: boolean;
@@ -109,7 +111,37 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const total = resolvedItems.reduce((acc, i) => acc + i.unitPrice * i.quantity, 0);
+  const itemsSubtotal = resolvedItems.reduce((acc, i) => acc + i.unitPrice * i.quantity, 0);
+
+  // Revalidate shipping cost server-side
+  let shippingCost = 0;
+  const clientShippingMethod = body.shipping?.method;
+  const clientShippingCost = Number(body.shipping?.cost ?? 0);
+  const shippingZip = body.shipping?.zip?.replace(/\D/g, "") ?? "";
+
+  if (clientShippingMethod && shippingZip) {
+    const { POST: calculateShipping } = await import("@/app/api/shipping/calculate/route");
+    const fakeReq = new Request(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/shipping/calculate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cep: shippingZip, items: body.items }),
+    });
+    const calcRes = await calculateShipping(fakeReq as import("next/server").NextRequest);
+    const calcData = await calcRes.json();
+    const matchedOption = (calcData.options ?? []).find(
+      (o: { method: string; price: number }) => o.method === clientShippingMethod
+    );
+    if (matchedOption) {
+      shippingCost = matchedOption.price;
+    } else if (clientShippingCost > 0) {
+      // Accept client value only if we couldn't recalculate (e.g., API unavailable)
+      shippingCost = clientShippingCost;
+    }
+  } else if (clientShippingCost > 0) {
+    shippingCost = clientShippingCost;
+  }
+
+  const total = itemsSubtotal + shippingCost;
 
   // Create order in DB
   const order = await db.order.create({
@@ -118,13 +150,15 @@ export async function POST(req: NextRequest) {
       payerEmail,
       payerCpf: body.payer?.cpf?.replace(/\D/g, "") ?? null,
       payerPhone: body.payer?.phone?.replace(/\D/g, "") ?? null,
-      shippingZip: body.shipping?.zip?.replace(/\D/g, "") ?? null,
+      shippingZip: shippingZip || null,
       shippingStreet: body.shipping?.street ?? null,
       shippingNumber: body.shipping?.number ?? null,
       shippingComplement: body.shipping?.complement ?? null,
       shippingNeighborhood: body.shipping?.neighborhood ?? null,
       shippingCity: body.shipping?.city ?? null,
       shippingState: body.shipping?.state ?? null,
+      shippingMethod: clientShippingMethod ?? null,
+      shippingCost: shippingCost > 0 ? shippingCost : null,
       consentMarketingEmail: body.consent?.marketingEmail ?? false,
       consentMarketingWhatsapp: body.consent?.marketingWhatsapp ?? false,
       total,
@@ -152,16 +186,27 @@ export async function POST(req: NextRequest) {
 
   let result;
   try {
+    const mpItems = resolvedItems.map((i) => ({
+      id: i.productId,
+      title: i.productName,
+      quantity: i.quantity,
+      unit_price: i.unitPrice,
+      currency_id: "BRL",
+    }));
+    if (shippingCost > 0) {
+      mpItems.push({
+        id: "frete",
+        title: `Frete — ${clientShippingMethod ?? "entrega"}`,
+        quantity: 1,
+        unit_price: shippingCost,
+        currency_id: "BRL",
+      });
+    }
+
     result = await preference.create({
       body: {
         external_reference: order.id,
-        items: resolvedItems.map((i) => ({
-          id: i.productId,
-          title: i.productName,
-          quantity: i.quantity,
-          unit_price: i.unitPrice,
-          currency_id: "BRL",
-        })),
+        items: mpItems,
         payer: { name: payerName, email: payerEmail },
         payment_methods: { installments: maxInstallments },
         back_urls: {
