@@ -1,12 +1,17 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import HeaderServer from "@/components/HeaderServer";
-import { Logo } from "@/components/brand/Logo";
 import HeroSection from "@/components/HeroSection";
 import BannerCarousel from "@/components/BannerCarousel";
 import ScrollRevealGrid from "@/components/ScrollRevealGrid";
 import CategoryCarousel from "@/components/CategoryCarousel";
 import ProductCard from "@/components/ProductCard";
 import { SocialProofSection } from "@/components/SocialProofSection";
+import TrustBadges from "@/components/TrustBadges";
+import NewsletterStrip from "@/components/NewsletterStrip";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import Footer from "@/components/Footer";
 import { db } from "@/lib/db";
 
 export default async function Home() {
@@ -86,8 +91,10 @@ export default async function Home() {
               <ProductCard
                 key={product.id}
                 id={product.id}
+                slug={product.slug}
                 name={product.name}
                 price={Number(product.price)}
+                originalPrice={product.originalPrice ? Number(product.originalPrice) : null}
                 category={product.category.name}
                 imageUrl={product.images[0] ?? null}
                 tag={product.tag}
@@ -99,32 +106,16 @@ export default async function Home() {
 
         {/* Social Proof */}
         <SocialProofSection />
+
+        {/* Por que a Mais Brinquedos + Trust badges */}
+        <TrustBadges />
+
+        {/* Newsletter / WhatsApp strip */}
+        <NewsletterStrip />
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#0F0F0F] text-white/60">
-        <div className="h-px bg-white/10" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 flex flex-col md:flex-row justify-between gap-10">
-          <div className="max-w-xs space-y-2">
-            <Logo size="md" theme="dark" />
-            <p className="font-body text-xs text-white/50 mt-1">brinquedos e presentes</p>
-            <p className="text-sm font-body leading-relaxed mt-3">Variedade, novidades e tecnologia em um só lugar.</p>
-          </div>
-          <div className="flex flex-col gap-2 text-sm font-body">
-            <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Categorias</p>
-            {categories.map((cat) => (
-              <Link key={cat.id} href={`/categoria/${cat.slug}`} className="hover:text-white transition-colors">
-                {cat.name}
-              </Link>
-            ))}
-          </div>
-          <div className="text-sm font-body flex flex-col gap-1">
-            <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Info</p>
-            <p>© 2026 MAIS+ Brinquedos e Presentes</p>
-            <p>maisbrinquedos.com.br</p>
-          </div>
-        </div>
-      </footer>
+      <WhatsAppButton />
+      <Footer />
     </>
   );
 }

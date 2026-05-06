@@ -2,16 +2,26 @@
 
 export type AgeRange = "0-2" | "3-5" | "6-8" | "9-12";
 export type ProductType = "educativo" | "motor" | "criativo" | "classico";
+export type PriceRange = "0-50" | "50-150" | "150-300" | "300+";
 
 export interface ActiveFilters {
   ageRanges: Set<AgeRange>;
   productTypes: Set<ProductType>;
+  priceRanges: Set<PriceRange>;
 }
+
+export const PRICE_RANGE_OPTIONS: { value: PriceRange; label: string }[] = [
+  { value: "0-50", label: "Até R$ 50" },
+  { value: "50-150", label: "R$ 50–150" },
+  { value: "150-300", label: "R$ 150–300" },
+  { value: "300+", label: "Acima de R$ 300" },
+];
 
 interface AgeFilterProps {
   activeFilters: ActiveFilters;
   onToggleAge: (range: AgeRange) => void;
   onToggleType: (type: ProductType) => void;
+  onTogglePrice: (range: PriceRange) => void;
   onClear: () => void;
   totalProducts: number;
   filteredCount: number;
@@ -56,7 +66,7 @@ function Chip({
 }
 
 function hasActiveFilters(f: ActiveFilters) {
-  return f.ageRanges.size > 0 || f.productTypes.size > 0;
+  return f.ageRanges.size > 0 || f.productTypes.size > 0 || f.priceRanges.size > 0;
 }
 
 /** Sidebar version (desktop md+) */
@@ -64,6 +74,7 @@ function SidebarFilter({
   activeFilters,
   onToggleAge,
   onToggleType,
+  onTogglePrice,
   onClear,
   totalProducts,
   filteredCount,
@@ -94,6 +105,26 @@ function SidebarFilter({
                 key={opt.value}
                 active={activeFilters.ageRanges.has(opt.value)}
                 onClick={() => onToggleAge(opt.value)}
+              >
+                {opt.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div className="h-px bg-[#E2E6F0] dark:bg-white/10" />
+
+        {/* Price range section */}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold text-[#6B7080] dark:text-white/50 uppercase tracking-wider font-body">
+            Faixa de Preço
+          </p>
+          <div className="flex flex-col gap-2">
+            {PRICE_RANGE_OPTIONS.map((opt) => (
+              <Chip
+                key={opt.value}
+                active={activeFilters.priceRanges.has(opt.value)}
+                onClick={() => onTogglePrice(opt.value)}
               >
                 {opt.label}
               </Chip>
@@ -141,6 +172,7 @@ function HorizontalFilter({
   activeFilters,
   onToggleAge,
   onToggleType,
+  onTogglePrice,
   onClear,
 }: AgeFilterProps) {
   return (
@@ -159,6 +191,16 @@ function HorizontalFilter({
             key={opt.value}
             active={activeFilters.ageRanges.has(opt.value)}
             onClick={() => onToggleAge(opt.value)}
+          >
+            {opt.label}
+          </Chip>
+        ))}
+        <div className="w-px h-5 bg-[#E2E6F0] shrink-0 self-center" />
+        {PRICE_RANGE_OPTIONS.map((opt) => (
+          <Chip
+            key={opt.value}
+            active={activeFilters.priceRanges.has(opt.value)}
+            onClick={() => onTogglePrice(opt.value)}
           >
             {opt.label}
           </Chip>

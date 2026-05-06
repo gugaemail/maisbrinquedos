@@ -2,10 +2,19 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { SidebarFilter, HorizontalFilter, ActiveFilters, AgeRange, ProductType } from "./AgeFilter";
+import { SidebarFilter, HorizontalFilter, ActiveFilters, AgeRange, ProductType, PriceRange } from "./AgeFilter";
+
+function inPriceRange(price: number, range: PriceRange): boolean {
+  if (range === "0-50")   return price <= 50;
+  if (range === "50-150") return price > 50 && price <= 150;
+  if (range === "150-300") return price > 150 && price <= 300;
+  if (range === "300+")   return price > 300;
+  return true;
+}
 
 export interface FilterableProduct {
   id: string;
+  slug: string;
   name: string;
   price: number;
   originalPrice: number | null;
@@ -50,7 +59,7 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
         return (
           <Link
             key={product.id}
-            href={`/produto/${product.id}`}
+            href={`/produto/${product.slug}`}
             className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all duration-200"
           >
             <div className="aspect-square bg-[#F5F5F2] dark:bg-white/5 flex items-center justify-center text-5xl relative overflow-hidden">
@@ -99,6 +108,7 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     ageRanges: new Set(),
     productTypes: new Set(),
+    priceRanges: new Set(),
   });
 
   const toggleAge = useCallback((range: AgeRange) => {
@@ -119,18 +129,26 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
     });
   }, []);
 
+  const togglePrice = useCallback((range: PriceRange) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev.priceRanges);
+      if (next.has(range)) next.delete(range);
+      else next.add(range);
+      return { ...prev, priceRanges: next };
+    });
+  }, []);
+
   const clearFilters = useCallback(() => {
-    setActiveFilters({ ageRanges: new Set(), productTypes: new Set() });
+    setActiveFilters({ ageRanges: new Set(), productTypes: new Set(), priceRanges: new Set() });
   }, []);
 
   const filtered = useMemo(() => {
-    const { ageRanges, productTypes } = activeFilters;
+    const { ageRanges, productTypes, priceRanges } = activeFilters;
     return products.filter((p) => {
       const ageOk = ageRanges.size === 0 || (p.ageRange && ageRanges.has(p.ageRange));
-      const typeOk =
-        productTypes.size === 0 ||
-        (p.productType && productTypes.has(p.productType));
-      return ageOk && typeOk;
+      const typeOk = productTypes.size === 0 || (p.productType && productTypes.has(p.productType));
+      const priceOk = priceRanges.size === 0 || Array.from(priceRanges).some((r) => inPriceRange(p.price, r));
+      return ageOk && typeOk && priceOk;
     });
   }, [products, activeFilters]);
 
@@ -138,6 +156,7 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
     activeFilters,
     onToggleAge: toggleAge,
     onToggleType: toggleType,
+    onTogglePrice: togglePrice,
     onClear: clearFilters,
     totalProducts: products.length,
     filteredCount: filtered.length,

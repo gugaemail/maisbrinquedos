@@ -1,7 +1,9 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { db } from "@/lib/db";
 import Header from "./Header";
 
 export default async function HeaderServer() {
+  noStore();
   const categories = await db.category.findMany({
     where: { active: true },
     orderBy: { order: "asc" },

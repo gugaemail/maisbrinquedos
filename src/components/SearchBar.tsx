@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { SearchResult } from "@/app/api/products/search/route";
 
 export default function SearchBar() {
@@ -63,8 +64,8 @@ export default function SearchBar() {
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
-  function navigateTo(id: string) {
-    router.push(`/produto/${id}`);
+  function navigateTo(slug: string) {
+    router.push(`/produto/${slug}`);
     closeSearch();
   }
 
@@ -79,7 +80,7 @@ export default function SearchBar() {
       setActiveIndex((i) => Math.max(i - 1, -1));
     }
     if (e.key === "Enter" && activeIndex >= 0 && results[activeIndex]) {
-      navigateTo(results[activeIndex].id);
+      navigateTo(results[activeIndex].slug);
     }
   }
 
@@ -154,41 +155,47 @@ export default function SearchBar() {
           )}
 
           {!isLoading && results.length > 0 && (
-            <ul>
-              {results.map((r, i) => (
-                <li
-                  key={r.id}
-                  role="option"
-                  aria-selected={i === activeIndex}
-                  className={`flex items-center gap-3 px-4 py-3 cursor-pointer
-                             transition-colors duration-150 border-b border-[#E2E6F0] last:border-0
-                             ${i === activeIndex ? "bg-[#F5F5F2]" : "hover:bg-[#F8F9FC]"}`}
-                  onMouseEnter={() => setActiveIndex(i)}
-                  onClick={() => navigateTo(r.id)}
+            <>
+              <ul>
+                {results.map((r, i) => (
+                  <li
+                    key={r.id}
+                    role="option"
+                    aria-selected={i === activeIndex}
+                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer
+                               transition-colors duration-150 border-b border-[#E2E6F0] last:border-0
+                               ${i === activeIndex ? "bg-[#F5F5F2]" : "hover:bg-[#F8F9FC]"}`}
+                    onMouseEnter={() => setActiveIndex(i)}
+                    onClick={() => navigateTo(r.slug)}
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-[#F5F5F2] flex-shrink-0 overflow-hidden">
+                      {r.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={r.imageUrl} alt={r.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="w-full h-full flex items-center justify-center text-xl">🧸</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#0F0F0F] truncate">{r.name}</p>
+                      <p className="text-xs text-[#6B7080]">{r.category}</p>
+                    </div>
+                    <span className="text-sm font-bold text-[#0F0F0F] flex-shrink-0">
+                      R$ {r.price.toFixed(2).replace(".", ",")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <div className="border-t border-[#E2E6F0] px-4 py-2">
+                <Link
+                  href={`/busca?q=${encodeURIComponent(query.trim())}`}
+                  onClick={closeSearch}
+                  className="text-xs text-[#3B8BFF] font-semibold hover:underline"
                 >
-                  {/* Thumbnail */}
-                  <div className="w-10 h-10 rounded-lg bg-[#F5F5F2] flex-shrink-0 overflow-hidden">
-                    {r.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={r.imageUrl} alt={r.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="w-full h-full flex items-center justify-center text-xl">🧸</span>
-                    )}
-                  </div>
-
-                  {/* Text */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#0F0F0F] truncate">{r.name}</p>
-                    <p className="text-xs text-[#6B7080]">{r.category}</p>
-                  </div>
-
-                  {/* Price */}
-                  <span className="text-sm font-bold text-[#0F0F0F] flex-shrink-0">
-                    R$ {r.price.toFixed(2).replace(".", ",")}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                  Ver todos os resultados para &ldquo;{query}&rdquo; →
+                </Link>
+              </div>
+            </>
           )}
         </div>
       )}

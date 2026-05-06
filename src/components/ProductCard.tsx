@@ -6,8 +6,10 @@ import { animate } from "animejs";
 
 interface Props {
   id: string;
+  slug: string;
   name: string;
   price: number;
+  originalPrice?: number | null;
   category: string;
   imageUrl?: string | null;
   tag?: string | null;
@@ -34,10 +36,13 @@ const TAG_STYLES: Record<string, string> = {
   "Oferta":       "bg-[#FF3D5A] text-white",
 };
 
-export default function ProductCard({ id, name, price, category, imageUrl, tag }: Props) {
+export default function ProductCard({ slug, name, price, originalPrice, category, imageUrl, tag }: Props) {
   const cardRef = useRef<HTMLAnchorElement>(null);
-  const bg    = CATEGORY_BG[category]    ?? "#FFE14D";
-  const emoji = CATEGORY_EMOJI[category] ?? "✨";
+  const bg      = CATEGORY_BG[category]    ?? "#FFE14D";
+  const emoji   = CATEGORY_EMOJI[category] ?? "✨";
+  const discount = originalPrice && originalPrice > price
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    : null;
 
   function handleMouseEnter() {
     if (!cardRef.current) return;
@@ -52,7 +57,7 @@ export default function ProductCard({ id, name, price, category, imageUrl, tag }
   return (
     <Link
       ref={cardRef}
-      href={`/produto/${id}`}
+      href={`/produto/${slug}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className="group flex flex-col rounded-2xl bg-white border border-black/8 overflow-hidden hover:border-[#FF3D5A]/30 hover:shadow-[0_8px_32px_rgba(255,61,90,0.10)] transition-[border-color,box-shadow] duration-300"
@@ -83,9 +88,19 @@ export default function ProductCard({ id, name, price, category, imageUrl, tag }
         <h3 className="text-sm font-display font-bold text-[#0F0F0F] leading-tight group-hover:text-[#FF3D5A] transition-colors duration-200">
           {name}
         </h3>
-        <p className="text-base font-display font-black text-[#FF3D5A] mt-1">
-          R$ {price.toFixed(2).replace(".", ",")}
-        </p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-base font-display font-black text-[#FF3D5A]">
+            R$ {price.toFixed(2).replace(".", ",")}
+          </p>
+          {discount && (
+            <span className="text-xs font-semibold text-[#3DDC84]">{discount}% OFF</span>
+          )}
+        </div>
+        {originalPrice && (
+          <p className="text-xs text-[#6B7080] line-through font-body">
+            R$ {originalPrice.toFixed(2).replace(".", ",")}
+          </p>
+        )}
       </div>
     </Link>
   );

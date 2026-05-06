@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import CartDrawer from "@/components/CartDrawer";
+import Analytics from "@/components/Analytics";
 
 const unbounded = Unbounded({
   variable: "--font-unbounded",
@@ -28,6 +29,15 @@ export const metadata: Metadata = {
   description: "Brinquedos, tech e presentes para todas as idades. Variedade, novidades e tecnologia em um só lugar.",
   alternates: {
     canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    other: [
+      { rel: "icon", url: "/favicon-dark.svg", type: "image/svg+xml", media: "(prefers-color-scheme: dark)" },
+      { rel: "icon", url: "/favicon.svg", type: "image/svg+xml", media: "(prefers-color-scheme: light)" },
+    ],
   },
   openGraph: {
     siteName: "Mais Brinquedos e Presentes",
@@ -54,6 +64,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[var(--color-background)] text-[var(--color-text)] font-body">
         <CustomerAuthProvider>
           <CartProvider>
+            <Analytics />
             <CartDrawer />
             {children}
           </CartProvider>

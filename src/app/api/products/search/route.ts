@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 
 export interface SearchResult {
   id: string;
+  slug: string;
   name: string;
   price: number;
   imageUrl: string | null;
@@ -28,6 +29,7 @@ export async function GET(request: NextRequest) {
       },
       select: {
         id: true,
+        slug: true,
         name: true,
         price: true,
         images: true,
@@ -40,6 +42,7 @@ export async function GET(request: NextRequest) {
 
     const results: SearchResult[] = products.map((p) => ({
       id: p.id,
+      slug: p.slug,
       name: p.name,
       price: Number(p.price),
       imageUrl: p.images[0] ?? null,

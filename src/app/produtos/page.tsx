@@ -1,5 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import HeaderServer from "@/components/HeaderServer";
+import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { ProductsWithFilter } from "@/components/ProductsWithFilter";
 import { db } from "@/lib/db";
 
@@ -53,6 +57,7 @@ export default async function ProdutosPage() {
         <ProductsWithFilter
           products={products.map((product) => ({
             id: product.id,
+            slug: product.slug,
             name: product.name,
             price: Number(product.price),
             originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
@@ -69,18 +74,8 @@ export default async function ProdutosPage() {
         />
       </main>
 
-      <footer className="bg-[#0F0F0F] text-white/60 py-10 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between gap-6">
-          <div>
-            <p className="font-display font-bold text-white text-lg mb-1">Mais Brinquedos e Presentes</p>
-            <p className="text-sm">Variedade, novidades e tecnologia em um só lugar.</p>
-          </div>
-          <div className="text-sm">
-            <p>© 2026 Mais Brinquedos e Presentes</p>
-            <p>maisbrinquedos.com.br</p>
-          </div>
-        </div>
-      </footer>
+      <WhatsAppButton />
+      <Footer />
     </>
   );
 }

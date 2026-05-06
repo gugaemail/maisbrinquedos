@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import HeaderServer from "@/components/HeaderServer";
+import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { db } from "@/lib/db";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -50,7 +52,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               const originalPrice = product.originalPrice ? Number(product.originalPrice) : null;
               const imageUrl = product.images[0];
               return (
-                <Link key={product.id} href={`/produto/${product.id}`}
+                <Link key={product.id} href={`/produto/${product.slug}`}
                   className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all">
                   <div className="aspect-square bg-[#F5F5F2] dark:bg-white/5 flex items-center justify-center text-5xl relative overflow-hidden">
                     {imageUrl ? (
@@ -99,18 +101,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         )}
       </main>
 
-      <footer className="bg-[#0F0F0F] text-white/60 py-10 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between gap-6">
-          <div>
-            <p className="font-display font-bold text-white text-lg mb-1">Mais Brinquedos e Presentes</p>
-            <p className="text-sm">Variedade, novidades e tecnologia em um só lugar.</p>
-          </div>
-          <div className="text-sm">
-            <p>© 2026 Mais Brinquedos e Presentes</p>
-            <p>maisbrinquedos.com.br</p>
-          </div>
-        </div>
-      </footer>
+      <WhatsAppButton />
+      <Footer />
     </>
   );
 }

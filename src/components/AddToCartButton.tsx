@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { animate } from "animejs";
+import { useMetaPixel } from "@/hooks/useMetaPixel";
 
 interface Props {
   product: {
@@ -16,11 +17,14 @@ interface Props {
 
 export default function AddToCartButton({ product }: Props) {
   const { addItem } = useCart();
+  const { trackAddToCart } = useMetaPixel();
   const [added, setAdded] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   function handleAdd() {
     if (added) return;
+
+    trackAddToCart({ id: product.id, name: product.name, price: product.price });
 
     if (btnRef.current) {
       animate(btnRef.current, {
