@@ -9,8 +9,16 @@ import PromoMarquee from "@/components/PromoMarquee";
 
 interface CategoryProp { name: string; slug: string }
 
-export default function Header({ categories = [] }: { categories?: CategoryProp[] }) {
-  const nav = categories.map((c) => ({ label: c.name, href: `/categoria/${c.slug}` }));
+const FIXED_NAV = [
+  { label: "Início", href: "/" },
+  { label: "Categorias", href: "/produtos" },
+  { label: "Novidades", href: "/produtos?tag=novidade" },
+  { label: "Promoções", href: "/produtos?tag=oferta" },
+  { label: "Marcas", href: "/marcas" },
+];
+
+export default function Header({ categories: _categories = [] }: { categories?: CategoryProp[] }) {
+  const nav = FIXED_NAV;
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -122,31 +130,31 @@ export default function Header({ categories = [] }: { categories?: CategoryProp[
           <button
             onClick={openDrawer}
             aria-label="Abrir carrinho"
-            className="btn btn-cherry"
-            style={{ flexShrink: 0, height: 44, padding: "0 16px", gap: 6 }}
+            style={{
+              flexShrink: 0,
+              height: 44,
+              padding: "0 18px",
+              gap: 8,
+              display: "inline-flex",
+              alignItems: "center",
+              background: "var(--ink)",
+              color: "var(--bg-elev)",
+              border: "none",
+              borderRadius: "var(--r-pill)",
+              fontFamily: "var(--font-body)",
+              fontWeight: 500,
+              fontSize: 14,
+              cursor: "pointer",
+              transition: "opacity 140ms",
+            }}
           >
             <CartIcon />
-            <span className="desktop-only">Sacola</span>
-            {totalItems > 0 && (
-              <span
-                ref={badgeRef}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: 20,
-                  height: 20,
-                  borderRadius: 999,
-                  background: "#fff",
-                  color: "var(--c-cherry)",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "0 4px",
-                }}
-              >
-                {totalItems > 99 ? "99+" : totalItems}
-              </span>
-            )}
+            <span
+              ref={badgeRef}
+              style={{ fontFamily: "var(--font-mono)", fontSize: 13, minWidth: 12, textAlign: "center" }}
+            >
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
           </button>
         </div>
 
