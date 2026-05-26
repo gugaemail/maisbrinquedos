@@ -32,12 +32,14 @@ export default function Header({ categories: _categories = [] }: { categories?: 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(initial);
     document.documentElement.setAttribute("data-theme", initial);
+    document.documentElement.classList.toggle("dark", initial === "dark");
   }, []);
 
   function toggleTheme() {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
     localStorage.setItem("mb_theme", next);
   }
 
