@@ -2,8 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import HeaderServer from "@/components/HeaderServer";
-import AddToCartButton from "@/components/AddToCartButton";
-import BuyNowButton from "@/components/BuyNowButton";
+import ProductActions from "@/components/ProductActions";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
@@ -140,7 +139,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
               {/* Main image */}
               <div style={{ flex: 1, position: "relative" }}>
-                <div style={{ aspectRatio: "1/1", borderRadius: "var(--r-xl)", overflow: "hidden", background: "var(--bg-sunken)", border: "1px solid var(--line-hair)", position: "relative" }}>
+                <div style={{ aspectRatio: "1/1", borderRadius: "var(--r-lg)", overflow: "hidden", background: "var(--bg-sunken)", border: "1px solid var(--line-hair)", position: "relative" }}>
                   {primaryImage ? (
                     <Image
                       src={primaryImage}
@@ -225,10 +224,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
 
               {/* CTAs */}
-              <div style={{ display: "flex", gap: 12 }}>
-                <BuyNowButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
-                <AddToCartButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
-              </div>
+              <ProductActions product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
 
               {/* Trust items */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
@@ -251,7 +247,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div style={{ borderTop: "1.5px solid var(--line-soft)", paddingTop: 40, marginBottom: 80 }}>
             {/* Tab nav */}
             <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--line-hair)", marginBottom: 32 }}>
-              {["Descrição", "Especificações", "Avaliações"].map((tab, i) => (
+              {["Descrição", "Especificações", "Avaliações", "Perguntas e respostas"].map((tab, i) => (
                 <button
                   key={tab}
                   style={{

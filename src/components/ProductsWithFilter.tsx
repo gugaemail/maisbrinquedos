@@ -21,9 +21,7 @@ export interface FilterableProduct {
   category: { name: string; slug: string; emoji: string };
   imageUrl?: string | null;
   tag?: string | null;
-  /** Optional: '0-2' | '3-5' | '6-8' | '9-12' */
   ageRange?: AgeRange;
-  /** Optional: 'educativo' | 'motor' | 'criativo' | 'classico' */
   productType?: ProductType;
 }
 
@@ -31,15 +29,53 @@ interface ProductsWithFilterProps {
   products: FilterableProduct[];
 }
 
+type SortOption = "relevancia" | "menor-preco" | "maior-preco" | "novidade";
+type ViewMode = "grid" | "list";
+
+function GridIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <rect x="1" y="1" width="6" height="6" rx="1"/>
+      <rect x="9" y="1" width="6" height="6" rx="1"/>
+      <rect x="1" y="9" width="6" height="6" rx="1"/>
+      <rect x="9" y="9" width="6" height="6" rx="1"/>
+    </svg>
+  );
+}
+
+function ListIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <line x1="3" y1="4" x2="13" y2="4"/>
+      <line x1="3" y1="8" x2="13" y2="8"/>
+      <line x1="3" y1="12" x2="13" y2="12"/>
+    </svg>
+  );
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="2" y1="4" x2="14" y2="4"/>
+      <line x1="4" y1="8" x2="12" y2="8"/>
+      <line x1="6" y1="12" x2="10" y2="12"/>
+    </svg>
+  );
+}
+
 function ProductGrid({ products }: { products: FilterableProduct[] }) {
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-        <span className="text-5xl">🔍</span>
-        <p className="font-display font-bold text-[#0F0F0F] dark:text-white text-lg">
-          Nenhum produto encontrado
-        </p>
-        <p className="text-[#6B7080] dark:text-white/60 text-sm font-body max-w-xs">
+        <div style={{ width: 80, height: 80, borderRadius: "50%", background: "var(--bg-sunken)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 700, color: "var(--ink)", margin: 0, fontSize: 20 }}>
+          Nenhum brinquedo encontrado
+        </h3>
+        <p style={{ color: "var(--ink-3)", fontSize: 14, maxWidth: 280, margin: 0 }}>
           Tente remover alguns filtros para ver mais opções.
         </p>
       </div>
@@ -47,7 +83,7 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 24 }}>
       {products.map((product) => {
         const price = product.price;
         const originalPrice = product.originalPrice;
@@ -60,41 +96,56 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
           <Link
             key={product.id}
             href={`/produto/${product.slug}`}
-            className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all duration-200"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "var(--r-md)",
+              background: "var(--bg-elev)",
+              border: "1px solid var(--line-hair)",
+              overflow: "hidden",
+              transition: "transform var(--t) var(--ease), border-color var(--t) var(--ease)",
+              textDecoration: "none",
+            }}
+            className="product-card-link"
           >
-            <div className="aspect-square bg-[#F5F5F2] dark:bg-white/5 flex items-center justify-center text-5xl relative overflow-hidden">
+            <div style={{ aspectRatio: "1/1", background: "var(--bg-sunken)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, position: "relative", overflow: "hidden" }}>
               {product.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={product.imageUrl}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
                 <span>{product.category.emoji}</span>
               )}
               {product.tag && (
-                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#3B8BFF] text-white text-xs font-semibold font-body">
+                <span style={{ position: "absolute", top: 8, left: 8, padding: "3px 10px", borderRadius: "var(--r-pill)", background: "var(--c-cherry)", color: "#fff", fontSize: 10, fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                   {product.tag}
                 </span>
               )}
+              {discount && (
+                <span style={{ position: "absolute", top: 8, right: 8, padding: "3px 8px", borderRadius: "var(--r-pill)", background: "rgba(14,14,16,0.7)", color: "#fff", fontSize: 10, fontFamily: "var(--font-mono)", fontWeight: 700 }}>
+                  −{discount}%
+                </span>
+              )}
             </div>
-            <div className="p-4 flex flex-col gap-1">
-              <span className="text-xs text-[#6B7080] dark:text-white/60 font-body">
+            <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
+              <span style={{ fontSize: 11, color: "var(--ink-4)", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                 {product.category.name}
               </span>
-              <h3 className="text-sm font-display font-semibold text-[#0F0F0F] dark:text-white leading-tight group-hover:text-[#3B8BFF] transition-colors duration-200">
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 14, color: "var(--ink)", margin: 0, lineHeight: 1.35, letterSpacing: "-0.01em" }}>
                 {product.name}
               </h3>
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-base font-bold text-[#0F0F0F] dark:text-white">
-                  R$ {price.toFixed(2).replace(".", ",")}
-                </p>
-                {discount && (
-                  <span className="text-xs font-semibold text-[#3DDC84]">
-                    {discount}% OFF
+              <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 2 }}>
+                {originalPrice && (
+                  <span style={{ fontSize: 12, color: "var(--ink-4)", textDecoration: "line-through" }}>
+                    R$ {originalPrice.toFixed(2).replace(".", ",")}
                   </span>
                 )}
+                <span style={{ fontSize: 16, fontWeight: 700, color: "var(--ink)", fontFamily: "var(--font-display)" }}>
+                  R$ {price.toFixed(2).replace(".", ",")}
+                </span>
               </div>
             </div>
           </Link>
@@ -104,12 +155,96 @@ function ProductGrid({ products }: { products: FilterableProduct[] }) {
   );
 }
 
+function ProductList({ products }: { products: FilterableProduct[] }) {
+  if (products.length === 0) return <ProductGrid products={[]} />;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {products.map((product) => {
+        const price = product.price;
+        const originalPrice = product.originalPrice;
+        const discount =
+          originalPrice && originalPrice > price
+            ? Math.round(((originalPrice - price) / originalPrice) * 100)
+            : null;
+
+        return (
+          <Link
+            key={product.id}
+            href={`/produto/${product.slug}`}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "160px 1fr auto",
+              gap: 24,
+              padding: 16,
+              border: "1px solid var(--line-hair)",
+              borderRadius: 16,
+              alignItems: "center",
+              transition: "border-color var(--t) var(--ease)",
+              textDecoration: "none",
+              background: "var(--bg-elev)",
+            }}
+            className="product-list-link"
+          >
+            <div style={{ aspectRatio: "1/1", borderRadius: 12, overflow: "hidden", background: "var(--bg-sunken)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
+              {product.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={product.imageUrl} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                <span>{product.category.emoji}</span>
+              )}
+            </div>
+            <div>
+              <span style={{ fontSize: 11, color: "var(--ink-4)", fontFamily: "var(--font-mono)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                {product.category.name}
+              </span>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ink)", margin: "4px 0 0", letterSpacing: "-0.02em" }}>
+                {product.name}
+              </h3>
+              {product.tag && (
+                <span style={{ display: "inline-block", marginTop: 6, padding: "2px 8px", borderRadius: "var(--r-pill)", background: "var(--c-cherry)", color: "#fff", fontSize: 10, fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                  {product.tag}
+                </span>
+              )}
+            </div>
+            <div style={{ textAlign: "right", flexShrink: 0 }}>
+              {originalPrice && (
+                <div style={{ fontSize: 13, color: "var(--ink-4)", textDecoration: "line-through" }}>
+                  R$ {originalPrice.toFixed(2).replace(".", ",")}
+                </div>
+              )}
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 22, color: "var(--ink)", letterSpacing: "-0.02em" }}>
+                R$ {price.toFixed(2).replace(".", ",")}
+              </div>
+              {discount && (
+                <div style={{ fontSize: 11, color: "var(--c-cherry)", fontWeight: 700, fontFamily: "var(--font-mono)" }}>
+                  −{discount}%
+                </div>
+              )}
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function hasActiveFilters(f: ActiveFilters) {
+  return f.ageRanges.size > 0 || f.productTypes.size > 0 || f.priceRanges.size > 0;
+}
+
+function activeFilterCount(f: ActiveFilters) {
+  return f.ageRanges.size + f.productTypes.size + f.priceRanges.size;
+}
+
 export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
     ageRanges: new Set(),
     productTypes: new Set(),
     priceRanges: new Set(),
   });
+  const [sort, setSort] = useState<SortOption>("relevancia");
+  const [view, setView] = useState<ViewMode>("grid");
 
   const toggleAge = useCallback((range: AgeRange) => {
     setActiveFilters((prev) => {
@@ -144,13 +279,18 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
 
   const filtered = useMemo(() => {
     const { ageRanges, productTypes, priceRanges } = activeFilters;
-    return products.filter((p) => {
+    const base = products.filter((p) => {
       const ageOk = ageRanges.size === 0 || (p.ageRange && ageRanges.has(p.ageRange));
       const typeOk = productTypes.size === 0 || (p.productType && productTypes.has(p.productType));
       const priceOk = priceRanges.size === 0 || Array.from(priceRanges).some((r) => inPriceRange(p.price, r));
       return ageOk && typeOk && priceOk;
     });
-  }, [products, activeFilters]);
+
+    if (sort === "menor-preco") return [...base].sort((a, b) => a.price - b.price);
+    if (sort === "maior-preco") return [...base].sort((a, b) => b.price - a.price);
+    if (sort === "novidade") return [...base].sort((a, b) => (a.tag === "Novidade" ? -1 : 1) - (b.tag === "Novidade" ? -1 : 1));
+    return base;
+  }, [products, activeFilters, sort]);
 
   const filterProps = {
     activeFilters,
@@ -162,38 +302,83 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
     filteredCount: filtered.length,
   };
 
-  const productCount = (
-    <p className="text-sm text-[#6B7080] dark:text-white/60 font-body mb-4">
-      {filtered.length === products.length ? (
-        <span>{products.length} produtos</span>
-      ) : (
-        <span>
-          <span className="font-semibold text-[#0F0F0F] dark:text-white">{filtered.length}</span>{" "}
-          de {products.length} produtos
+  const filterCount = activeFilterCount(activeFilters);
+
+  const toolbar = (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, paddingBottom: 16, borderBottom: "1px solid var(--line-hair)", marginBottom: 24, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 13, color: "var(--ink-3)", fontFamily: "var(--font-body)" }}>
+          {filtered.length === products.length ? (
+            <>{products.length} produtos</>
+          ) : (
+            <><strong style={{ color: "var(--ink)" }}>{filtered.length}</strong> de {products.length} produtos</>
+          )}
         </span>
-      )}
-    </p>
-  );
-
-  return (
-    <div className="w-full">
-      {/* Mobile layout */}
-      <div className="md:hidden flex flex-col gap-4 w-full">
-        <HorizontalFilter {...filterProps} />
-        <div className="w-full">
-          {productCount}
-          <ProductGrid products={filtered} />
-        </div>
+        {filterCount > 0 && (
+          <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 18, height: 18, borderRadius: "50%", background: "var(--c-cherry)", color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "var(--font-mono)" }}>
+            {filterCount}
+          </span>
+        )}
       </div>
-
-      {/* Desktop layout */}
-      <div className="hidden md:flex gap-8 items-start">
-        <SidebarFilter {...filterProps} />
-        <div className="flex-1 min-w-0">
-          {productCount}
-          <ProductGrid products={filtered} />
+      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "flex", border: "1.5px solid var(--line-soft)", borderRadius: 8, overflow: "hidden" }}>
+          <button
+            onClick={() => setView("grid")}
+            title="Visualização em grade"
+            style={{ width: 36, height: 36, border: "none", background: view === "grid" ? "var(--ink)" : "transparent", color: view === "grid" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
+          >
+            <GridIcon />
+          </button>
+          <button
+            onClick={() => setView("list")}
+            title="Visualização em lista"
+            style={{ width: 36, height: 36, border: "none", background: view === "list" ? "var(--ink)" : "transparent", color: view === "list" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
+          >
+            <ListIcon />
+          </button>
         </div>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          style={{ height: 36, padding: "0 12px", border: "1.5px solid var(--line-soft)", borderRadius: 8, background: "var(--bg-elev)", color: "var(--ink)", fontSize: 13, fontFamily: "var(--font-body)", cursor: "pointer" }}
+        >
+          <option value="relevancia">Relevância</option>
+          <option value="menor-preco">Menor preço</option>
+          <option value="maior-preco">Maior preço</option>
+          <option value="novidade">Novidades</option>
+        </select>
       </div>
     </div>
+  );
+
+  const productView = view === "grid"
+    ? <ProductGrid products={filtered} />
+    : <ProductList products={filtered} />;
+
+  return (
+    <>
+      <style>{`
+        .product-card-link:hover { transform: scale(1.04); border-color: var(--line) !important; }
+        .product-list-link:hover { border-color: var(--ink-3) !important; }
+        @media (max-width: 767px) { .product-card-link:hover { transform: none; } }
+      `}</style>
+      <div className="w-full">
+        {/* Mobile layout */}
+        <div className="md:hidden flex flex-col gap-4 w-full">
+          <HorizontalFilter {...filterProps} />
+          {toolbar}
+          {productView}
+        </div>
+
+        {/* Desktop layout */}
+        <div className="hidden md:flex gap-12 items-start">
+          <SidebarFilter {...filterProps} />
+          <div className="flex-1 min-w-0">
+            {toolbar}
+            {productView}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
