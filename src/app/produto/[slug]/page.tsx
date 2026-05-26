@@ -119,7 +119,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </nav>
 
           {/* Main grid */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(32px, 5vw, 80px)", alignItems: "start", marginBottom: 80 }}>
+          <div className="pdp-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(32px, 5vw, 80px)", alignItems: "start", marginBottom: 80 }}>
 
             {/* Gallery */}
             <div style={{ display: "flex", gap: 12 }}>
@@ -227,7 +227,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <ProductActions product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
 
               {/* Trust items */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+              <div className="pdp-trust" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                 {[
                   { icon: "🛡️", title: "Garantia 12 meses", desc: "Em todos os produtos" },
                   { icon: "🔄", title: "Troca em 30 dias", desc: "Sem burocracia" },
@@ -362,6 +362,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <style>{`
         @media (max-width: 940px) {
           .pdp-grid { grid-template-columns: 1fr !important; }
+          .pdp-trust { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 540px) {
+          .pdp-thumbs { display: none !important; }
         }
       `}</style>
 

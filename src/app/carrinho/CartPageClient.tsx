@@ -60,7 +60,7 @@ export default function CartPageClient() {
             </Link>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 40, alignItems: "start" }}>
+          <div className="cart-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 40, alignItems: "start" }}>
 
             {/* Items list */}
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -74,7 +74,7 @@ export default function CartPageClient() {
                   style={{ display: "flex", alignItems: "flex-start", gap: 16, background: "var(--bg-elev)", borderRadius: "var(--r-lg)", border: "1px solid var(--line-hair)", padding: 20 }}
                 >
                   {/* Image 140×140 */}
-                  <div style={{ width: 140, height: 140, borderRadius: "var(--r-md)", background: "var(--bg-sunken)", flexShrink: 0, overflow: "hidden", border: "1px solid var(--line-hair)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div className="cart-item-img" style={{ width: 140, height: 140, borderRadius: "var(--r-md)", background: "var(--bg-sunken)", flexShrink: 0, overflow: "hidden", border: "1px solid var(--line-hair)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {item.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.imageUrl} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
