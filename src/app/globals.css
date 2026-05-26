@@ -106,6 +106,7 @@ html, body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "cv11";
 }
 
 ::selection { background: var(--c-sun); color: var(--ink); }
@@ -126,6 +127,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 0.92;
+  font-variation-settings: "opsz" 96, "wdth" 100;
 }
 .t-h1 {
   font-family: var(--font-display);
@@ -133,6 +135,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.03em;
   line-height: 1.0;
   font-size: clamp(40px, 5.6vw, 84px);
+  font-variation-settings: "opsz" 72;
 }
 .t-h2 {
   font-family: var(--font-display);
@@ -140,6 +143,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.025em;
   line-height: 1.02;
   font-size: clamp(32px, 4vw, 56px);
+  font-variation-settings: "opsz" 48;
 }
 .t-h3 {
   font-family: var(--font-display);
@@ -147,6 +151,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
   line-height: 1.1;
   font-size: clamp(22px, 2.2vw, 30px);
+  font-variation-settings: "opsz" 32;
 }
 .t-eyebrow {
   font-family: var(--font-mono);
@@ -166,6 +171,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 24;
 }
 .t-mono { font-family: var(--font-mono); }
 .t-muted { color: var(--ink-3); }

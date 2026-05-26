@@ -10,7 +10,7 @@ import Analytics from "@/components/Analytics";
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  axes: ["opsz"],
 });
 
 const geist = Geist({
