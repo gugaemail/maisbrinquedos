@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import Stars from "@/components/Stars";
+import { showToast } from "@/components/Toast";
 
 interface Props {
   id: string;
@@ -50,8 +51,26 @@ function formatBRL(v: number) {
   return "R$ " + v.toFixed(2).replace(".", ",");
 }
 
-export default function ProductCard({ slug, name, price, originalPrice, category, imageUrl, tag, rating, reviewCount }: Props) {
-  const [fav, setFav] = useState(false);
+export default function ProductCard({ id, slug, name, price, originalPrice, category, imageUrl, tag, rating, reviewCount }: Props) {
+  const [fav, setFav] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const saved = JSON.parse(localStorage.getItem("mb_favs") ?? "[]") as string[];
+      return saved.includes(id);
+    } catch { return false; }
+  });
+
+  function toggleFav(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const next = !fav;
+    setFav(next);
+    try {
+      const saved = JSON.parse(localStorage.getItem("mb_favs") ?? "[]") as string[];
+      const updated = next ? [...saved.filter(i => i !== id), id] : saved.filter(i => i !== id);
+      localStorage.setItem("mb_favs", JSON.stringify(updated));
+    } catch { /* noop */ }
+  }
   const bg = getBg(category);
   const emoji = getEmoji(category);
   const discount = originalPrice && originalPrice > price
@@ -106,7 +125,7 @@ export default function ProductCard({ slug, name, price, originalPrice, category
         <button
           className={`pc-fav${fav ? " is-fav" : ""}`}
           aria-label={fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); setFav((v) => !v); }}
+          onClick={toggleFav}
         >
           <HeartIcon filled={fav} />
         </button>
@@ -116,7 +135,7 @@ export default function ProductCard({ slug, name, price, originalPrice, category
           <button
             className="btn btn-cherry btn-sm"
             style={{ flex: 1 }}
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); showToast(`${name} adicionado`); }}
             aria-label="Adicionar ao carrinho"
           >
             <PlusIcon /> Adicionar

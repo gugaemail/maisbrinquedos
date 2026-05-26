@@ -7,19 +7,20 @@ interface CategoryCard {
   slug: string;
   count?: number;
   color: string;
+  deep: string;
   emoji: string;
   shape: "circle" | "square" | "triangle";
 }
 
 const DEFAULT_CATEGORIES: CategoryCard[] = [
-  { name: "Brinquedos",    slug: "brinquedos",    color: "var(--c-sun)",    emoji: "🧸", shape: "circle" },
-  { name: "Presentes",     slug: "presentes",     color: "var(--c-kiwi)",   emoji: "🎁", shape: "square" },
-  { name: "Tech",          slug: "tech",          color: "var(--c-sky)",    emoji: "🎮", shape: "circle" },
-  { name: "Pelúcia",       slug: "pelucia",       color: "var(--c-bubble)", emoji: "🐻", shape: "triangle" },
-  { name: "Educativo",     slug: "educativo",     color: "var(--c-grape)",  emoji: "🎨", shape: "circle" },
-  { name: "Baby",          slug: "baby",          color: "var(--c-rose)",   emoji: "🍼", shape: "square" },
-  { name: "Colecionáveis", slug: "colecao",       color: "var(--c-cherry)", emoji: "⭐", shape: "triangle" },
-  { name: "Ao Ar Livre",   slug: "ar-livre",      color: "var(--c-cream)",  emoji: "🚴", shape: "circle" },
+  { name: "Brinquedos",    slug: "brinquedos",    color: "#FFE4D6", deep: "#C74A1A", emoji: "🧸", shape: "circle" },
+  { name: "Presentes",     slug: "presentes",     color: "#D6F0DC", deep: "#1F7A3F", emoji: "🎁", shape: "square" },
+  { name: "Tech",          slug: "tech",          color: "#D6E4FF", deep: "#1A3FA6", emoji: "🎮", shape: "circle" },
+  { name: "Pelúcia",       slug: "pelucia",       color: "#FFD6E8", deep: "#A62B5A", emoji: "🐻", shape: "triangle" },
+  { name: "Educativo",     slug: "educativo",     color: "#D8F4E0", deep: "#1F7A3F", emoji: "🎨", shape: "circle" },
+  { name: "Baby",          slug: "baby",          color: "#FFE4CC", deep: "#A64A1A", emoji: "🍼", shape: "square" },
+  { name: "Colecionáveis", slug: "colecao",       color: "#E8D6FF", deep: "#4E28A6", emoji: "⭐", shape: "triangle" },
+  { name: "Ao Ar Livre",   slug: "ar-livre",      color: "#FFF3CC", deep: "#7A5A00", emoji: "🚴", shape: "circle" },
 ];
 
 interface Props {
@@ -40,25 +41,22 @@ export default function CategoriesStrip({ categories }: Props) {
     <section style={{ padding: "var(--gap-9) 0", background: "var(--bg)" }}>
       <div className="container">
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 32 }}>
-          <div>
-            <span className="t-eyebrow" style={{ display: "block", marginBottom: 6 }}>Categorias</span>
-            <h2 className="t-h2" style={{ margin: 0 }}>Explore por categoria</h2>
-          </div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 32 }}>
+          <h2 className="t-h2" style={{ margin: 0 }}>Por categoria</h2>
           <Link
             href="/produtos"
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
               fontFamily: "var(--font-mono)",
               fontSize: 12,
-              letterSpacing: "0.08em",
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: "var(--ink-3)",
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
+              color: "var(--ink-2)",
             }}
           >
-            Ver tudo →
+            VER TODAS ↗
           </Link>
         </div>
 
@@ -66,8 +64,8 @@ export default function CategoriesStrip({ categories }: Props) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 16,
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: 14,
           }}
         >
           {cards.map((cat) => (
@@ -76,55 +74,64 @@ export default function CategoriesStrip({ categories }: Props) {
               href={`/categoria/${cat.slug}`}
               style={{
                 position: "relative",
-                borderRadius: "var(--r-lg)",
+                borderRadius: 18,
                 background: cat.color,
                 overflow: "hidden",
-                padding: "24px 20px",
+                padding: 20,
                 display: "flex",
                 flexDirection: "column",
-                gap: 8,
-                transition: "transform var(--t) var(--ease), box-shadow var(--t) var(--ease)",
-                minHeight: 140,
+                gap: 12,
+                minHeight: 160,
+                transition: "all 240ms var(--ease)",
+                border: `1.5px solid ${cat.color}`,
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.transform = "translateY(-3px)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.transform = "translateY(0)";
+              }}
             >
-              {cat.count !== undefined && (
-                <span className="t-tag" style={{ fontSize: 10, opacity: 0.65 }}>{cat.count} ITENS</span>
-              )}
-              <span
+              {/* Top row: count + arrow */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                {cat.count !== undefined && (
+                  <span className="t-tag" style={{ fontSize: 10, color: cat.deep, opacity: 0.65 }}>
+                    {String(cat.count).padStart(3, "0")} ITENS
+                  </span>
+                )}
+                <span style={{ fontSize: 14, lineHeight: 1, marginLeft: "auto", color: cat.deep }}>↗</span>
+              </div>
+
+              {/* Spacer */}
+              <div style={{ flex: 1 }} />
+
+              {/* Category name */}
+              <h3
                 style={{
+                  margin: 0,
                   fontFamily: "var(--font-display)",
+                  fontSize: 22,
                   fontWeight: 700,
-                  fontSize: 18,
-                  letterSpacing: "-0.02em",
-                  color: "var(--ink)",
-                  lineHeight: 1.2,
+                  letterSpacing: "-0.025em",
+                  color: cat.deep,
+                  lineHeight: 1.05,
                 }}
               >
                 {cat.name}
-              </span>
-              <span style={{ fontSize: 10, color: "var(--ink-3)", fontFamily: "var(--font-mono)", letterSpacing: "0.06em" }}>
-                Explorar →
-              </span>
+              </h3>
 
-              {/* Decorative emoji */}
-              <span
+              {/* Decorative dots */}
+              <svg
                 aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  bottom: -4,
-                  right: 8,
-                  fontSize: 52,
-                  opacity: 0.35,
-                  lineHeight: 1,
-                  transform: "rotate(12deg)",
-                  pointerEvents: "none",
-                  userSelect: "none",
-                }}
+                viewBox="0 0 200 200"
+                style={{ position: "absolute", right: -30, bottom: -30, width: 130, height: 130, opacity: 0.7, pointerEvents: "none" }}
               >
-                {cat.emoji}
-              </span>
+                <circle cx="160" cy="160" r="40" fill="var(--ink)" opacity="0.07"/>
+                <circle cx="190" cy="120" r="14" fill="var(--ink)" opacity="0.08"/>
+                <rect x="140" y="100" width="20" height="20" rx="3" fill="var(--ink)" opacity="0.05" transform="rotate(20 150 110)"/>
+              </svg>
             </Link>
           ))}
         </div>

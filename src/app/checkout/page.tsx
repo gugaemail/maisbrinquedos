@@ -263,6 +263,7 @@ function CheckoutPageInner() {
                   authMode={authMode}
                   prefill={prefill}
                   cartItems={items.map((i) => ({ id: i.id, quantity: i.quantity }))}
+                  subtotal={totalPrice}
                   onSubmit={handleFormSubmit}
                 />
               </div>

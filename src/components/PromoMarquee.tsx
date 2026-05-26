@@ -15,7 +15,9 @@ export default function PromoMarquee() {
       <div className="marquee-track">
         {allItems.map((item, i) => (
           <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 12 }}>
-            <span className="chip chip-solid" style={{ fontSize: 10 }}>{item.tag}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", padding: "3px 8px", border: "1.5px solid var(--ink)", borderRadius: 4, background: "transparent" }}>
+              {item.tag}
+            </span>
             {item.text}
             <span style={{ opacity: 0.4 }}>✻</span>
           </span>

@@ -6,31 +6,21 @@ import AddToCartButton from "@/components/AddToCartButton";
 import BuyNowButton from "@/components/BuyNowButton";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
 import { db } from "@/lib/db";
 
-const CATEGORY_BG: Record<string, string> = {
-  "Tech & Celular": "#3B8BFF",
-  "Brinquedos":     "#FFE14D",
-  "Presentes":      "#3DDC84",
-  "Novidades":      "#FF3D5A",
-};
-
 async function getProduct(slug: string) {
-  // Try by slug first (canonical)
   const product = await db.product.findUnique({
     where: { slug, active: true },
     include: { category: true },
   });
-
   if (product) return product;
 
-  // Backward compat: if not found by slug, try by id (UUID) and redirect
   const byId = await db.product.findUnique({
     where: { id: slug, active: true },
     include: { category: true },
   });
   if (byId) redirect(`/produto/${byId.slug}`);
-
   return null;
 }
 
@@ -75,20 +65,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description: product.description,
     image: images.length > 0 ? images : undefined,
     url: `${baseUrl}/produto/${slug}`,
-    brand: {
-      "@type": "Brand",
-      name: "Mais Brinquedos e Presentes",
-    },
+    brand: { "@type": "Brand", name: "Mais Brinquedos e Presentes" },
     offers: {
       "@type": "Offer",
       priceCurrency: "BRL",
       price: price.toFixed(2),
       availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       url: `${baseUrl}/produto/${slug}`,
-      seller: {
-        "@type": "Organization",
-        name: "Mais Brinquedos e Presentes",
-      },
+      seller: { "@type": "Organization", name: "Mais Brinquedos e Presentes" },
     },
     aggregateRating: {
       "@type": "AggregateRating",
@@ -109,238 +93,281 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ],
   };
 
-  // Related products
   const related = await db.product.findMany({
     where: { categoryId: product.categoryId, active: true, NOT: { id: product.id } },
-    select: { id: true, slug: true, name: true, price: true, originalPrice: true, images: true, tag: true, category: true },
+    include: { category: true },
     take: 4,
     orderBy: { createdAt: "desc" },
   });
+
+  const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <HeaderServer />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#6B7080] dark:text-white/60 mb-8 font-body">
-          <Link href="/" className="hover:text-[#0F0F0F] dark:hover:text-white transition-colors">Início</Link>
-          <span>/</span>
-          <Link href={`/categoria/${product.category.slug}`} className="hover:text-[#0F0F0F] dark:hover:text-white transition-colors">
-            {product.category.name}
-          </Link>
-          <span>/</span>
-          <span className="text-[#0F0F0F] dark:text-white truncate max-w-[200px]">{product.name}</span>
-        </nav>
+      <main style={{ background: "var(--bg)" }}>
+        <div className="container" style={{ paddingTop: 40, paddingBottom: 96 }}>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Image gallery */}
-          <div className="flex flex-col gap-3">
-            <div
-              className="aspect-square rounded-3xl flex items-center justify-center text-9xl relative overflow-hidden"
-              style={{ backgroundColor: CATEGORY_BG[product.category.name] ?? "#FFE14D" }}
-            >
-              {primaryImage ? (
-                <Image
-                  src={primaryImage}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              ) : (
-                <span>{emoji}</span>
-              )}
-              {product.tag && (
-                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold z-10">
-                  {product.tag}
-                </span>
-              )}
-            </div>
+          {/* Breadcrumb */}
+          <nav style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 40 }}>
+            <Link href="/" style={{ color: "var(--ink-3)" }}>Início</Link>
+            <span>›</span>
+            <Link href={`/categoria/${product.category.slug}`} style={{ color: "var(--ink-3)" }}>{product.category.name}</Link>
+            <span>›</span>
+            <span style={{ color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{product.name}</span>
+          </nav>
 
-            {/* Thumbnails */}
-            {images.length > 1 && (
-              <div className="flex gap-2 flex-wrap">
-                {images.map((img, i) => (
-                  <div
-                    key={i}
-                    className="w-16 h-16 rounded-xl overflow-hidden border-2 border-transparent hover:border-[#3B8BFF] transition-colors cursor-pointer relative"
-                    style={{ backgroundColor: CATEGORY_BG[product.category.name] ?? "#FFE14D" }}
-                  >
-                    <Image src={img} alt={`${product.name} ${i + 1}`} fill className="object-cover" sizes="64px" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Main grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(32px, 5vw, 80px)", alignItems: "start", marginBottom: 80 }}>
 
-          {/* Product info */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <span className="text-sm text-[#6B7080] dark:text-white/60 font-body">{product.category.name}</span>
-              <h1 className="text-3xl font-display font-extrabold text-[#0F0F0F] dark:text-white mt-1 leading-tight">
-                {product.name}
-              </h1>
-            </div>
-
-            {/* Rating summary */}
-            <div className="flex items-center gap-2">
-              <div className="flex gap-0.5" aria-label="4.9 de 5 estrelas">
-                {[1,2,3,4,5].map((s) => (
-                  <svg key={s} width="16" height="16" viewBox="0 0 16 16" fill={s <= 4 ? "#FFB800" : "#FFB800"} aria-hidden="true">
-                    <path d="M8 1l1.854 3.756L14 5.528l-3 2.923.708 4.127L8 10.539l-3.708 2.039L5 8.451 2 5.528l4.146-.772L8 1z" />
-                  </svg>
-                ))}
-              </div>
-              <span className="text-sm font-semibold text-[#0F0F0F] dark:text-white">4.9</span>
-              <span className="text-sm text-[#6B7080] dark:text-white/60 font-body">(127 avaliações)</span>
-            </div>
-
-            {/* Price */}
-            <div className="flex items-end gap-3">
-              <span className="text-4xl font-display font-extrabold text-[#0F0F0F] dark:text-white">
-                R$ {price.toFixed(2).replace(".", ",")}
-              </span>
-              {originalPrice && discount && (
-                <div className="flex flex-col">
-                  <span className="text-sm text-[#6B7080] dark:text-white/50 line-through font-body">
-                    R$ {originalPrice.toFixed(2).replace(".", ",")}
-                  </span>
-                  <span className="text-xs font-semibold text-[#3DDC84]">{discount}% OFF</span>
+            {/* Gallery */}
+            <div style={{ display: "flex", gap: 12 }}>
+              {/* Thumbnails vertical */}
+              {images.length > 1 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, flexShrink: 0 }}>
+                  {images.slice(0, 4).map((img, i) => (
+                    <div
+                      key={i}
+                      style={{ width: 80, height: 80, borderRadius: "var(--r-sm)", overflow: "hidden", border: `2px solid ${i === 0 ? "var(--ink)" : "var(--line-hair)"}`, background: "var(--bg-sunken)", flexShrink: 0, cursor: "pointer" }}
+                    >
+                      <Image src={img} alt={`${product.name} ${i + 1}`} width={80} height={80} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                    </div>
+                  ))}
                 </div>
               )}
-            </div>
 
-            <p className="text-sm text-[#6B7080] dark:text-white/60 font-body">
-              Em até <strong className="text-[#0F0F0F] dark:text-white">12x</strong> de{" "}
-              <strong className="text-[#0F0F0F] dark:text-white">R$ {(price / 12).toFixed(2).replace(".", ",")}</strong> sem juros
-            </p>
+              {/* Main image */}
+              <div style={{ flex: 1, position: "relative" }}>
+                <div style={{ aspectRatio: "1/1", borderRadius: "var(--r-xl)", overflow: "hidden", background: "var(--bg-sunken)", border: "1px solid var(--line-hair)", position: "relative" }}>
+                  {primaryImage ? (
+                    <Image
+                      src={primaryImage}
+                      alt={product.name}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      sizes="(max-width: 940px) 100vw, 50vw"
+                      priority
+                    />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(64px, 10vw, 120px)" }}>
+                      {emoji}
+                    </div>
+                  )}
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3DDC84]/10 border border-[#3DDC84]/20 text-sm font-semibold text-[#3DDC84] w-fit">
-              <span>⚡</span>
-              <span>PIX: R$ {(price * 0.95).toFixed(2).replace(".", ",")} (5% OFF)</span>
-            </div>
+                  {/* Discount sticker */}
+                  {discount && (
+                    <div style={{ position: "absolute", top: 16, left: 16, transform: "rotate(-8deg)", animation: "spin-slow 14s linear infinite" }}>
+                      <div className="chip chip-cherry" style={{ height: "auto", padding: "8px 14px", fontSize: 13, fontWeight: 700 }}>
+                        −{discount}% OFF
+                      </div>
+                    </div>
+                  )}
 
-            <p className="text-sm font-body text-[#6B7080] dark:text-white/60">
-              {product.stock <= 5 ? (
-                <span className="text-[#FF3D5A] font-semibold">⚠ Apenas {product.stock} em estoque</span>
-              ) : (
-                <span>✓ Em estoque</span>
-              )}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <BuyNowButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
-              <AddToCartButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
-            </div>
-
-            {product.features.length > 0 && (
-              <div className="pt-4 border-t border-[#E2E6F0] dark:border-white/10">
-                <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white mb-3">Características</h2>
-                <ul className="flex flex-col gap-2">
-                  {product.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm font-body text-[#6B7080] dark:text-white/70">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#3B8BFF] shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+                  {/* Counter */}
+                  {images.length > 1 && (
+                    <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(14,14,16,0.6)", color: "#fff", borderRadius: "var(--r-pill)", padding: "4px 10px", fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em" }}>
+                      01/{String(images.length).padStart(2, "0")}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-
-            <div className="pt-4 border-t border-[#E2E6F0] dark:border-white/10">
-              <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white mb-2">Descrição</h2>
-              <p className="text-sm font-body text-[#6B7080] dark:text-white/70 leading-relaxed">{product.description}</p>
             </div>
-          </div>
-        </div>
 
-        {/* Reviews */}
-        <section className="mt-16 pt-12 border-t border-[#E2E6F0] dark:border-white/10">
-          <h2 className="text-xl font-display font-bold text-[#0F0F0F] dark:text-white mb-6">Avaliações dos clientes</h2>
-          <div className="flex items-center gap-4 mb-8">
-            <div className="text-center">
-              <p className="text-5xl font-display font-black text-[#0F0F0F] dark:text-white">4.9</p>
-              <div className="flex gap-0.5 justify-center mt-1">
-                {[1,2,3,4,5].map((s) => (
-                  <svg key={s} width="16" height="16" viewBox="0 0 16 16" fill="#FFB800" aria-hidden="true">
-                    <path d="M8 1l1.854 3.756L14 5.528l-3 2.923.708 4.127L8 10.539l-3.708 2.039L5 8.451 2 5.528l4.146-.772L8 1z" />
-                  </svg>
-                ))}
+            {/* Info */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+              {/* Chips */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <span className="chip chip-solid">{product.category.name}</span>
+                {product.tag === "Novidade" && <span className="chip chip-sun">NOVIDADE</span>}
+                {product.tag === "mais-vendido" && <span className="chip chip-cherry">MAIS VENDIDO</span>}
+                {product.tag === "edição-limitada" && <span className="chip" style={{ background: "var(--c-grape)", color: "#fff", borderColor: "var(--c-grape)" }}>EDIÇÃO LIMITADA</span>}
               </div>
-              <p className="text-xs text-[#6B7080] dark:text-white/60 font-body mt-1">127 avaliações</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { name: "Mariana S.", text: "Produto incrível, chegou no prazo e meu filho amou! Qualidade excelente.", stars: 5 },
-              { name: "Rafael M.", text: "Comprei de presente e foi sucesso total. Embalagem caprichada e produto de primeira.", stars: 5 },
-              { name: "Fernanda L.", text: "Atendimento ótimo, entrega rápida. Super recomendo a loja!", stars: 5 },
-            ].map((r) => (
-              <div key={r.name} className="rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/8 p-5 flex flex-col gap-3">
-                <div className="flex gap-0.5">
+
+              {/* Name */}
+              <h1 className="t-h2" style={{ margin: 0 }}>{product.name}</h1>
+
+              {/* Rating row */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", gap: 3 }}>
                   {[1,2,3,4,5].map((s) => (
-                    <svg key={s} width="14" height="14" viewBox="0 0 16 16" fill={s <= r.stars ? "#FFB800" : "#E2E6F0"} aria-hidden="true">
+                    <svg key={s} width="14" height="14" viewBox="0 0 16 16" fill="var(--c-sun)" aria-hidden="true">
                       <path d="M8 1l1.854 3.756L14 5.528l-3 2.923.708 4.127L8 10.539l-3.708 2.039L5 8.451 2 5.528l4.146-.772L8 1z" />
                     </svg>
                   ))}
                 </div>
-                <p className="text-sm text-[#6B7080] dark:text-white/60 font-body leading-relaxed">&ldquo;{r.text}&rdquo;</p>
-                <div className="flex items-center gap-2 mt-auto">
-                  <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white font-body">{r.name}</p>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-[#3DDC84]/10 text-[#3DDC84] border border-[#3DDC84]/20 font-semibold">✓ Verificado</span>
-                </div>
+                <span style={{ fontWeight: 700, fontSize: 14, color: "var(--ink)" }}>4.9</span>
+                <span style={{ fontSize: 13, color: "var(--ink-3)" }}>(127 avaliações)</span>
+                {product.stock <= 5 && product.stock > 0 && (
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--c-cherry)", fontWeight: 600 }}>
+                    ÚLTIMAS {product.stock} UNIDADES
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Related products */}
-        {related.length > 0 && (
-          <section className="mt-16 pt-12 border-t border-[#E2E6F0] dark:border-white/10">
-            <h2 className="text-xl font-display font-bold text-[#0F0F0F] dark:text-white mb-6">Você também pode gostar</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {related.map((p) => {
-                const rPrice = Number(p.price);
-                const rOriginal = p.originalPrice ? Number(p.originalPrice) : null;
-                const rDiscount = rOriginal ? Math.round(((rOriginal - rPrice) / rOriginal) * 100) : null;
-                const rImage = p.images[0] ?? null;
-                return (
-                  <Link
-                    key={p.id}
-                    href={`/produto/${p.slug}`}
-                    className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all duration-200"
-                  >
-                    <div className="aspect-square relative overflow-hidden" style={{ backgroundColor: CATEGORY_BG[p.category.name] ?? "#FFE14D" }}>
-                      {rImage ? (
-                        <Image src={rImage} alt={p.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
-                      ) : (
-                        <span className="w-full h-full flex items-center justify-center text-5xl">{p.category.emoji}</span>
-                      )}
-                      {p.tag && (
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#3B8BFF] text-white text-xs font-semibold">
-                          {p.tag}
-                        </span>
-                      )}
+              {/* Price card */}
+              <div style={{ background: "var(--bg-sunken)", borderRadius: "var(--r-lg)", padding: 24 }}>
+                {originalPrice && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 14, color: "var(--ink-4)", textDecoration: "line-through" }}>{fmt(originalPrice)}</span>
+                    <span className="chip chip-cherry" style={{ height: 22, fontSize: 10 }}>−{discount}%</span>
+                  </div>
+                )}
+                <div className="t-price" style={{ fontSize: 40, color: "var(--ink)", lineHeight: 1 }}>{fmt(price)}</div>
+                <p style={{ margin: "8px 0 4px", fontSize: 13, color: "var(--c-kiwi-deep)", fontWeight: 600 }}>
+                  ou {fmt(price * 0.9)} no Pix (−10%)
+                </p>
+                <p style={{ margin: 0, fontSize: 13, color: "var(--ink-3)" }}>
+                  em até 12x de {fmt(price / 12)} sem juros
+                </p>
+              </div>
+
+              {/* CTAs */}
+              <div style={{ display: "flex", gap: 12 }}>
+                <BuyNowButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
+                <AddToCartButton product={{ id: product.id, name: product.name, price, emoji, imageUrl: primaryImage ?? undefined }} />
+              </div>
+
+              {/* Trust items */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                {[
+                  { icon: "🛡️", title: "Garantia 12 meses", desc: "Em todos os produtos" },
+                  { icon: "🔄", title: "Troca em 30 dias", desc: "Sem burocracia" },
+                  { icon: "✅", title: "Loja certificada", desc: "Compra segura" },
+                ].map((t) => (
+                  <div key={t.title} style={{ background: "var(--bg-sunken)", borderRadius: "var(--r-md)", padding: "12px 10px", textAlign: "center" }}>
+                    <div style={{ fontSize: 20, marginBottom: 4 }}>{t.icon}</div>
+                    <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: "var(--ink)", lineHeight: 1.3 }}>{t.title}</p>
+                    <p style={{ margin: 0, fontSize: 10, color: "var(--ink-4)", marginTop: 2 }}>{t.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div style={{ borderTop: "1.5px solid var(--line-soft)", paddingTop: 40, marginBottom: 80 }}>
+            {/* Tab nav */}
+            <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--line-hair)", marginBottom: 32 }}>
+              {["Descrição", "Especificações", "Avaliações"].map((tab, i) => (
+                <button
+                  key={tab}
+                  style={{
+                    padding: "12px 24px",
+                    background: "none",
+                    border: "none",
+                    borderBottom: i === 0 ? "2px solid var(--ink)" : "2px solid transparent",
+                    fontFamily: "var(--font-body)",
+                    fontWeight: i === 0 ? 700 : 500,
+                    fontSize: 14,
+                    color: i === 0 ? "var(--ink)" : "var(--ink-3)",
+                    cursor: "pointer",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Descrição (active) */}
+            <div style={{ maxWidth: 720 }}>
+              <p style={{ fontSize: 17, lineHeight: 1.7, color: "var(--ink-2)", margin: 0 }}>
+                {product.description}
+              </p>
+              {product.features.length > 0 && (
+                <ul style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 10, listStyle: "none", padding: 0 }}>
+                  {product.features.map((f) => (
+                    <li key={f} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "var(--ink-2)" }}>
+                      <span style={{ width: 20, height: 20, borderRadius: "50%", background: "var(--c-kiwi)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Reviews */}
+          <section style={{ marginBottom: 80 }}>
+            <h2 className="t-h3" style={{ margin: "0 0 24px" }}>Avaliações</h2>
+            <div style={{ display: "flex", gap: 40, alignItems: "flex-start", marginBottom: 32, flexWrap: "wrap" }}>
+              <div style={{ textAlign: "center" }}>
+                <div className="t-display" style={{ fontSize: 56, color: "var(--ink)" }}>4.9</div>
+                <div style={{ display: "flex", gap: 3, justifyContent: "center", marginTop: 4 }}>
+                  {[1,2,3,4,5].map((s) => (
+                    <svg key={s} width="14" height="14" viewBox="0 0 16 16" fill="var(--c-sun)" aria-hidden="true">
+                      <path d="M8 1l1.854 3.756L14 5.528l-3 2.923.708 4.127L8 10.539l-3.708 2.039L5 8.451 2 5.528l4.146-.772L8 1z" />
+                    </svg>
+                  ))}
+                </div>
+                <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--ink-4)" }}>127 avaliações</p>
+              </div>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+              {[
+                { name: "Mariana S.", text: "Produto incrível, chegou no prazo e meu filho amou! Qualidade excelente.", stars: 5 },
+                { name: "Rafael M.", text: "Comprei de presente e foi sucesso total. Embalagem caprichada e produto de primeira.", stars: 5 },
+                { name: "Fernanda L.", text: "Atendimento ótimo, entrega rápida. Super recomendo a loja!", stars: 5 },
+              ].map((r) => (
+                <div key={r.name} style={{ background: "var(--bg-elev)", borderRadius: "var(--r-md)", border: "1px solid var(--line-hair)", padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div style={{ display: "flex", gap: 3 }}>
+                    {[1,2,3,4,5].map((s) => (
+                      <svg key={s} width="12" height="12" viewBox="0 0 16 16" fill={s <= r.stars ? "var(--c-sun)" : "var(--line-soft)"} aria-hidden="true">
+                        <path d="M8 1l1.854 3.756L14 5.528l-3 2.923.708 4.127L8 10.539l-3.708 2.039L5 8.451 2 5.528l4.146-.772L8 1z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p style={{ margin: 0, fontSize: 14, color: "var(--ink-2)", lineHeight: 1.6 }}>&ldquo;{r.text}&rdquo;</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto" }}>
+                    <div style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--bg-sunken)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: "var(--ink-3)" }}>
+                      {r.name[0]}
                     </div>
-                    <div className="p-3 flex flex-col gap-1">
-                      <h3 className="text-sm font-display font-semibold text-[#0F0F0F] dark:text-white leading-tight group-hover:text-[#3B8BFF] transition-colors line-clamp-2">
-                        {p.name}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className="text-sm font-bold text-[#FF3D5A]">R$ {rPrice.toFixed(2).replace(".", ",")}</p>
-                        {rDiscount && <span className="text-xs font-semibold text-[#3DDC84]">{rDiscount}% OFF</span>}
-                      </div>
+                    <div>
+                      <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "var(--ink)" }}>{r.name}</p>
+                      <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--c-kiwi-deep)", letterSpacing: "0.06em", textTransform: "uppercase" }}>✓ Verificado</span>
                     </div>
-                  </Link>
-                );
-              })}
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
-        )}
+
+          {/* Related products */}
+          {related.length > 0 && (
+            <section>
+              <h2 className="t-h3" style={{ margin: "0 0 24px" }}>Você também pode gostar</h2>
+              <div className="grid-products" data-density="comfy">
+                {related.map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    id={p.id}
+                    slug={p.slug}
+                    name={p.name}
+                    price={Number(p.price)}
+                    originalPrice={p.originalPrice ? Number(p.originalPrice) : null}
+                    category={p.category.name}
+                    imageUrl={p.images[0] ?? null}
+                    tag={p.tag}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       </main>
+
+      <style>{`
+        @media (max-width: 940px) {
+          .pdp-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
 
       <WhatsAppButton />
       <Footer />

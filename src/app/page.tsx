@@ -7,6 +7,7 @@ import BannerCarousel from "@/components/BannerCarousel";
 import CategoriesStrip from "@/components/CategoriesStrip";
 import AudienceBanner from "@/components/AudienceBanner";
 import BrandStory from "@/components/BrandStory";
+import ValueProps from "@/components/ValueProps";
 import ProductCard from "@/components/ProductCard";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import Footer from "@/components/Footer";
@@ -39,6 +40,7 @@ export default async function Home() {
     db.category.findMany({
       where: { active: true },
       orderBy: { order: "asc" },
+      include: { _count: { select: { products: { where: { active: true } } } } },
     }),
   ]);
 
@@ -49,13 +51,16 @@ export default async function Home() {
         {/* Hero */}
         {banners.length > 0 ? <BannerCarousel banners={banners} /> : <HeroSection />}
 
+        {/* Value props strip */}
+        <ValueProps />
+
         {/* Categories strip */}
         <CategoriesStrip categories={categories} />
 
         {/* Os queridinhos */}
         <FeaturedStrip
-          eyebrow="Mais vendidos"
-          title="Os queridinhos"
+          eyebrow="MAIS VENDIDOS DA SEMANA"
+          title="Os queridinhos."
           href="/produtos"
           color="var(--c-cherry)"
           products={featuredProducts}
@@ -67,8 +72,8 @@ export default async function Home() {
         {/* Bons descontos */}
         {discountProducts.length > 0 && (
           <FeaturedStrip
-            eyebrow="Promoções"
-            title="Bons descontos"
+            eyebrow="EM PROMOÇÃO HOJE"
+            title="Bons descontos."
             href="/produtos?tag=oferta"
             color="var(--c-kiwi)"
             products={discountProducts}
@@ -81,8 +86,8 @@ export default async function Home() {
         {/* Novidades */}
         {newProducts.length > 0 && (
           <FeaturedStrip
-            eyebrow="Recém chegados"
-            title="Novidades"
+            eyebrow="ACABOU DE CHEGAR"
+            title="Novidades."
             href="/produtos?tag=novidade"
             color="var(--c-sky)"
             products={newProducts}

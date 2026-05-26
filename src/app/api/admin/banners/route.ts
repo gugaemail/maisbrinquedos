@@ -9,6 +9,10 @@ const schema = z.object({
   ctaText: z.string().optional(),
   ctaLink: z.string().optional(),
   imageUrl: z.string().url().optional().or(z.literal("")),
+  videoUrl: z.string().url().optional().or(z.literal("")),
+  textPosition: z.enum(["left", "center", "bottom-bar"]).optional(),
+  overlay: z.enum(["dark", "light"]).optional(),
+  tag: z.string().optional(),
   order: z.number().int().min(0).optional(),
 });
 
@@ -31,7 +35,12 @@ export async function POST(request: NextRequest) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const data = { ...parsed.data, imageUrl: parsed.data.imageUrl || null };
+  const data = {
+    ...parsed.data,
+    imageUrl: parsed.data.imageUrl || null,
+    videoUrl: parsed.data.videoUrl || null,
+    tag: parsed.data.tag || null,
+  };
   const banner = await db.banner.create({ data });
   return NextResponse.json(banner, { status: 201 });
 }

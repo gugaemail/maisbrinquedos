@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { animate } from "animejs";
 import { useMetaPixel } from "@/hooks/useMetaPixel";
+import { showToast } from "@/components/Toast";
 
 interface Props {
   product: {
@@ -33,12 +34,14 @@ export default function AddToCartButton({ product }: Props) {
         ease: "outCubic",
         onComplete: () => {
           addItem(product);
+          showToast(`${product.name} adicionado`);
           setAdded(true);
           setTimeout(() => setAdded(false), 1500);
         },
       });
     } else {
       addItem(product);
+      showToast(`${product.name} adicionado`);
       setAdded(true);
       setTimeout(() => setAdded(false), 1500);
     }

@@ -54,14 +54,14 @@ const DEFAULT_METRICS: Metric[] = [
 
 function StarRow({ stars }: { stars: number }) {
   return (
-    <div className="flex gap-0.5" aria-label={`${stars} de 5 estrelas`}>
+    <div style={{ display: "flex", gap: 2 }} aria-label={`${stars} de 5 estrelas`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
           width="16"
           height="16"
           viewBox="0 0 16 16"
-          fill={i < stars ? "#FFB800" : "#E2E6F0"}
+          fill={i < stars ? "#FFB800" : "var(--line-soft)"}
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
@@ -74,17 +74,58 @@ function StarRow({ stars }: { stars: number }) {
 
 function ReviewCard({ review }: { review: Review }) {
   return (
-    <div className="rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/8 p-6 flex flex-col gap-3">
+    <div
+      style={{
+        borderRadius: "var(--r-md)",
+        background: "var(--bg-elev)",
+        border: "1px solid var(--line-hair)",
+        padding: 24,
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
       <StarRow stars={review.stars} />
-      <p className="text-[#6B7080] dark:text-white/45 text-sm font-body leading-relaxed">
+      <p
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: 14,
+          lineHeight: 1.65,
+          color: "var(--ink-3)",
+          margin: 0,
+          flex: 1,
+        }}
+      >
         &ldquo;{review.text}&rdquo;
       </p>
-      <div className="flex items-center gap-2 mt-auto pt-1">
-        <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white/85 font-body">
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: "auto", paddingTop: 4 }}>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--ink)",
+            margin: 0,
+          }}
+        >
           {review.customerName}
         </p>
         {review.verified && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold font-body bg-[#3DDC84]/10 text-[#3DDC84] border border-[#3DDC84]/20">
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              padding: "2px 8px",
+              borderRadius: "var(--r-pill)",
+              fontSize: 11,
+              fontFamily: "var(--font-mono)",
+              fontWeight: 600,
+              background: "color-mix(in srgb, var(--c-kiwi) 12%, transparent)",
+              color: "var(--c-kiwi-deep)",
+              border: "1px solid color-mix(in srgb, var(--c-kiwi) 24%, transparent)",
+            }}
+          >
             ✓ Compra verificada
           </span>
         )}
@@ -95,15 +136,57 @@ function ReviewCard({ review }: { review: Review }) {
 
 function MetricStrip({ metrics }: { metrics: Metric[] }) {
   return (
-    <div className="rounded-2xl bg-[#F5F5F2] dark:bg-[#3B8BFF]/8 border border-[#E2E6F0] dark:border-[#3B8BFF]/15 overflow-hidden">
-      <div className="grid grid-cols-3 divide-x divide-[#E2E6F0] dark:divide-white/8">
-        {metrics.map((m) => (
-          <div key={m.label} className="flex flex-col items-center justify-center gap-1 py-6 px-4 text-center">
-            {m.icon && <span className="text-xl mb-1" aria-hidden="true">{m.icon}</span>}
-            <p className="text-2xl md:text-3xl font-display font-extrabold text-[#3B8BFF] leading-none">
+    <div
+      style={{
+        borderRadius: "var(--r-md)",
+        background: "var(--bg-sunken)",
+        border: "1px solid var(--line-hair)",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${metrics.length}, 1fr)`,
+        }}
+      >
+        {metrics.map((m, i) => (
+          <div
+            key={m.label}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              padding: "28px 16px",
+              textAlign: "center",
+              borderLeft: i > 0 ? "1px solid var(--line-hair)" : undefined,
+            }}
+          >
+            {m.icon && (
+              <span style={{ fontSize: 20, marginBottom: 4 }} aria-hidden="true">
+                {m.icon}
+              </span>
+            )}
+            <p
+              className="t-h3"
+              style={{ margin: 0, color: "var(--c-sky)", lineHeight: 1 }}
+            >
               {m.value}
             </p>
-            <p className="text-xs text-[#6B7080] dark:text-white/40 font-body mt-0.5">{m.label}</p>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                color: "var(--ink-3)",
+                margin: 0,
+              }}
+            >
+              {m.label}
+            </p>
           </div>
         ))}
       </div>
@@ -117,20 +200,36 @@ export function SocialProofSection({
   title = "O que nossos clientes dizem",
 }: SocialProofSectionProps) {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex flex-col gap-8">
+    <section
+      style={{
+        padding: "clamp(48px, 6vw, 80px) 0",
+        background: "var(--bg)",
+      }}
+    >
+      <div className="container" style={{ display: "flex", flexDirection: "column", gap: 40 }}>
         {/* Section heading */}
-        <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-display font-extrabold text-[#0F0F0F] dark:text-white">
-            {title}
-          </h2>
-          <p className="text-[#6B7080] dark:text-white/35 text-sm font-body mt-2">
+        <div style={{ textAlign: "center" }}>
+          <h2 className="t-h2" style={{ margin: 0 }}>{title}</h2>
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 15,
+              color: "var(--ink-3)",
+              margin: "8px 0 0",
+            }}
+          >
             Avaliações reais de clientes que já compraram
           </p>
         </div>
 
         {/* Reviews grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 16,
+          }}
+        >
           {reviews.map((review, i) => (
             <ReviewCard key={i} review={review} />
           ))}

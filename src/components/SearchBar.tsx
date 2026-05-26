@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SearchResult } from "@/app/api/products/search/route";
 
+const SUGGESTIONS = ["LEGO", "Boneca", "Hot Wheels", "Pelúcia", "Funko", "Educativo"];
+
 export default function SearchBar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +15,6 @@ export default function SearchBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -25,23 +26,24 @@ export default function SearchBar() {
     setIsLoading(false);
   }, []);
 
-  // Auto-focus when opened
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      setTimeout(() => inputRef.current?.focus(), 50);
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  // Click-outside to close
   useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        closeSearch();
-      }
+    function handler(e: KeyboardEvent) {
+      if (e.key === "Escape") closeSearch();
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [closeSearch]);
 
-  // Debounced fetch
   useEffect(() => {
     clearTimeout(debounceRef.current);
     if (query.trim().length < 2) {
@@ -79,152 +81,254 @@ export default function SearchBar() {
       e.preventDefault();
       setActiveIndex((i) => Math.max(i - 1, -1));
     }
-    if (e.key === "Enter" && activeIndex >= 0 && results[activeIndex]) {
-      navigateTo(results[activeIndex].slug);
+    if (e.key === "Enter") {
+      if (activeIndex >= 0 && results[activeIndex]) {
+        navigateTo(results[activeIndex].slug);
+      } else if (query.trim()) {
+        router.push(`/busca?q=${encodeURIComponent(query.trim())}`);
+        closeSearch();
+      }
     }
   }
 
-  const showDropdown = isOpen && query.trim().length >= 2;
+  const showResults = query.trim().length >= 2;
 
   return (
-    <div ref={containerRef} className="relative">
-      {/* Closed: lupa icon */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          aria-label="Buscar produtos"
-          className="p-2 rounded-full text-[#6B7080] hover:text-[#3B8BFF] hover:bg-[#F5F5F2] transition-colors duration-200"
-        >
-          <SearchIcon />
-        </button>
-      )}
+    <>
+      {/* Trigger button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        aria-label="Buscar produtos"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          height: 40,
+          padding: "0 14px",
+          background: "var(--bg-sunken)",
+          border: "1.5px solid var(--line)",
+          borderRadius: "var(--r-pill)",
+          color: "var(--ink-3)",
+          fontSize: 13,
+          fontFamily: "var(--font-body)",
+          cursor: "pointer",
+          transition: "border-color 140ms",
+          minWidth: 180,
+        }}
+      >
+        <SearchIcon />
+        <span style={{ flex: 1, textAlign: "left" }}>Buscar brinquedos, marcas…</span>
+        <kbd style={{ fontFamily: "var(--font-mono)", fontSize: 10, opacity: 0.5, background: "var(--bg-elev)", border: "1px solid var(--line)", borderRadius: 4, padding: "1px 5px" }}>⌘K</kbd>
+      </button>
 
-      {/* Open: input */}
+      {/* Overlay */}
       {isOpen && (
-        <div className="relative flex items-center">
-          <span className="absolute left-3 text-[#6B7080] pointer-events-none">
-            <SearchIcon />
-          </span>
-          <input
-            ref={inputRef}
-            type="search"
-            value={query}
-            onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
-            onKeyDown={handleKeyDown}
-            placeholder="Buscar produtos..."
-            className="w-48 sm:w-64 pl-9 pr-8 py-2 rounded-full border border-[#E2E6F0]
-                       bg-white text-sm text-[#0F0F0F] placeholder:text-[#6B7080]
-                       focus:outline-none focus:border-[#3B8BFF]/40 focus:ring-2
-                       focus:ring-[#3B8BFF]/10 transition-all duration-200"
-            aria-label="Buscar produtos"
-            aria-autocomplete="list"
-            aria-controls="search-results"
-            aria-expanded={showDropdown}
-          />
-          <button
-            onClick={closeSearch}
-            aria-label="Fechar busca"
-            className="absolute right-2 text-[#6B7080] hover:text-[#0F0F0F] transition-colors"
-          >
-            <XIcon />
-          </button>
-        </div>
-      )}
-
-      {/* Dropdown */}
-      {showDropdown && (
         <div
-          id="search-results"
-          role="listbox"
-          className="absolute top-full mt-2 right-0 w-80 sm:w-96 bg-white rounded-2xl
-                     border border-[#E2E6F0] shadow-[0_8px_32px_rgba(0,0,0,0.12)]
-                     overflow-hidden z-50"
+          onClick={closeSearch}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 200,
+            background: "rgba(0,0,0,0.55)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            paddingTop: "12vh",
+            paddingLeft: 16,
+            paddingRight: 16,
+          }}
         >
-          {isLoading && (
-            <div className="flex items-center justify-center gap-2 py-6 text-[#6B7080] text-sm">
-              <SpinnerIcon />
-              Buscando...
+          {/* Modal card */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 640,
+              background: "#fff",
+              borderRadius: 24,
+              boxShadow: "0 24px 80px rgba(0,0,0,0.22)",
+              overflow: "hidden",
+            }}
+          >
+            {/* Search input row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "20px 24px",
+                borderBottom: "1.5px solid var(--line)",
+              }}
+            >
+              <span style={{ color: "var(--ink-3)", flexShrink: 0 }}>
+                <SearchIcon />
+              </span>
+              <input
+                ref={inputRef}
+                type="search"
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
+                onKeyDown={handleKeyDown}
+                placeholder="O que você procura?"
+                style={{
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 18,
+                  fontFamily: "var(--font-body)",
+                  color: "var(--ink)",
+                  fontWeight: 500,
+                }}
+                role="combobox"
+                aria-label="Buscar produtos"
+                aria-autocomplete="list"
+                aria-expanded={showResults}
+                aria-haspopup="listbox"
+                aria-controls="search-listbox"
+              />
+              <button
+                onClick={closeSearch}
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  color: "var(--ink-3)",
+                  background: "var(--bg-sunken)",
+                  border: "1.5px solid var(--line)",
+                  borderRadius: 6,
+                  padding: "4px 8px",
+                  cursor: "pointer",
+                }}
+              >
+                ESC
+              </button>
             </div>
-          )}
 
-          {!isLoading && results.length === 0 && (
-            <div className="py-6 text-center text-sm text-[#6B7080]">
-              Nenhum resultado para{" "}
-              <strong className="text-[#0F0F0F]">&ldquo;{query}&rdquo;</strong>
+            {/* Body */}
+            <div style={{ padding: "24px 24px 28px" }}>
+              {!showResults && (
+                <>
+                  <span className="t-eyebrow" style={{ color: "var(--ink-3)", display: "block", marginBottom: 14 }}>
+                    Sugestões populares
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {SUGGESTIONS.map((s) => (
+                      <Link
+                        key={s}
+                        href={`/busca?q=${encodeURIComponent(s)}`}
+                        onClick={closeSearch}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          padding: "8px 14px",
+                          borderRadius: 999,
+                          border: "1.5px solid var(--line)",
+                          background: "var(--bg-sunken)",
+                          fontFamily: "var(--font-body)",
+                          fontSize: 14,
+                          color: "var(--ink-2)",
+                          fontWeight: 500,
+                          transition: "border-color 120ms, background 120ms",
+                          textDecoration: "none",
+                        }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        {s}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {showResults && isLoading && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--ink-3)", fontSize: 14, padding: "8px 0" }}>
+                  <SpinnerIcon />
+                  Buscando…
+                </div>
+              )}
+
+              {showResults && !isLoading && results.length === 0 && (
+                <p style={{ fontSize: 14, color: "var(--ink-3)", margin: 0 }}>
+                  Nenhum resultado para <strong style={{ color: "var(--ink)" }}>&ldquo;{query}&rdquo;</strong>
+                </p>
+              )}
+
+              {showResults && !isLoading && results.length > 0 && (
+                <>
+                  <ul id="search-listbox" style={{ listStyle: "none", margin: 0, padding: 0 }} role="listbox">
+                    {results.map((r, i) => (
+                      <li
+                        key={r.id}
+                        role="option"
+                        aria-selected={i === activeIndex}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          cursor: "pointer",
+                          background: i === activeIndex ? "var(--bg-sunken)" : "transparent",
+                          transition: "background 100ms",
+                        }}
+                        onMouseEnter={() => setActiveIndex(i)}
+                        onClick={() => navigateTo(r.slug)}
+                      >
+                        <div style={{ width: 44, height: 44, borderRadius: 10, background: "var(--bg-sunken)", flexShrink: 0, overflow: "hidden" }}>
+                          {r.imageUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={r.imageUrl} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          ) : (
+                            <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🧸</span>
+                          )}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.name}</p>
+                          <p style={{ margin: 0, fontSize: 12, color: "var(--ink-3)" }}>{r.category}</p>
+                        </div>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", flexShrink: 0 }}>
+                          R$ {r.price.toFixed(2).replace(".", ",")}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ borderTop: "1.5px solid var(--line)", marginTop: 8, paddingTop: 12 }}>
+                    <Link
+                      href={`/busca?q=${encodeURIComponent(query.trim())}`}
+                      onClick={closeSearch}
+                      style={{ fontSize: 13, color: "var(--c-sky)", fontWeight: 600 }}
+                    >
+                      Ver todos os resultados para &ldquo;{query}&rdquo; →
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
-          )}
-
-          {!isLoading && results.length > 0 && (
-            <>
-              <ul>
-                {results.map((r, i) => (
-                  <li
-                    key={r.id}
-                    role="option"
-                    aria-selected={i === activeIndex}
-                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer
-                               transition-colors duration-150 border-b border-[#E2E6F0] last:border-0
-                               ${i === activeIndex ? "bg-[#F5F5F2]" : "hover:bg-[#F8F9FC]"}`}
-                    onMouseEnter={() => setActiveIndex(i)}
-                    onClick={() => navigateTo(r.slug)}
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-[#F5F5F2] flex-shrink-0 overflow-hidden">
-                      {r.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={r.imageUrl} alt={r.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="w-full h-full flex items-center justify-center text-xl">🧸</span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#0F0F0F] truncate">{r.name}</p>
-                      <p className="text-xs text-[#6B7080]">{r.category}</p>
-                    </div>
-                    <span className="text-sm font-bold text-[#0F0F0F] flex-shrink-0">
-                      R$ {r.price.toFixed(2).replace(".", ",")}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <div className="border-t border-[#E2E6F0] px-4 py-2">
-                <Link
-                  href={`/busca?q=${encodeURIComponent(query.trim())}`}
-                  onClick={closeSearch}
-                  className="text-xs text-[#3B8BFF] font-semibold hover:underline"
-                >
-                  Ver todos os resultados para &ldquo;{query}&rdquo; →
-                </Link>
-              </div>
-            </>
-          )}
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
 function SearchIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="8" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
   );
 }
 
 function SpinnerIcon() {
   return (
-    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-      <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+    <svg style={{ animation: "spin 1s linear infinite" }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round"/>
     </svg>
   );
 }

@@ -1,17 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import HeaderServer from "@/components/HeaderServer";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import ProductCard from "@/components/ProductCard";
 import { db } from "@/lib/db";
-
-const CATEGORY_BG: Record<string, string> = {
-  "Tech & Celular": "#3B8BFF",
-  "Brinquedos":     "#FFE14D",
-  "Presentes":      "#3DDC84",
-  "Novidades":      "#FF3D5A",
-};
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -25,11 +18,8 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
 async function SearchResults({ query }: { query: string }) {
   if (query.length < 2) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-        <span className="text-5xl">🔍</span>
-        <p className="font-display font-bold text-[#0F0F0F] dark:text-white text-lg">
-          Digite pelo menos 2 caracteres para buscar
-        </p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 0", textAlign: "center", gap: 12 }}>
+        <p style={{ color: "var(--ink-3)", fontSize: 15 }}>Digite pelo menos 2 caracteres para buscar.</p>
       </div>
     );
   }
@@ -50,15 +40,15 @@ async function SearchResults({ query }: { query: string }) {
 
   if (products.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
-        <span className="text-5xl">😕</span>
-        <p className="font-display font-bold text-[#0F0F0F] dark:text-white text-lg">
-          Nenhum resultado para &ldquo;{query}&rdquo;
-        </p>
-        <p className="text-[#6B7080] dark:text-white/60 text-sm font-body">
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "96px 0", textAlign: "center", gap: 16 }}>
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <h2 className="t-h2" style={{ margin: 0 }}>Nada encontrado.</h2>
+        <p style={{ color: "var(--ink-3)", fontSize: 15, margin: 0 }}>
           Tente termos diferentes ou explore nossas categorias.
         </p>
-        <Link href="/produtos" className="mt-2 px-6 py-3 rounded-full bg-[#3B8BFF] text-white font-semibold hover:bg-[#3B8BFF]/90 transition-colors">
+        <Link href="/produtos" className="btn btn-cherry" style={{ marginTop: 8 }}>
           Ver todos os produtos
         </Link>
       </div>
@@ -67,54 +57,23 @@ async function SearchResults({ query }: { query: string }) {
 
   return (
     <>
-      <p className="text-sm text-[#6B7080] dark:text-white/60 font-body mb-6">
-        <span className="font-semibold text-[#0F0F0F] dark:text-white">{products.length}</span>{" "}
-        resultado{products.length !== 1 ? "s" : ""} para &ldquo;{query}&rdquo;
-      </p>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => {
-          const price = Number(product.price);
-          const originalPrice = product.originalPrice ? Number(product.originalPrice) : null;
-          const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : null;
-          const imageUrl = product.images[0] ?? null;
-          const bg = CATEGORY_BG[product.category.name] ?? "#FFE14D";
-
-          return (
-            <Link
-              key={product.id}
-              href={`/produto/${product.slug}`}
-              className="group flex flex-col rounded-2xl bg-white dark:bg-white/5 border border-[#E2E6F0] dark:border-white/10 overflow-hidden hover:shadow-lg hover:border-[#3B8BFF]/20 transition-all duration-200"
-            >
-              <div className="aspect-square relative overflow-hidden flex items-center justify-center" style={{ backgroundColor: bg }}>
-                {imageUrl ? (
-                  <Image src={imageUrl} alt={product.name} fill className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
-                ) : (
-                  <span className="text-5xl">{product.category.emoji}</span>
-                )}
-                {product.tag && (
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#3B8BFF] text-white text-xs font-semibold">
-                    {product.tag}
-                  </span>
-                )}
-              </div>
-              <div className="p-4 flex flex-col gap-1">
-                <span className="text-xs text-[#6B7080] dark:text-white/60 font-body">{product.category.name}</span>
-                <h2 className="text-sm font-display font-semibold text-[#0F0F0F] dark:text-white leading-tight group-hover:text-[#3B8BFF] transition-colors">
-                  {product.name}
-                </h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-base font-bold text-[#FF3D5A]">R$ {price.toFixed(2).replace(".", ",")}</p>
-                  {discount && <span className="text-xs font-semibold text-[#3DDC84]">{discount}% OFF</span>}
-                </div>
-                {originalPrice && (
-                  <p className="text-xs text-[#6B7080] line-through font-body">
-                    R$ {originalPrice.toFixed(2).replace(".", ",")}
-                  </p>
-                )}
-              </div>
-            </Link>
-          );
-        })}
+      <span style={{ display: "block", fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 32 }}>
+        {products.length} resultado{products.length !== 1 ? "s" : ""}
+      </span>
+      <div className="grid-products" data-density="comfy">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            slug={product.slug}
+            name={product.name}
+            price={Number(product.price)}
+            originalPrice={product.originalPrice ? Number(product.originalPrice) : null}
+            category={product.category.name}
+            imageUrl={product.images[0] ?? null}
+            tag={product.tag}
+          />
+        ))}
       </div>
     </>
   );
@@ -127,28 +86,33 @@ export default async function BuscaPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <HeaderServer />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <nav className="flex items-center gap-2 text-sm text-[#6B7080] dark:text-white/60 mb-8 font-body">
-          <Link href="/" className="hover:text-[#0F0F0F] dark:hover:text-white transition-colors">Início</Link>
-          <span>/</span>
-          <span className="text-[#0F0F0F] dark:text-white">Busca</span>
-        </nav>
+      <main style={{ background: "var(--bg)", minHeight: "60vh" }}>
+        <div className="container" style={{ paddingTop: 40, paddingBottom: 96 }}>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-display font-extrabold text-[#0F0F0F] dark:text-white">
-            {query ? `Resultados para "${query}"` : "Buscar produtos"}
+          {/* Breadcrumb */}
+          <nav style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 32 }}>
+            <Link href="/" style={{ color: "var(--ink-3)" }}>Início</Link>
+            <span>›</span>
+            <span style={{ color: "var(--ink)" }}>Busca</span>
+          </nav>
+
+          {query && (
+            <span className="t-eyebrow" style={{ display: "block", marginBottom: 8 }}>VOCÊ BUSCOU POR</span>
+          )}
+          <h1 className="t-h1" style={{ margin: "0 0 40px" }}>
+            {query ? `"${query}"` : "Buscar produtos"}
           </h1>
-        </div>
 
-        <Suspense fallback={
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-2xl bg-[#F5F5F2] animate-pulse aspect-square" />
-            ))}
-          </div>
-        }>
-          <SearchResults query={query} />
-        </Suspense>
+          <Suspense fallback={
+            <div className="grid-products" data-density="comfy">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="skeleton" style={{ aspectRatio: "1/1", borderRadius: "var(--r-md)" }} />
+              ))}
+            </div>
+          }>
+            <SearchResults query={query} />
+          </Suspense>
+        </div>
       </main>
       <WhatsAppButton />
       <Footer />

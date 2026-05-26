@@ -540,10 +540,46 @@ function ShippingSelector({
 
 // ─── Step 3: Consent + Review ─────────────────────────────────────────────────
 
+function PixQR({ total }: { total: number }) {
+  return (
+    <div style={{ marginTop: 24, padding: 24, background: "var(--c-mint)", borderRadius: 16, display: "flex", gap: 24, alignItems: "center" }}>
+      <div style={{ width: 120, height: 120, background: "#fff", borderRadius: 12, padding: 8, flexShrink: 0 }}>
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          {[...Array(11)].map((_, r) =>
+            [...Array(11)].map((__, c) => {
+              const filled = (r + c + (r * c) % 3) % 3 !== 0;
+              return filled ? <rect key={`${r}-${c}`} x={r * 9} y={c * 9} width="8" height="8" fill="var(--ink)" /> : null;
+            })
+          )}
+          <rect x="0" y="0" width="26" height="26" fill="var(--ink)" />
+          <rect x="4" y="4" width="18" height="18" fill="#fff" />
+          <rect x="8" y="8" width="10" height="10" fill="var(--ink)" />
+          <rect x="74" y="0" width="26" height="26" fill="var(--ink)" />
+          <rect x="78" y="4" width="18" height="18" fill="#fff" />
+          <rect x="82" y="8" width="10" height="10" fill="var(--ink)" />
+          <rect x="0" y="74" width="26" height="26" fill="var(--ink)" />
+          <rect x="4" y="78" width="18" height="18" fill="#fff" />
+          <rect x="8" y="82" width="10" height="10" fill="var(--ink)" />
+        </svg>
+      </div>
+      <div style={{ flex: 1 }}>
+        <p className="t-eyebrow" style={{ margin: 0, color: "var(--c-kiwi-deep)" }}>−5% NO PAGAMENTO À VISTA</p>
+        <h3 style={{ fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", margin: "8px 0", color: "var(--c-kiwi-deep)" }}>
+          R$ {total.toFixed(2).replace(".", ",")}
+        </h3>
+        <p style={{ margin: 0, fontSize: 13, color: "var(--ink-3)" }}>
+          Aponte a câmera no QR Code ou copie o código abaixo. Aprovação imediata após pagamento.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function StepConsent({
   personal,
   address,
   shipping,
+  subtotal,
   onNext,
   onBack,
   isLoading,
@@ -551,10 +587,14 @@ function StepConsent({
   personal: PersonalData;
   address: AddressData;
   shipping: ShippingOption;
+  subtotal: number;
   onNext: (consent: ConsentData) => void;
   onBack: () => void;
   isLoading: boolean;
 }) {
+  const [payment, setPayment] = useState<"pix" | "cartao">("pix");
+  const pixTotal = subtotal * 0.95 + shipping.price;
+
   const {
     register,
     handleSubmit,
@@ -570,6 +610,29 @@ function StepConsent({
 
   return (
     <form onSubmit={handleSubmit(onNext)} className="flex flex-col gap-6">
+      {/* Payment method selector */}
+      <div>
+        <p className="text-xs font-body font-semibold uppercase tracking-wide text-[#6B7080] dark:text-white/50 mb-3">Forma de pagamento</p>
+        <div className="grid grid-cols-2 gap-3">
+          {(["pix", "cartao"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setPayment(m)}
+              className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 transition-all duration-150 text-sm font-display font-semibold ${
+                payment === m
+                  ? "border-[#58C77A] bg-[#C5F0DB]/30 text-[#2F9E50] dark:bg-[#58C77A]/10 dark:text-[#58C77A]"
+                  : "border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 hover:border-[#58C77A]/50"
+              }`}
+            >
+              <span className="text-lg">{m === "pix" ? "⚡" : "💳"}</span>
+              {m === "pix" ? "PIX (5% OFF)" : "Cartão de crédito"}
+            </button>
+          ))}
+        </div>
+        {payment === "pix" && <PixQR total={pixTotal} />}
+      </div>
+
       {/* Data review */}
       <div className="rounded-2xl border border-[#E2E6F0] dark:border-white/10 overflow-hidden">
         <div className="px-5 py-3 bg-[#F8F9FC] dark:bg-white/5 border-b border-[#E2E6F0] dark:border-white/10">
@@ -715,10 +778,11 @@ interface CheckoutFormProps {
   authMode: AuthMode;
   prefill?: Partial<PersonalData>;
   cartItems: { id: string; quantity: number }[];
+  subtotal: number;
   onSubmit: (data: CheckoutData) => Promise<void>;
 }
 
-export default function CheckoutForm({ authMode, prefill, cartItems, onSubmit }: CheckoutFormProps) {
+export default function CheckoutForm({ authMode, prefill, cartItems, subtotal, onSubmit }: CheckoutFormProps) {
   const [step, setStep] = useState(0);
   const [personal, setPersonal] = useState<PersonalData | null>(null);
   const [address, setAddress] = useState<AddressData | null>(null);
@@ -776,6 +840,7 @@ export default function CheckoutForm({ authMode, prefill, cartItems, onSubmit }:
           personal={personal}
           address={address}
           shipping={shipping}
+          subtotal={subtotal}
           onNext={handleConsentNext}
           onBack={() => setStep(1)}
           isLoading={isLoading}

@@ -9,6 +9,10 @@ const schema = z.object({
   ctaText: z.string().nullable().optional(),
   ctaLink: z.string().nullable().optional(),
   imageUrl: z.string().nullable().optional(),
+  videoUrl: z.string().nullable().optional(),
+  textPosition: z.enum(["left", "center", "bottom-bar"]).optional(),
+  overlay: z.enum(["dark", "light"]).optional(),
+  tag: z.string().nullable().optional(),
   active: z.boolean().optional(),
   order: z.number().int().min(0).optional(),
 });

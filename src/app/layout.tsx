@@ -5,6 +5,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import CartDrawer from "@/components/CartDrawer";
+import Toast from "@/components/Toast";
 import Analytics from "@/components/Analytics";
 
 const bricolage = Bricolage_Grotesque({
@@ -73,6 +74,7 @@ export default function RootLayout({
           <CartProvider>
             <Analytics />
             <CartDrawer />
+            <Toast />
             {children}
           </CartProvider>
         </CustomerAuthProvider>

@@ -48,12 +48,19 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Scrim */}
       <div
         onClick={closeDrawer}
-        className={`fixed inset-0 z-[200] bg-[#0F0F0F]/40 backdrop-blur-[2px] transition-opacity duration-300 ${
-          isDrawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 200,
+          background: "rgba(14,14,16,0.42)",
+          backdropFilter: "blur(2px)",
+          opacity: isDrawerOpen ? 1 : 0,
+          pointerEvents: isDrawerOpen ? "auto" : "none",
+          transition: "opacity 300ms",
+        }}
       />
 
       {/* Panel */}
@@ -61,19 +68,29 @@ export default function CartDrawer() {
         role="dialog"
         aria-modal="true"
         aria-label="Carrinho de compras"
-        className={`fixed top-0 right-0 z-[201] h-full w-full max-w-md bg-white dark:bg-[#0A0A0F] border-l border-transparent dark:border-white/8 shadow-[-8px_0_40px_rgba(0,0,0,0.12)] dark:shadow-[-8px_0_60px_rgba(0,0,0,0.5)] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-          isDrawerOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        style={{
+          position: "fixed",
+          top: 0, right: 0, bottom: 0,
+          width: "min(460px, 100vw)",
+          background: "var(--bg-elev)",
+          borderLeft: "1px solid var(--line-hair)",
+          boxShadow: "-8px 0 40px rgba(14,14,16,0.12)",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 201,
+          transform: isDrawerOpen ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 320ms cubic-bezier(.22,.61,.36,1)",
+        }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E2E6F0] dark:border-white/8">
-          <div className="flex items-center gap-2">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid var(--line-hair)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <CartIcon />
-            <span className="font-display font-bold text-lg text-[#0F0F0F] dark:text-white">
-              Carrinho
+            <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, color: "var(--ink)" }}>
+              Sua sacola
             </span>
             {totalItems > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FF3D5A] text-white text-[10px] font-bold">
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: 999, background: "var(--c-cherry)", color: "#fff", fontSize: 10, fontWeight: 700 }}>
                 {totalItems}
               </span>
             )}
@@ -82,91 +99,80 @@ export default function CartDrawer() {
             ref={closeBtnRef}
             onClick={closeDrawer}
             aria-label="Fechar carrinho"
-            className="p-1.5 rounded-lg text-[#6B7080] dark:text-white/40 hover:text-[#0F0F0F] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/8 transition-colors"
+            style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--bg-sunken)", border: "1px solid var(--line-soft)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--ink-3)", transition: "background var(--t-fast)" }}
           >
             <CloseIcon />
           </button>
         </div>
 
         {/* Items */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px" }}>
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4 text-center py-16">
-              <span className="text-6xl">🛒</span>
-              <p className="font-display font-semibold text-[#0F0F0F] dark:text-white text-lg">
-                Seu carrinho está vazio
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16, textAlign: "center", padding: "64px 0" }}>
+              <BagIcon />
+              <p style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, color: "var(--ink)", margin: 0 }}>
+                Sacola vazia
               </p>
-              <p className="text-sm text-[#6B7080]">
+              <p style={{ fontSize: 14, color: "var(--ink-3)", margin: 0 }}>
                 Adicione produtos para continuar
               </p>
-              <Link
-                href="/produtos"
-                onClick={closeDrawer}
-                className="mt-2 inline-flex items-center px-5 py-2.5 rounded-full bg-[#FF3D5A] text-white text-sm font-semibold hover:bg-[#e62e4a] transition-colors"
-              >
+              <Link href="/produtos" onClick={closeDrawer} className="btn btn-cherry btn-sm" style={{ marginTop: 8 }}>
                 Ver loja
               </Link>
             </div>
           ) : (
-            <ul ref={listRef} className="flex flex-col gap-3">
+            <ul ref={listRef} style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
               {items.map((item) => (
                 <li
                   key={item.id}
-                  className="flex items-center gap-3 bg-[#F8F9FC] dark:bg-white/5 rounded-2xl p-3"
+                  style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "var(--bg-sunken)", borderRadius: "var(--r-md)", padding: 12 }}
                 >
-                  {/* Product thumb */}
-                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/8 flex items-center justify-center overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.07)] shrink-0">
+                  {/* Product thumb 84×84 */}
+                  <div style={{ width: 84, height: 84, borderRadius: "var(--r-sm)", background: "var(--bg-elev)", flexShrink: 0, overflow: "hidden", border: "1px solid var(--line-hair)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {item.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={item.imageUrl} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     ) : (
-                      <span className="text-2xl">{item.emoji}</span>
+                      <span style={{ fontSize: 32 }}>{item.emoji}</span>
                     )}
                   </div>
 
                   {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white/85 truncate">
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {item.name}
                     </p>
-                    <p className="text-sm font-bold text-[#FF3D5A]">
+                    <p className="t-price" style={{ margin: "4px 0 8px", fontSize: 16, color: "var(--ink)" }}>
                       {fmt(item.price)}
                     </p>
+                    {/* Qty stepper + remove */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <button
+                        onClick={() => decrement(item.id)}
+                        aria-label="Diminuir quantidade"
+                        style={{ width: 28, height: 28, borderRadius: "var(--r-sm)", background: "var(--bg-elev)", border: "1px solid var(--line-soft)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", cursor: "pointer", fontWeight: 700, fontSize: 14 }}
+                      >
+                        −
+                      </button>
+                      <span style={{ width: 24, textAlign: "center", fontSize: 14, fontWeight: 700, color: "var(--ink)" }}>
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => increment(item.id)}
+                        aria-label="Aumentar quantidade"
+                        style={{ width: 28, height: 28, borderRadius: "var(--r-sm)", background: "var(--bg-elev)", border: "1px solid var(--line-soft)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--ink-3)", cursor: "pointer", fontWeight: 700, fontSize: 14 }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        aria-label="Remover item"
+                        style={{ marginLeft: 4, background: "none", border: "none", cursor: "pointer", color: "var(--ink-4)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: "0.06em", textTransform: "uppercase", padding: 0 }}
+                      >
+                        Remover
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Quantity controls */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <button
-                      onClick={() => decrement(item.id)}
-                      aria-label="Diminuir quantidade"
-                      className="w-7 h-7 rounded-lg bg-white dark:bg-white/8 border border-[#E2E6F0] dark:border-white/10 flex items-center justify-center text-[#6B7080] dark:text-white/50 hover:text-[#0F0F0F] dark:hover:text-white hover:border-[#FF3D5A] transition-colors text-sm font-bold"
-                    >
-                      −
-                    </button>
-                    <span className="w-6 text-center text-sm font-bold text-[#0F0F0F] dark:text-white">
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() => increment(item.id)}
-                      aria-label="Aumentar quantidade"
-                      className="w-7 h-7 rounded-lg bg-white dark:bg-white/8 border border-[#E2E6F0] dark:border-white/10 flex items-center justify-center text-[#6B7080] dark:text-white/50 hover:text-[#0F0F0F] dark:hover:text-white hover:border-[#FF3D5A] transition-colors text-sm font-bold"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* Remove */}
-                  <button
-                    onClick={() => removeItem(item.id)}
-                    aria-label="Remover item"
-                    className="p-1 text-[#6B7080] hover:text-[#FF3D5A] transition-colors shrink-0"
-                  >
-                    <TrashIcon />
-                  </button>
                 </li>
               ))}
             </ul>
@@ -175,32 +181,31 @@ export default function CartDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-[#E2E6F0] dark:border-white/8 px-5 py-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between text-sm text-[#6B7080] dark:text-white/40">
-              <span>{totalItems} {totalItems === 1 ? "item" : "itens"}</span>
-              <span className="text-xs">Frete calculado no checkout</span>
+          <div style={{ borderTop: "1px solid var(--line-hair)", padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "var(--ink-3)" }}>
+              <span>Subtotal</span>
+              <span>{fmt(totalPrice)}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="font-display font-bold text-[#0F0F0F] dark:text-white text-lg">Total</span>
-              <span className="font-display font-bold text-[#FF3D5A] text-xl">{fmt(totalPrice)}</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "var(--ink-3)" }}>
+              <span>Frete</span>
+              <span style={{ color: "var(--c-kiwi-deep)", fontWeight: 600 }}>Calcular no checkout</span>
             </div>
-            <p className="text-xs text-[#3DDC84] font-medium text-center">
-              💚 5% de desconto pagando com PIX
-            </p>
+            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1.5px solid var(--line-soft)", paddingTop: 12 }}>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 20, color: "var(--ink)" }}>Total</span>
+              <span className="t-price" style={{ fontSize: 22, color: "var(--ink)" }}>{fmt(totalPrice)}</span>
+            </div>
             <Link
               href="/checkout"
               onClick={closeDrawer}
-              className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-[#FF3D5A] text-white font-semibold text-sm hover:bg-[#e62e4a] hover:shadow-[0_4px_20px_rgba(255,61,90,0.4)] transition-all duration-200"
+              className="btn btn-cherry"
+              style={{ width: "100%", justifyContent: "center", height: 52 }}
             >
               Finalizar compra
               <ArrowRight />
             </Link>
-            <button
-              onClick={closeDrawer}
-              className="w-full text-center text-sm text-[#6B7080] dark:text-white/35 hover:text-[#0F0F0F] dark:hover:text-white transition-colors py-1"
-            >
-              Continuar comprando
-            </button>
+            <p style={{ margin: 0, textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-4)" }}>
+              COMPRA SEGURA · ENTREGA EM ATÉ 5 DIAS ÚTEIS
+            </p>
           </div>
         )}
       </div>
@@ -210,7 +215,7 @@ export default function CartDrawer() {
 
 function CartIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#FF3D5A]">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-cherry)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="9" cy="21" r="1" />
       <circle cx="20" cy="21" r="1" />
       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -218,22 +223,21 @@ function CartIcon() {
   );
 }
 
-function CloseIcon() {
+function BagIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ink-4)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <path d="M16 10a4 4 0 0 1-8 0" />
     </svg>
   );
 }
 
-function TrashIcon() {
+function CloseIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="3 6 5 6 21 6" />
-      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-      <path d="M10 11v6M14 11v6" />
-      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   );
 }

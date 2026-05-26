@@ -1,107 +1,77 @@
 export default function BrandStory() {
   const stats = [
-    { num: "+12 mil", label: "PRODUTOS" },
-    { num: "98%",     label: "AVALIAÇÃO" },
-    { num: "2 dias",  label: "ENTREGA" },
-    { num: "+5 anos", label: "NO MERCADO" },
+    { num: "12 anos",    label: "FAMÍLIA INDEPENDENTE" },
+    { num: "+180 marcas", label: "NACIONAIS E IMPORTADAS" },
+    { num: "4 lojas",   label: "SP, RJ, BH E POA" },
+    { num: "100% seguro", label: "SITE CERTIFICADO" },
   ];
 
   return (
-    <section
-      style={{
-        background: "var(--inverse-bg)",
-        color: "var(--inverse-fg)",
-        padding: "clamp(64px, 10vw, 120px) 0",
-      }}
-    >
-      <div className="container">
-        {/* Headline */}
-        <div style={{ marginBottom: 64 }}>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 11,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.35)",
-              display: "block",
-              marginBottom: 20,
-            }}
-          >
-            Nossa história
-          </span>
-          <h2
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 800,
-              fontSize: "clamp(36px, 5.6vw, 80px)",
-              letterSpacing: "-0.03em",
-              lineHeight: 0.95,
-              color: "var(--inverse-fg)",
-              margin: 0,
-              maxWidth: 800,
-            }}
-          >
-            Nascemos de uma{" "}
-            <em style={{ fontStyle: "italic", color: "var(--c-sun)" }}>tarde de domingo</em>{" "}
-            brincando com quem a gente ama.
-          </h2>
-        </div>
+    <section className="container" style={{ paddingBottom: 80, paddingTop: 16 }}>
+      <div
+        style={{
+          background: "var(--inverse-bg)",
+          color: "var(--inverse-fg)",
+          borderRadius: 28,
+          padding: "clamp(48px, 6vw, 80px)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            letterSpacing: "0.10em",
+            textTransform: "uppercase",
+            color: "var(--c-sun)",
+            display: "block",
+          }}
+        >
+          MANIFESTO MAIS+ · 2026
+        </span>
+        <h2
+          className="t-h1"
+          style={{ margin: "18px 0 0", maxWidth: 880 }}
+        >
+          A gente não vende brinquedo.{" "}
+          A gente vende{" "}
+          <em style={{ fontStyle: "italic", color: "var(--c-sun)" }}>tarde de domingo</em>
+          , primeira pista de carrinho, descoberta de monstro debaixo da cama.
+        </h2>
 
         {/* Stats grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 0,
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: 32,
+            marginTop: 56,
+            maxWidth: 900,
           }}
         >
-          {stats.map((s, i) => (
+          {stats.map((s) => (
             <div
               key={s.label}
               style={{
-                borderTop: "1px solid rgba(255,255,255,0.12)",
-                paddingTop: 24,
-                paddingBottom: 24,
-                paddingRight: i < 3 ? 32 : 0,
-                paddingLeft: i > 0 ? 32 : 0,
-                borderLeft: i > 0 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                borderTop: "1.5px solid rgba(255,255,255,0.18)",
+                paddingTop: 16,
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 800,
-                  fontSize: "clamp(32px, 3.5vw, 52px)",
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1,
-                  color: "var(--inverse-fg)",
-                  marginBottom: 8,
-                }}
-              >
-                {s.num}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  letterSpacing: "0.10em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.35)",
-                }}
-              >
-                {s.label}
-              </div>
+              <div className="t-h3" style={{ margin: 0 }}>{s.num}</div>
+              <div className="t-tag" style={{ color: "rgba(255,255,255,0.55)", marginTop: 4 }}>{s.label}</div>
             </div>
           ))}
         </div>
-      </div>
 
-      <style>{`
-        @media (max-width: 640px) {
-          .brand-stats { grid-template-columns: repeat(2, 1fr) !important; }
-        }
-      `}</style>
+        {/* Decorative sparkles */}
+        <div style={{ position: "absolute", right: -40, top: -40, opacity: 0.06, pointerEvents: "none" }}>
+          <svg width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" aria-hidden="true">
+            <path d="M12 3l1.9 5.8 5.8 1.9-5.8 1.9L12 18.4l-1.9-5.8-5.8-1.9 5.8-1.9z"/>
+            <path d="M19 14l.8 2.2 2.2.8-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"/>
+          </svg>
+        </div>
+      </div>
     </section>
   );
 }

@@ -11,70 +11,35 @@ export default async function Footer() {
   });
 
   return (
-    <footer className="site-footer" style={{ position: "relative", overflow: "hidden" }}>
-      {/* Giant watermark */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontFamily: "var(--font-display)",
-          fontWeight: 800,
-          fontSize: "22vw",
-          letterSpacing: "-0.04em",
-          whiteSpace: "nowrap",
-          color: "var(--inverse-fg)",
-          opacity: 0.04,
-          pointerEvents: "none",
-          lineHeight: 1,
-          userSelect: "none",
-        }}
-      >
-        mais+brinquedos
-      </div>
-
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Main grid */}
+    <footer className="site-footer">
+      <div className="container" style={{ paddingTop: 72, paddingBottom: 0 }}>
+        {/* Main grid — 5 cols: brand + 4 */}
         <div
+          className="footer-main"
           style={{
             display: "grid",
-            gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
-            gap: 40,
-            paddingTop: 64,
+            gridTemplateColumns: "minmax(280px, 1.4fr) repeat(4, 1fr)",
+            gap: 48,
             paddingBottom: 40,
           }}
         >
           {/* Col 1 — Brand */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
-                  background: "var(--c-cherry)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#fff",
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 800,
-                  fontSize: 18,
-                }}
-              >
-                M
-              </span>
-              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--inverse-fg)", letterSpacing: "-0.02em" }}>
+          <div className="footer-brand">
+            {/* Logo SVG */}
+            <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+              <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
+                <circle cx="20" cy="20" r="18" fill="var(--c-cherry)"/>
+                <path d="M11 27 V 14 L 16 22 L 20 14 L 24 22 L 29 14 V 27" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="32" cy="9" r="3" fill="var(--c-sun)" stroke="#fff" strokeWidth="1.5"/>
+              </svg>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 16, color: "var(--inverse-fg)", letterSpacing: "-0.03em" }}>
                 mais<span style={{ color: "var(--c-cherry)" }}>+</span>brinquedos
               </span>
-            </div>
-            <p style={{ fontFamily: "var(--font-body)", fontSize: 14, lineHeight: 1.6, color: "rgba(255,255,255,0.55)", maxWidth: 280, margin: 0 }}>
-              Curadoria de brinquedos que estimulam a criatividade e geram memórias afetivas para toda a família.
+            </Link>
+            <p style={{ marginTop: 20, color: "rgba(255,255,255,0.7)", maxWidth: 320, lineHeight: 1.5, fontSize: 14 }}>
+              A maior loja independente de brinquedos do Brasil. Curadoria, garantia, entrega segura.
             </p>
-            {/* Social */}
-            <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+            <div style={{ marginTop: 24, display: "flex", gap: 10 }}>
               <a href="https://www.instagram.com/maisbrinquedosepresentes" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={socialBtn}>
                 <InstagramIcon />
               </a>
@@ -89,62 +54,100 @@ export default async function Footer() {
 
           {/* Col 2 — Comprar */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Comprar</span>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Comprar</span>
             {categories.map((cat) => (
-              <Link key={cat.id} href={`/categoria/${cat.slug}`} className="col-link">
-                {cat.name}
-              </Link>
+              <Link key={cat.id} href={`/categoria/${cat.slug}`} className="col-link">{cat.name}</Link>
             ))}
             <Link href="/produtos" className="col-link">Ver tudo</Link>
           </div>
 
           {/* Col 3 — Atendimento */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Atendimento</span>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Atendimento</span>
             <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" className="col-link">WhatsApp</a>
             <a href="mailto:contato@maisbrinquedos.com.br" className="col-link">E-mail</a>
             <Link href="/troca" className="col-link">Trocas e devoluções</Link>
             <Link href="/faq" className="col-link">Dúvidas frequentes</Link>
+            <Link href="/pedido" className="col-link">Rastrear pedido</Link>
           </div>
 
-          {/* Col 4 — Legal */}
+          {/* Col 4 — Mais Brinquedos */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Legal</span>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Mais Brinquedos</span>
+            <Link href="/sobre" className="col-link">Sobre nós</Link>
+            <Link href="/lojas" className="col-link">Lojas físicas</Link>
+            <Link href="/trabalhe" className="col-link">Trabalhe conosco</Link>
+          </div>
+
+          {/* Col 5 — Legal */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Legal</span>
             <Link href="/privacidade" className="col-link">Privacidade</Link>
             <Link href="/termos" className="col-link">Termos de uso</Link>
+            <Link href="/cookies" className="col-link">Cookies</Link>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div
           style={{
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-            paddingTop: 20,
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            paddingTop: 32,
             paddingBottom: 32,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: 12,
+            gap: 16,
           }}
         >
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>
-            © 2026 MAIS+ BRINQUEDOS E PRESENTES · MAISBRINQUEDOS.COM.BR
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "rgba(255,255,255,0.5)", letterSpacing: "0.04em" }}>
+            © 2026 MAIS BRINQUEDOS LTDA · CNPJ 12.345.678/0001-90 · TODOS OS DIREITOS RESERVADOS
           </span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "rgba(255,255,255,0.5)", letterSpacing: "0.04em" }}>
             VISA · MASTERCARD · ELO · PIX
           </span>
         </div>
       </div>
 
-      {/* Mobile responsive */}
+      {/* Giant wordmark watermark — in flow, after content */}
+      <div
+        aria-hidden="true"
+        style={{
+          overflow: "hidden",
+          marginTop: -20,
+          paddingTop: 60,
+          lineHeight: 0.85,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 800,
+            fontSize: "min(22vw, 320px)",
+            letterSpacing: "-0.04em",
+            textAlign: "center",
+            color: "rgba(255,255,255,0.06)",
+            fontVariationSettings: "'opsz' 96, 'wdth' 100",
+            whiteSpace: "nowrap",
+            userSelect: "none",
+          }}
+        >
+          mais+brinquedos
+        </div>
+      </div>
+
       <style>{`
-        @media (max-width: 768px) {
-          .site-footer .footer-grid { grid-template-columns: 1fr 1fr !important; }
+        @media (max-width: 1024px) {
+          .site-footer .footer-main { grid-template-columns: 1fr 1fr 1fr !important; }
+          .site-footer .footer-brand { grid-column: 1 / -1; }
+        }
+        @media (max-width: 640px) {
+          .site-footer .footer-main { grid-template-columns: 1fr 1fr !important; }
           .site-footer .footer-brand { grid-column: 1 / -1; }
         }
         @media (max-width: 480px) {
-          .site-footer .footer-grid { grid-template-columns: 1fr !important; }
+          .site-footer .footer-main { grid-template-columns: 1fr !important; gap: 32px !important; }
         }
       `}</style>
     </footer>
