@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
-import { animate } from "animejs";
+import { useState } from "react";
 
 interface Props {
   id: string;
@@ -17,10 +16,10 @@ interface Props {
 }
 
 const CATEGORY_BG: Record<string, string> = {
-  "Tech & Celular": "#3B8BFF",
-  "Brinquedos":     "#FFE14D",
-  "Presentes":      "#3DDC84",
-  "Novidades":      "#FF3D5A",
+  "Tech & Celular": "var(--c-sky-soft)",
+  "Brinquedos":     "var(--c-cream)",
+  "Presentes":      "var(--c-mint)",
+  "Novidades":      "var(--c-rose)",
 };
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -30,78 +29,105 @@ const CATEGORY_EMOJI: Record<string, string> = {
   "Novidades":      "✨",
 };
 
-const TAG_STYLES: Record<string, string> = {
-  "Mais vendido": "bg-[#3B8BFF] text-white",
-  "Novidade":     "bg-[#3DDC84] text-[#0F0F0F]",
-  "Oferta":       "bg-[#FF3D5A] text-white",
-};
-
-export default function ProductCard({ slug, name, price, originalPrice, category, imageUrl, tag }: Props) {
-  const cardRef = useRef<HTMLAnchorElement>(null);
-  const bg      = CATEGORY_BG[category]    ?? "#FFE14D";
-  const emoji   = CATEGORY_EMOJI[category] ?? "✨";
+export default function ProductCard({ id, slug, name, price, originalPrice, category, imageUrl, tag }: Props) {
+  const [fav, setFav] = useState(false);
+  const bg    = CATEGORY_BG[category]    ?? "var(--c-cream)";
+  const emoji = CATEGORY_EMOJI[category] ?? "✨";
   const discount = originalPrice && originalPrice > price
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : null;
 
-  function handleMouseEnter() {
-    if (!cardRef.current) return;
-    animate(cardRef.current, { translateY: -4, duration: 250, ease: "outCubic" });
-  }
-
-  function handleMouseLeave() {
-    if (!cardRef.current) return;
-    animate(cardRef.current, { translateY: 0, duration: 350, ease: "outElastic(1, .5)" });
+  function formatBRL(v: number) {
+    return "R$ " + v.toFixed(2).replace(".", ",");
   }
 
   return (
-    <Link
-      ref={cardRef}
-      href={`/produto/${slug}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="group flex flex-col rounded-2xl bg-white border border-black/8 overflow-hidden hover:border-[#FF3D5A]/30 hover:shadow-[0_8px_32px_rgba(255,61,90,0.10)] transition-[border-color,box-shadow] duration-300"
-    >
-      {/* Image area */}
-      <div
-        className="aspect-square flex items-center justify-center relative overflow-hidden"
-        style={{ backgroundColor: bg }}
-      >
-        {imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-6xl transition-transform duration-300 group-hover:scale-110">
-            {emoji}
-          </span>
-        )}
-        {tag && (
-          <span className={`absolute top-2 left-2 px-3 py-0.5 rounded-[100px] text-xs font-body font-bold z-20 ${TAG_STYLES[tag] ?? "bg-[#FF3D5A] text-white"}`}>
-            {tag}
-          </span>
-        )}
+    <div className="product-card">
+      {/* Media */}
+      <div className="pc-media">
+        <div className="pc-media-inner" style={{ backgroundColor: bg }}>
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(40px, 6vw, 64px)" }}>
+              {emoji}
+            </div>
+          )}
+        </div>
+
+        {/* Badges */}
+        <div className="pc-badges">
+          {discount && <span className="chip chip-cherry">-{discount}%</span>}
+          {tag && <span className="chip chip-sun">{tag}</span>}
+        </div>
+
+        {/* Favorite */}
+        <button
+          className={`pc-fav${fav ? " is-fav" : ""}`}
+          aria-label={fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+          onClick={(e) => { e.preventDefault(); setFav((v) => !v); }}
+        >
+          <HeartIcon filled={fav} />
+        </button>
+
+        {/* Quick actions */}
+        <div className="pc-quick">
+          <Link
+            href={`/produto/${slug}`}
+            className="btn btn-cherry btn-sm"
+            style={{ flex: 1, justifyContent: "center" }}
+          >
+            + Adicionar
+          </Link>
+          <Link
+            href={`/produto/${slug}`}
+            className="btn btn-ghost btn-sm"
+            style={{ background: "rgba(255,255,255,0.88)", backdropFilter: "blur(8px)" }}
+          >
+            Olhar
+          </Link>
+        </div>
       </div>
 
       {/* Info */}
-      <div className="p-4 flex flex-col gap-1">
-        <span className="text-xs text-[#6B7080] font-body">{category}</span>
-        <h3 className="text-sm font-display font-bold text-[#0F0F0F] leading-tight group-hover:text-[#FF3D5A] transition-colors duration-200">
+      <Link href={`/produto/${slug}`} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <span className="t-eyebrow">{category}</span>
+        <h3
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 600,
+            fontSize: 14,
+            letterSpacing: "-0.01em",
+            lineHeight: 1.3,
+            color: "var(--ink)",
+            margin: 0,
+          }}
+        >
           {name}
         </h3>
-        <div className="flex items-center gap-2 mt-1">
-          <p className="text-base font-display font-black text-[#FF3D5A]">
-            R$ {price.toFixed(2).replace(".", ",")}
-          </p>
-          {discount && (
-            <span className="text-xs font-semibold text-[#3DDC84]">{discount}% OFF</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2 }}>
+          <span className="t-price" style={{ fontSize: 17, color: "var(--ink)" }}>
+            {formatBRL(price)}
+          </span>
+          {originalPrice && originalPrice > price && (
+            <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--ink-4)", textDecoration: "line-through" }}>
+              {formatBRL(originalPrice)}
+            </span>
           )}
         </div>
-        {originalPrice && (
-          <p className="text-xs text-[#6B7080] line-through font-body">
-            R$ {originalPrice.toFixed(2).replace(".", ",")}
-          </p>
-        )}
-      </div>
-    </Link>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--c-kiwi-deep)", letterSpacing: "0.04em" }}>
+          Frete grátis
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
   );
 }

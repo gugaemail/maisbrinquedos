@@ -1,21 +1,28 @@
 import type { Metadata } from "next";
-import { Unbounded, Plus_Jakarta_Sans } from "next/font/google";
+import type React from "react";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { CustomerAuthProvider } from "@/context/CustomerAuthContext";
 import CartDrawer from "@/components/CartDrawer";
 import Analytics from "@/components/Analytics";
 
-const unbounded = Unbounded({
-  variable: "--font-unbounded",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["300", "400", "700"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://maisbrinquedos.com.br";
@@ -60,8 +67,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${unbounded.variable} ${plusJakartaSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[var(--color-background)] text-[var(--color-text)] font-body">
+    <html lang="pt-BR" data-theme="light" className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} h-full antialiased`} style={{"--font-display": `var(--font-bricolage)`, "--font-body": `var(--font-geist)`, "--font-mono": `var(--font-geist-mono)`} as React.CSSProperties}>
+      <body className="min-h-full flex flex-col">
         <CustomerAuthProvider>
           <CartProvider>
             <Analytics />

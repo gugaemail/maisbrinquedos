@@ -1,6 +1,5 @@
 import { unstable_noStore as noStore } from "next/cache";
 import Link from "next/link";
-import { Logo } from "@/components/brand/Logo";
 import { db } from "@/lib/db";
 
 export default async function Footer() {
@@ -12,72 +11,181 @@ export default async function Footer() {
   });
 
   return (
-    <footer className="bg-[#0F0F0F] text-white/60">
-      <div className="h-px bg-white/10" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 flex flex-col md:flex-row justify-between gap-10">
-        <div className="max-w-xs space-y-2">
-          <Logo size="md" theme="dark" />
-          <p className="font-body text-xs text-white/50 mt-1">brinquedos e presentes</p>
-          <p className="text-sm font-body leading-relaxed mt-3">Variedade, novidades e tecnologia em um só lugar.</p>
-          <div className="flex items-center gap-3 pt-3">
-            <a
-              href="https://www.instagram.com/maisbrinquedosepresentes"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#FF3D5A]/20 transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
-              </svg>
-            </a>
-            <a
-              href="https://wa.me/5511999999999"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#3DDC84]/20 transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.115 1.524 5.845L.057 24l6.305-1.654A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.003-1.371l-.359-.213-3.741.981.998-3.648-.234-.374A9.786 9.786 0 0 1 2.182 12C2.182 6.573 6.573 2.182 12 2.182S21.818 6.573 21.818 12 17.427 21.818 12 21.818z" />
-              </svg>
-            </a>
+    <footer className="site-footer" style={{ position: "relative", overflow: "hidden" }}>
+      {/* Giant watermark */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          bottom: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontFamily: "var(--font-display)",
+          fontWeight: 800,
+          fontSize: "22vw",
+          letterSpacing: "-0.04em",
+          whiteSpace: "nowrap",
+          color: "var(--inverse-fg)",
+          opacity: 0.04,
+          pointerEvents: "none",
+          lineHeight: 1,
+          userSelect: "none",
+        }}
+      >
+        mais+brinquedos
+      </div>
+
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+        {/* Main grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
+            gap: 40,
+            paddingTop: 64,
+            paddingBottom: 40,
+          }}
+        >
+          {/* Col 1 — Brand */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  background: "var(--c-cherry)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#fff",
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 800,
+                  fontSize: 18,
+                }}
+              >
+                M
+              </span>
+              <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16, color: "var(--inverse-fg)", letterSpacing: "-0.02em" }}>
+                mais<span style={{ color: "var(--c-cherry)" }}>+</span>brinquedos
+              </span>
+            </div>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 14, lineHeight: 1.6, color: "rgba(255,255,255,0.55)", maxWidth: 280, margin: 0 }}>
+              Curadoria de brinquedos que estimulam a criatividade e geram memórias afetivas para toda a família.
+            </p>
+            {/* Social */}
+            <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+              <a href="https://www.instagram.com/maisbrinquedosepresentes" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={socialBtn}>
+                <InstagramIcon />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" style={socialBtn}>
+                <YoutubeIcon />
+              </a>
+              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok" style={socialBtn}>
+                <TiktokIcon />
+              </a>
+            </div>
+          </div>
+
+          {/* Col 2 — Comprar */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Comprar</span>
+            {categories.map((cat) => (
+              <Link key={cat.id} href={`/categoria/${cat.slug}`} className="col-link">
+                {cat.name}
+              </Link>
+            ))}
+            <Link href="/produtos" className="col-link">Ver tudo</Link>
+          </div>
+
+          {/* Col 3 — Atendimento */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Atendimento</span>
+            <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" className="col-link">WhatsApp</a>
+            <a href="mailto:contato@maisbrinquedos.com.br" className="col-link">E-mail</a>
+            <Link href="/troca" className="col-link">Trocas e devoluções</Link>
+            <Link href="/faq" className="col-link">Dúvidas frequentes</Link>
+          </div>
+
+          {/* Col 4 — Legal */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <span className="t-eyebrow" style={{ color: "rgba(255,255,255,0.35)", marginBottom: 4 }}>Legal</span>
+            <Link href="/privacidade" className="col-link">Privacidade</Link>
+            <Link href="/termos" className="col-link">Termos de uso</Link>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 text-sm font-body">
-          <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Categorias</p>
-          {categories.map((cat) => (
-            <Link key={cat.id} href={`/categoria/${cat.slug}`} className="hover:text-white transition-colors">
-              {cat.name}
-            </Link>
-          ))}
-          <Link href="/produtos" className="hover:text-white transition-colors mt-1">Ver todos os produtos</Link>
-        </div>
-
-        <div className="flex flex-col gap-2 text-sm font-body">
-          <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Atendimento</p>
-          <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-            WhatsApp
-          </a>
-          <a href="mailto:contato@maisbrinquedos.com.br" className="hover:text-white transition-colors">
-            E-mail
-          </a>
-        </div>
-
-        <div className="text-sm font-body flex flex-col gap-1">
-          <p className="text-white/40 text-xs font-display font-bold uppercase tracking-wider mb-1">Info</p>
-          <p>© 2026 MAIS+ Brinquedos e Presentes</p>
-          <p>maisbrinquedos.com.br</p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 border border-white/10">🔒 SSL Seguro</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 border border-white/10">💳 PIX</span>
-          </div>
+        {/* Bottom bar */}
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+            paddingTop: 20,
+            paddingBottom: 32,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
+        >
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>
+            © 2026 MAIS+ BRINQUEDOS E PRESENTES · MAISBRINQUEDOS.COM.BR
+          </span>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em" }}>
+            VISA · MASTERCARD · ELO · PIX
+          </span>
         </div>
       </div>
+
+      {/* Mobile responsive */}
+      <style>{`
+        @media (max-width: 768px) {
+          .site-footer .footer-grid { grid-template-columns: 1fr 1fr !important; }
+          .site-footer .footer-brand { grid-column: 1 / -1; }
+        }
+        @media (max-width: 480px) {
+          .site-footer .footer-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </footer>
+  );
+}
+
+const socialBtn: React.CSSProperties = {
+  width: 36,
+  height: 36,
+  borderRadius: "50%",
+  background: "rgba(255,255,255,0.08)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "rgba(255,255,255,0.65)",
+  transition: "background 140ms, color 140ms",
+};
+
+function InstagramIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+function YoutubeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" />
+    </svg>
+  );
+}
+
+function TiktokIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.62a8.17 8.17 0 0 0 4.77 1.52V6.68a4.85 4.85 0 0 1-1-.01z" />
+    </svg>
   );
 }
