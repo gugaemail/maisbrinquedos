@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { SearchResult } from "@/app/api/products/search/route";
 
-const SUGGESTIONS = ["LEGO", "Boneca", "Hot Wheels", "Pelúcia", "Funko", "Educativo"];
-
 export default function SearchBar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -14,9 +12,17 @@ export default function SearchBar() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    fetch("/api/search/suggestions")
+      .then((r) => r.json())
+      .then((d) => setSuggestions(d.suggestions ?? []))
+      .catch(() => {});
+  }, []);
 
   const closeSearch = useCallback(() => {
     setIsOpen(false);
@@ -208,13 +214,13 @@ export default function SearchBar() {
 
             {/* Body */}
             <div style={{ padding: "24px 24px 28px" }}>
-              {!showResults && (
+              {!showResults && suggestions.length > 0 && (
                 <>
                   <span className="t-eyebrow" style={{ color: "var(--ink-3)", display: "block", marginBottom: 14 }}>
                     Sugestões populares
                   </span>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {SUGGESTIONS.map((s) => (
+                    {suggestions.map((s) => (
                       <Link
                         key={s}
                         href={`/busca?q=${encodeURIComponent(s)}`}
