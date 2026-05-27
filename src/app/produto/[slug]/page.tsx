@@ -1,6 +1,5 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import HeaderServer from "@/components/HeaderServer";
 import ProductActions from "@/components/ProductActions";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -131,7 +130,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       key={i}
                       style={{ width: 80, height: 80, borderRadius: "var(--r-sm)", overflow: "hidden", border: `2px solid ${i === 0 ? "var(--ink)" : "var(--line-hair)"}`, background: "var(--bg-sunken)", flexShrink: 0, cursor: "pointer" }}
                     >
-                      <Image src={img} alt={`${product.name} ${i + 1}`} width={80} height={80} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img} alt={`${product.name} ${i + 1}`} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                     </div>
                   ))}
                 </div>
@@ -141,13 +141,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <div style={{ flex: 1, position: "relative" }}>
                 <div style={{ aspectRatio: "1/1", borderRadius: "var(--r-lg)", overflow: "hidden", background: "var(--bg-sunken)", border: "1px solid var(--line-hair)", position: "relative" }}>
                   {primaryImage ? (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       src={primaryImage}
                       alt={product.name}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      sizes="(max-width: 940px) 100vw, 50vw"
-                      priority
+                      style={{ objectFit: "cover", width: "100%", height: "100%", position: "absolute", inset: 0 }}
                     />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(64px, 10vw, 120px)" }}>
