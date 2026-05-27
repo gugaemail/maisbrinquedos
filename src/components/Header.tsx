@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useCustomerAuth } from "@/context/CustomerAuthContext";
 import { animate } from "animejs";
 import SearchBar from "@/components/SearchBar";
 import PromoMarquee from "@/components/PromoMarquee";
@@ -22,6 +24,10 @@ export default function Header({ categories: _categories = [] }: { categories?: 
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const router = useRouter();
+  const { user, profile, signOut } = useCustomerAuth();
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
   const { totalItems, openDrawer } = useCart();
   const badgeRef = useRef<HTMLSpanElement>(null);
   const prevTotalRef = useRef(totalItems);
@@ -47,6 +53,16 @@ export default function Header({ categories: _categories = [] }: { categories?: 
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -130,13 +146,63 @@ export default function Header({ categories: _categories = [] }: { categories?: 
           </button>
 
           {/* Account */}
-          <button
-            aria-label="Minha conta"
-            className="btn btn-icon btn-ghost desktop-nav"
-            style={{ flexShrink: 0, border: "1.5px solid var(--line-soft)" }}
-          >
-            <AccountIcon />
-          </button>
+          <div ref={accountRef} className="desktop-nav" style={{ position: "relative", flexShrink: 0 }}>
+            <button
+              aria-label="Minha conta"
+              className="btn btn-icon btn-ghost"
+              style={{ border: "1.5px solid var(--line-soft)" }}
+              onClick={() => {
+                if (!user) {
+                  router.push("/checkout");
+                } else {
+                  setAccountOpen((v) => !v);
+                }
+              }}
+            >
+              <AccountIcon />
+            </button>
+
+            {accountOpen && user && (
+              <div style={{
+                position: "absolute",
+                top: "calc(100% + 8px)",
+                right: 0,
+                minWidth: 200,
+                background: "var(--bg-elev)",
+                border: "1.5px solid var(--line-soft)",
+                borderRadius: 12,
+                padding: "12px 0",
+                boxShadow: "0 8px 24px rgba(0,0,0,.12)",
+                zIndex: 100,
+              }}>
+                <div style={{ padding: "0 16px 10px", borderBottom: "1px solid var(--line-soft)" }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {profile?.name ?? "Minha conta"}
+                  </p>
+                  <p style={{ fontSize: 11, color: "var(--ink-muted)", margin: "2px 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {profile?.email}
+                  </p>
+                </div>
+                <button
+                  onClick={async () => { await signOut(); setAccountOpen(false); }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "10px 16px",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: 13,
+                    color: "var(--ink)",
+                    fontFamily: "var(--font-body)",
+                  }}
+                >
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Cart */}
           <button
