@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Stars from "@/components/Stars";
 import { showToast } from "@/components/Toast";
+import { useCart } from "@/context/CartContext";
 
 interface Props {
   id: string;
@@ -52,6 +53,7 @@ function formatBRL(v: number) {
 }
 
 export default function ProductCard({ id, slug, name, price, originalPrice, category, imageUrl, tag, rating, reviewCount }: Props) {
+  const { addItem } = useCart();
   const [fav, setFav] = useState(() => {
     if (typeof window === "undefined") return false;
     try {
@@ -135,7 +137,12 @@ export default function ProductCard({ id, slug, name, price, originalPrice, cate
           <button
             className="btn btn-cherry btn-sm"
             style={{ flex: 1 }}
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); showToast(`${name} adicionado`); }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addItem({ id, name, price, emoji: getEmoji(category), imageUrl: imageUrl ?? undefined });
+              showToast(`${name} adicionado`);
+            }}
             aria-label="Adicionar ao carrinho"
           >
             <PlusIcon /> Adicionar
