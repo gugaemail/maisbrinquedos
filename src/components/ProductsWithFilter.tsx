@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { SidebarFilter, HorizontalFilter, ActiveFilters, AgeRange, ProductType, PriceRange } from "./AgeFilter";
+import { FilterModal, activeFilterCount, ActiveFilters, AgeRange, ProductType, PriceRange } from "./AgeFilter";
 
 function inPriceRange(price: number, range: PriceRange): boolean {
   if (range === "0-50")   return price <= 50;
@@ -229,13 +229,6 @@ function ProductList({ products }: { products: FilterableProduct[] }) {
   );
 }
 
-function hasActiveFilters(f: ActiveFilters) {
-  return f.ageRanges.size > 0 || f.productTypes.size > 0 || f.priceRanges.size > 0;
-}
-
-function activeFilterCount(f: ActiveFilters) {
-  return f.ageRanges.size + f.productTypes.size + f.priceRanges.size;
-}
 
 export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({
@@ -304,53 +297,6 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
 
   const filterCount = activeFilterCount(activeFilters);
 
-  const toolbar = (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, paddingBottom: 16, borderBottom: "1px solid var(--line-hair)", marginBottom: 24, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 13, color: "var(--ink-3)", fontFamily: "var(--font-body)" }}>
-          {filtered.length === products.length ? (
-            <>{products.length} produtos</>
-          ) : (
-            <><strong style={{ color: "var(--ink)" }}>{filtered.length}</strong> de {products.length} produtos</>
-          )}
-        </span>
-        {filterCount > 0 && (
-          <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 18, height: 18, borderRadius: "50%", background: "var(--c-cherry)", color: "#fff", fontSize: 10, fontWeight: 700, fontFamily: "var(--font-mono)" }}>
-            {filterCount}
-          </span>
-        )}
-      </div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <div style={{ display: "flex", border: "1.5px solid var(--line-soft)", borderRadius: 8, overflow: "hidden" }}>
-          <button
-            onClick={() => setView("grid")}
-            title="Visualização em grade"
-            style={{ width: 36, height: 36, border: "none", background: view === "grid" ? "var(--ink)" : "transparent", color: view === "grid" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
-          >
-            <GridIcon />
-          </button>
-          <button
-            onClick={() => setView("list")}
-            title="Visualização em lista"
-            style={{ width: 36, height: 36, border: "none", background: view === "list" ? "var(--ink)" : "transparent", color: view === "list" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
-          >
-            <ListIcon />
-          </button>
-        </div>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as SortOption)}
-          style={{ height: 36, padding: "0 12px", border: "1.5px solid var(--line-soft)", borderRadius: 8, background: "var(--bg-elev)", color: "var(--ink)", fontSize: 13, fontFamily: "var(--font-body)", cursor: "pointer" }}
-        >
-          <option value="relevancia">Relevância</option>
-          <option value="menor-preco">Menor preço</option>
-          <option value="maior-preco">Maior preço</option>
-          <option value="novidade">Novidades</option>
-        </select>
-      </div>
-    </div>
-  );
-
   const productView = view === "grid"
     ? <ProductGrid products={filtered} />
     : <ProductList products={filtered} />;
@@ -363,21 +309,56 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
         @media (max-width: 767px) { .product-card-link:hover { transform: none; } }
       `}</style>
       <div className="w-full">
-        {/* Mobile layout */}
-        <div className="md:hidden flex flex-col gap-4 w-full">
-          <HorizontalFilter {...filterProps} />
-          {toolbar}
-          {productView}
-        </div>
-
-        {/* Desktop layout */}
-        <div className="hidden md:flex gap-12 items-start">
-          <SidebarFilter {...filterProps} />
-          <div className="flex-1 min-w-0">
-            {toolbar}
-            {productView}
+        {/* Toolbar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, paddingBottom: 16, borderBottom: "1px solid var(--line-hair)", marginBottom: 24, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <FilterModal {...filterProps} />
+            <span style={{ fontSize: 13, color: "var(--ink-3)", fontFamily: "var(--font-body)" }}>
+              {filtered.length === products.length ? (
+                <>{products.length} produtos</>
+              ) : (
+                <><strong style={{ color: "var(--ink)" }}>{filtered.length}</strong> de {products.length}</>
+              )}
+            </span>
+            {filterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                style={{ fontSize: 12, color: "var(--c-cherry)", fontWeight: 600, fontFamily: "var(--font-body)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                Limpar filtros
+              </button>
+            )}
+          </div>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <div style={{ display: "flex", border: "1.5px solid var(--line-soft)", borderRadius: 8, overflow: "hidden" }}>
+              <button
+                onClick={() => setView("grid")}
+                title="Grade"
+                style={{ width: 36, height: 36, border: "none", background: view === "grid" ? "var(--ink)" : "transparent", color: view === "grid" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
+              >
+                <GridIcon />
+              </button>
+              <button
+                onClick={() => setView("list")}
+                title="Lista"
+                style={{ width: 36, height: 36, border: "none", background: view === "list" ? "var(--ink)" : "transparent", color: view === "list" ? "var(--bg-elev)" : "var(--ink-3)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background var(--t-fast)" }}
+              >
+                <ListIcon />
+              </button>
+            </div>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortOption)}
+              style={{ height: 36, padding: "0 12px", border: "1.5px solid var(--line-soft)", borderRadius: 8, background: "var(--bg-elev)", color: "var(--ink)", fontSize: 13, fontFamily: "var(--font-body)", cursor: "pointer" }}
+            >
+              <option value="relevancia">Relevância</option>
+              <option value="menor-preco">Menor preço</option>
+              <option value="maior-preco">Maior preço</option>
+              <option value="novidade">Novidades</option>
+            </select>
           </div>
         </div>
+        {productView}
       </div>
     </>
   );
