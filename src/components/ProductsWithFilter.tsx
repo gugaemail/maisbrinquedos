@@ -29,7 +29,7 @@ interface ProductsWithFilterProps {
   products: FilterableProduct[];
 }
 
-type SortOption = "relevancia" | "menor-preco" | "maior-preco" | "novidade";
+type SortOption = "relevancia" | "menor-preco" | "maior-preco" | "novidade" | "maior-desconto";
 type ViewMode = "grid" | "list";
 
 function GridIcon() {
@@ -282,6 +282,13 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
     if (sort === "menor-preco") return [...base].sort((a, b) => a.price - b.price);
     if (sort === "maior-preco") return [...base].sort((a, b) => b.price - a.price);
     if (sort === "novidade") return [...base].sort((a, b) => (a.tag === "Novidade" ? -1 : 1) - (b.tag === "Novidade" ? -1 : 1));
+    if (sort === "maior-desconto") {
+      return [...base].sort((a, b) => {
+        const discA = a.originalPrice && a.originalPrice > a.price ? (a.originalPrice - a.price) / a.originalPrice : 0;
+        const discB = b.originalPrice && b.originalPrice > b.price ? (b.originalPrice - b.price) / b.originalPrice : 0;
+        return discB - discA;
+      });
+    }
     return base;
   }, [products, activeFilters, sort]);
 
@@ -355,6 +362,7 @@ export function ProductsWithFilter({ products }: ProductsWithFilterProps) {
               <option value="menor-preco">Menor preço</option>
               <option value="maior-preco">Maior preço</option>
               <option value="novidade">Novidades</option>
+              <option value="maior-desconto">Maior desconto</option>
             </select>
           </div>
         </div>
