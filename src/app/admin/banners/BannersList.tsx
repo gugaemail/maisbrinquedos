@@ -91,7 +91,7 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
     closeEdit();
   }
 
-  const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors";
+  const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] dark:border-white/10 bg-white dark:bg-[#0A0A0F] text-sm font-body text-[#0F0F0F] dark:text-white outline-none focus:border-[#3B8BFF] transition-colors";
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -162,31 +162,31 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
     <div className="max-w-3xl">
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <form onSubmit={handleEditSave} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4 w-full max-w-lg shadow-xl">
-            <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Editar banner</h2>
+          <form onSubmit={handleEditSave} className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex flex-col gap-4 w-full max-w-lg shadow-xl">
+            <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Editar banner</h2>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Título *</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Título *</label>
                 <input value={editForm.title} onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))} required className={inp} />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Subtítulo</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Subtítulo</label>
                 <input value={editForm.subtitle} onChange={(e) => setEditForm((f) => ({ ...f, subtitle: e.target.value }))} className={inp} />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Texto do botão</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Texto do botão</label>
                 <input value={editForm.ctaText} onChange={(e) => setEditForm((f) => ({ ...f, ctaText: e.target.value }))} className={inp} />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Link do botão</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Link do botão</label>
                 <input value={editForm.ctaLink} onChange={(e) => setEditForm((f) => ({ ...f, ctaLink: e.target.value }))} className={inp} placeholder="/produtos" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Tag / Badge</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Tag / Badge</label>
                 <input value={editForm.tag} onChange={(e) => setEditForm((f) => ({ ...f, tag: e.target.value }))} className={inp} placeholder="Coleção 2026" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Posição do texto</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Posição do texto</label>
                 <select value={editForm.textPosition} onChange={(e) => setEditForm((f) => ({ ...f, textPosition: e.target.value }))} className={inp}>
                   <option value="left">Esquerda (split)</option>
                   <option value="center">Centralizado</option>
@@ -194,20 +194,20 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Overlay</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Overlay</label>
                 <select value={editForm.overlay} onChange={(e) => setEditForm((f) => ({ ...f, overlay: e.target.value }))} className={inp}>
                   <option value="dark">Escuro (texto na cor da paleta)</option>
                   <option value="light">Claro (texto branco)</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">URL do vídeo (opcional)</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">URL do vídeo (opcional)</label>
                 <input value={editForm.videoUrl} onChange={(e) => setEditForm((f) => ({ ...f, videoUrl: e.target.value }))} className={inp} placeholder="https://..." />
               </div>
               <div className="col-span-2">
-                <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Imagem / GIF</label>
+                <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Imagem / GIF</label>
                 {editPreview ? (
-                  <div className="relative w-full h-36 rounded-xl overflow-hidden border border-[#E2E6F0] bg-[#F7F8FC]">
+                  <div className="relative w-full h-36 rounded-xl overflow-hidden border border-[#E2E6F0] dark:border-white/10 bg-[#F7F8FC] dark:bg-[#0A0A0F]">
                     {editForm.imageUrl.endsWith(".mp4") ? (
                       <video src={editPreview} autoPlay loop muted playsInline className="w-full h-full object-cover" />
                     ) : (
@@ -228,26 +228,26 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
                   </div>
                 ) : (
                   <button type="button" onClick={() => editFileInputRef.current?.click()}
-                    className="w-full h-28 rounded-xl border-2 border-dashed border-[#C7CEDE] flex flex-col items-center justify-center gap-1 hover:border-[#3B8BFF] hover:bg-[#F0F5FF] transition-colors cursor-pointer">
-                    <span className="text-xs font-semibold text-[#6B7080]">Clique para trocar a imagem</span>
-                    <span className="text-[10px] text-[#9CA3AF]">JPG, PNG, WebP, GIF</span>
+                    className="w-full h-28 rounded-xl border-2 border-dashed border-[#C7CEDE] dark:border-white/15 flex flex-col items-center justify-center gap-1 hover:border-[#3B8BFF] hover:bg-[#F0F5FF] dark:hover:border-[#3B8BFF] dark:hover:bg-[#3B8BFF]/10 transition-colors cursor-pointer">
+                    <span className="text-xs font-semibold text-[#6B7080] dark:text-white/50">Clique para trocar a imagem</span>
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-white/35">JPG, PNG, WebP, GIF, MP4</span>
                   </button>
                 )}
-                <input ref={editFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleEditImageUpload} />
+                <input ref={editFileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4" className="hidden" onChange={handleEditImageUpload} />
               </div>
             </div>
             <div className="flex gap-3">
               <button type="submit" disabled={editUploading} className="px-6 py-2.5 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold disabled:opacity-50">
                 {editUploading ? "Aguardando upload..." : "Salvar"}
               </button>
-              <button type="button" onClick={closeEdit} className="px-6 py-2.5 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm">Cancelar</button>
+              <button type="button" onClick={closeEdit} className="px-6 py-2.5 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 text-sm">Cancelar</button>
             </div>
           </form>
         </div>
       )}
       <div className="flex flex-col gap-4 mb-6">
         {banners.map((b) => (
-          <div key={b.id} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex items-center gap-6">
+          <div key={b.id} className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex items-center gap-6">
             {b.imageUrl && (
               b.imageUrl.endsWith(".mp4") ? (
                 <video src={b.imageUrl} muted className="w-24 h-16 object-cover rounded-xl shrink-0" />
@@ -258,18 +258,18 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
             )}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p className="font-semibold text-[#0F0F0F]">{b.title}</p>
-                {b.tag && <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B7080] border border-[#E2E6F0] rounded-full px-2 py-0.5">{b.tag}</span>}
+                <p className="font-semibold text-[#0F0F0F] dark:text-white">{b.title}</p>
+                {b.tag && <span className="text-[10px] font-mono uppercase tracking-wider text-[#6B7080] dark:text-white/50 border border-[#E2E6F0] dark:border-white/10 rounded-full px-2 py-0.5">{b.tag}</span>}
               </div>
-              {b.subtitle && <p className="text-sm text-[#6B7080] truncate">{b.subtitle}</p>}
+              {b.subtitle && <p className="text-sm text-[#6B7080] dark:text-white/50 truncate">{b.subtitle}</p>}
               <div className="flex items-center gap-2 mt-0.5">
-                {b.ctaLink && <p className="text-xs text-[#6B7080] truncate font-mono">{b.ctaLink}</p>}
-                <span className="text-[10px] text-[#9CA3AF] font-mono">{b.textPosition} · {b.overlay}</span>
+                {b.ctaLink && <p className="text-xs text-[#6B7080] dark:text-white/40 truncate font-mono">{b.ctaLink}</p>}
+                <span className="text-[10px] text-[#9CA3AF] dark:text-white/30 font-mono">{b.textPosition} · {b.overlay}</span>
               </div>
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <button onClick={() => handleToggle(b.id, b.active)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${b.active ? "bg-[#3DDC84]/10 text-[#3DDC84]" : "bg-[#6B7080]/10 text-[#6B7080]"}`}>
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${b.active ? "bg-[#3DDC84]/10 text-[#3DDC84]" : "bg-[#6B7080]/10 text-[#6B7080] dark:text-white/40"}`}>
                 {b.active ? "Ativo" : "Inativo"}
               </button>
               <button onClick={() => openEdit(b)} className="text-[#3B8BFF] text-xs font-semibold hover:underline">
@@ -282,36 +282,36 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
           </div>
         ))}
         {banners.length === 0 && (
-          <p className="text-sm text-[#6B7080] font-body">Nenhum banner cadastrado.</p>
+          <p className="text-sm text-[#6B7080] dark:text-white/50 font-body">Nenhum banner cadastrado.</p>
         )}
       </div>
 
       {creating ? (
-        <form onSubmit={handleCreate} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4">
-          <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Novo banner</h2>
+        <form onSubmit={handleCreate} className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex flex-col gap-4">
+          <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Novo banner</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Título *</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Título *</label>
               <input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Subtítulo</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Subtítulo</label>
               <input value={form.subtitle} onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))} className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Texto do botão</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Texto do botão</label>
               <input value={form.ctaText} onChange={(e) => setForm((f) => ({ ...f, ctaText: e.target.value }))} className={inp} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Link do botão</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Link do botão</label>
               <input value={form.ctaLink} onChange={(e) => setForm((f) => ({ ...f, ctaLink: e.target.value }))} className={inp} placeholder="/produtos" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Tag / Badge</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Tag / Badge</label>
               <input value={form.tag} onChange={(e) => setForm((f) => ({ ...f, tag: e.target.value }))} className={inp} placeholder="Coleção 2026" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Posição do texto</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Posição do texto</label>
               <select value={form.textPosition} onChange={(e) => setForm((f) => ({ ...f, textPosition: e.target.value }))} className={inp}>
                 <option value="left">Esquerda (split)</option>
                 <option value="center">Centralizado</option>
@@ -319,20 +319,20 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Overlay</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Overlay</label>
               <select value={form.overlay} onChange={(e) => setForm((f) => ({ ...f, overlay: e.target.value }))} className={inp}>
                 <option value="dark">Escuro (texto na cor da paleta)</option>
                 <option value="light">Claro (texto branco)</option>
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">URL do vídeo (opcional)</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">URL do vídeo (opcional)</label>
               <input value={form.videoUrl} onChange={(e) => setForm((f) => ({ ...f, videoUrl: e.target.value }))} className={inp} placeholder="https://..." />
             </div>
             <div className="col-span-2">
-              <label className="text-xs font-semibold text-[#0F0F0F] block mb-1">Imagem / GIF do banner</label>
+              <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white block mb-1">Imagem / GIF do banner</label>
               {preview ? (
-                <div className="relative w-full h-40 rounded-xl overflow-hidden border border-[#E2E6F0] bg-[#F7F8FC]">
+                <div className="relative w-full h-40 rounded-xl overflow-hidden border border-[#E2E6F0] dark:border-white/10 bg-[#F7F8FC] dark:bg-[#0A0A0F]">
                   {preview.includes("blob:") && fileInputRef.current?.files?.[0]?.type === "video/mp4" || form.imageUrl.endsWith(".mp4") ? (
                     <video src={preview} autoPlay loop muted playsInline className="w-full h-full object-cover" />
                   ) : (
@@ -358,19 +358,19 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-32 rounded-xl border-2 border-dashed border-[#C7CEDE] flex flex-col items-center justify-center gap-1 hover:border-[#3B8BFF] hover:bg-[#F0F5FF] transition-colors cursor-pointer"
+                  className="w-full h-32 rounded-xl border-2 border-dashed border-[#C7CEDE] dark:border-white/15 flex flex-col items-center justify-center gap-1 hover:border-[#3B8BFF] hover:bg-[#F0F5FF] dark:hover:border-[#3B8BFF] dark:hover:bg-[#3B8BFF]/10 transition-colors cursor-pointer"
                 >
-                  <svg className="w-6 h-6 text-[#6B7080]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-6 h-6 text-[#6B7080] dark:text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
-                  <span className="text-xs font-semibold text-[#6B7080]">Clique para enviar imagem, GIF ou vídeo</span>
-                  <span className="text-[10px] text-[#9CA3AF]">JPG, PNG, WebP, GIF, MP4 — máx. 50MB</span>
+                  <span className="text-xs font-semibold text-[#6B7080] dark:text-white/50">Clique para enviar imagem, GIF ou vídeo</span>
+                  <span className="text-[10px] text-[#9CA3AF] dark:text-white/35">JPG, PNG, WebP, GIF, MP4 — máx. 50MB</span>
                 </button>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
+                accept="image/jpeg,image/png,image/webp,image/gif,video/mp4"
                 className="hidden"
                 onChange={handleImageUpload}
               />
@@ -380,7 +380,7 @@ export default function BannersList({ initialBanners }: { initialBanners: Banner
             <button type="submit" disabled={uploading} className="px-6 py-2.5 rounded-full bg-[#3B8BFF] text-white text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
               {uploading ? "Aguardando upload..." : "Criar"}
             </button>
-            <button type="button" onClick={() => { setCreating(false); setPreview(null); setForm(blankForm); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="px-6 py-2.5 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm">Cancelar</button>
+            <button type="button" onClick={() => { setCreating(false); setPreview(null); setForm(blankForm); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="px-6 py-2.5 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 text-sm">Cancelar</button>
           </div>
         </form>
       ) : (

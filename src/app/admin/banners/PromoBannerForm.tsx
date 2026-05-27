@@ -12,7 +12,7 @@ interface PromoBanner {
   ctaLink: string;
 }
 
-const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#FF3D5A] transition-colors bg-white";
+const inp = "w-full px-4 py-2.5 rounded-xl border border-[#E2E6F0] dark:border-white/10 text-sm font-body text-[#0F0F0F] dark:text-white outline-none focus:border-[#FF3D5A] transition-colors bg-white dark:bg-[#0A0A0F]";
 
 export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
   const [form, setForm] = useState<PromoBanner>(initial);
@@ -41,7 +41,7 @@ export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
   }
 
   return (
-    <form onSubmit={handleSave} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 max-w-2xl space-y-5">
+    <form onSubmit={handleSave} className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 max-w-2xl space-y-5">
       {/* Preview */}
       {form.active && (
         <div className="rounded-xl bg-[#FFE14D] px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -61,13 +61,13 @@ export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
       {/* Active toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-display font-bold text-[#0F0F0F]">Banner visível na loja</p>
-          <p className="text-xs text-[#6B7080] font-body">Desative para ocultar sem apagar as configurações</p>
+          <p className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Banner visível na loja</p>
+          <p className="text-xs text-[#6B7080] dark:text-white/50 font-body">Desative para ocultar sem apagar as configurações</p>
         </div>
         <button
           type="button"
           onClick={() => set("active", !form.active)}
-          className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${form.active ? "bg-[#3DDC84]" : "bg-[#E2E6F0]"}`}
+          className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${form.active ? "bg-[#3DDC84]" : "bg-[#E2E6F0] dark:bg-white/10"}`}
         >
           <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${form.active ? "translate-x-6" : "translate-x-0"}`} />
         </button>
@@ -75,23 +75,23 @@ export default function PromoBannerForm({ initial }: { initial: PromoBanner }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="md:col-span-2">
-          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Título principal *</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] dark:text-white block mb-1">Título principal *</label>
           <input value={form.title} onChange={(e) => set("title", e.target.value)} required className={inp} placeholder="Frete grátis em pedidos acima de R$ 150" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Label do badge</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] dark:text-white block mb-1">Label do badge</label>
           <input value={form.label} onChange={(e) => set("label", e.target.value)} className={inp} placeholder="Oferta especial" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Descrição</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] dark:text-white block mb-1">Descrição</label>
           <input value={form.description} onChange={(e) => set("description", e.target.value)} className={inp} placeholder="Entrega rápida para todo o Brasil." />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Texto do botão</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] dark:text-white block mb-1">Texto do botão</label>
           <input value={form.ctaText} onChange={(e) => set("ctaText", e.target.value)} className={inp} placeholder="Aproveitar agora →" />
         </div>
         <div>
-          <label className="text-xs font-display font-bold text-[#0F0F0F] block mb-1">Link do botão</label>
+          <label className="text-xs font-display font-bold text-[#0F0F0F] dark:text-white block mb-1">Link do botão</label>
           <input value={form.ctaLink} onChange={(e) => set("ctaLink", e.target.value)} className={inp} placeholder="/produtos" />
         </div>
       </div>

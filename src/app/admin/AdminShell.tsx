@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { Toaster } from "sonner";
 
@@ -98,6 +99,30 @@ function IconLogout() {
   );
 }
 
+function IconSun() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+  );
+}
+
+function IconMoon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
 const allNavItems = [
   { href: "/admin/dashboard",    label: "Dashboard",    Icon: IconDashboard,  roles: ["admin", "operator"] },
   { href: "/admin/produtos",     label: "Produtos",     Icon: IconProducts,   roles: ["admin", "operator"] },
@@ -118,6 +143,18 @@ interface Props {
 export default function AdminShell({ children, role, userName }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("mb_admin_theme") as "dark" | "light" | null;
+    if (saved) setTheme(saved);
+  }, []);
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("mb_admin_theme", next);
+  }
 
   if (pathname === "/admin/login") {
     return (
@@ -139,13 +176,13 @@ export default function AdminShell({ children, role, userName }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0A0A0F]">
+    <div className={`min-h-screen flex ${theme === "dark" ? "dark" : ""} bg-[#F4F4F6] dark:bg-[#0A0A0F]`}>
       {/* Sidebar */}
-      <aside className="w-56 shrink-0 bg-[#0A0A0F] border-r border-white/8 flex flex-col min-h-screen">
+      <aside className="w-56 shrink-0 bg-white dark:bg-[#0A0A0F] border-r border-black/8 dark:border-white/8 flex flex-col min-h-screen">
         {/* Brand */}
-        <div className="px-5 py-5 border-b border-white/8">
-          <p className="font-display font-bold text-white text-sm leading-tight tracking-tight">Mais Brinquedos</p>
-          <span className="text-[10px] text-white/35 font-body uppercase tracking-widest mt-0.5 block">Admin</span>
+        <div className="px-5 py-5 border-b border-black/8 dark:border-white/8">
+          <p className="font-display font-bold text-[#0F0F0F] dark:text-white text-sm leading-tight tracking-tight">Mais Brinquedos</p>
+          <span className="text-[10px] text-[#0F0F0F]/35 dark:text-white/35 font-body uppercase tracking-widest mt-0.5 block">Admin</span>
         </div>
 
         <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
@@ -157,8 +194,8 @@ export default function AdminShell({ children, role, userName }: Props) {
                 href={item.href}
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body transition-all duration-150 ${
                   active
-                    ? "bg-white/8 text-white font-semibold"
-                    : "text-white/45 hover:text-white/80 hover:bg-white/5"
+                    ? "bg-black/8 dark:bg-white/8 text-[#0F0F0F] dark:text-white font-semibold"
+                    : "text-[#0F0F0F]/45 dark:text-white/45 hover:text-[#0F0F0F]/80 dark:hover:text-white/80 hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
                 {active && (
@@ -171,15 +208,27 @@ export default function AdminShell({ children, role, userName }: Props) {
           })}
         </nav>
 
+        {/* Theme toggle */}
+        <div className="px-3 pb-1">
+          <button
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body text-[#0F0F0F]/40 dark:text-white/40 hover:text-[#0F0F0F]/70 dark:hover:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-150"
+          >
+            {theme === "dark" ? <IconSun /> : <IconMoon />}
+            {theme === "dark" ? "Modo claro" : "Modo escuro"}
+          </button>
+        </div>
+
         {/* User + logout */}
-        <div className="px-3 py-4 border-t border-white/8 flex flex-col gap-0.5">
+        <div className="px-3 py-4 border-t border-black/8 dark:border-white/8 flex flex-col gap-0.5">
           <div className="px-3 py-2 mb-1">
-            <p className="text-xs font-semibold text-white/80 truncate font-body">{displayName}</p>
-            <p className="text-[11px] text-white/35 font-body">{roleLabel}</p>
+            <p className="text-xs font-semibold text-[#0F0F0F]/80 dark:text-white/80 truncate font-body">{displayName}</p>
+            <p className="text-[11px] text-[#0F0F0F]/35 dark:text-white/35 font-body">{roleLabel}</p>
           </div>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body text-white/40 hover:text-white/70 hover:bg-white/5 transition-all duration-150"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body text-[#0F0F0F]/40 dark:text-white/40 hover:text-[#0F0F0F]/70 dark:hover:text-white/70 hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-150"
           >
             <IconLogout />
             Sair
@@ -188,7 +237,7 @@ export default function AdminShell({ children, role, userName }: Props) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto bg-[#0A0A0F]">
+      <main className="flex-1 overflow-auto bg-[#F4F4F6] dark:bg-[#0A0A0F]">
         <Toaster richColors position="top-right" />
         {children}
       </main>
