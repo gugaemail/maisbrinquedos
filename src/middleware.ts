@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -8,7 +9,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const response = NextResponse.next({ request });
+  const pendingCookies: Array<{ name: string; value: string; options: Partial<ResponseCookie> }> = [];
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,9 +20,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach((c) => pendingCookies.push(c));
         },
       },
     }
@@ -36,8 +35,14 @@ export async function middleware(request: NextRequest) {
   }
 
   const role = (user.app_metadata?.role as string) ?? "operator";
-  response.headers.set("x-user-role", role);
-  response.headers.set("x-user-name", user.user_metadata?.name ?? user.email ?? "");
+  const userName = user.user_metadata?.name ?? user.email ?? "";
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-user-role", role);
+  requestHeaders.set("x-user-name", userName);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  pendingCookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
 
   return response;
 }
