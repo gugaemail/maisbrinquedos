@@ -12,7 +12,7 @@ interface Category {
   order: number;
 }
 
-const inp = "px-4 py-2 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors w-full";
+const inp = "px-4 py-2 rounded-xl border border-[#E2E6F0] dark:border-white/10 text-sm font-body text-[#0F0F0F] dark:text-white bg-white dark:bg-[#0A0A0F] outline-none focus:border-[#3B8BFF] transition-colors w-full";
 
 export default function CategoriasList({ initialCategories }: { initialCategories: Category[] }) {
   const [categories, setCategories] = useState(initialCategories);
@@ -78,20 +78,20 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
 
   return (
     <div className="max-w-2xl">
-      <div className="bg-white rounded-2xl border border-[#E2E6F0] overflow-hidden mb-6">
+      <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 overflow-hidden mb-6">
         <table className="w-full text-sm font-body">
-          <thead className="border-b border-[#E2E6F0] bg-[#F8F9FC]">
+          <thead className="border-b border-[#E2E6F0] dark:border-white/10 bg-[#F8F9FC] dark:bg-white/4">
             <tr>
-              <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7080] uppercase">Categoria</th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#6B7080] uppercase">Slug</th>
-              <th className="text-center px-4 py-3 text-xs font-semibold text-[#6B7080] uppercase">Status</th>
+              <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7080] dark:text-white/40 uppercase">Categoria</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[#6B7080] dark:text-white/40 uppercase">Slug</th>
+              <th className="text-center px-4 py-3 text-xs font-semibold text-[#6B7080] dark:text-white/40 uppercase">Status</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E2E6F0]">
+          <tbody className="divide-y divide-[#E2E6F0] dark:divide-white/10">
             {categories.map((c) =>
               editingId === c.id ? (
-                <tr key={c.id} className="bg-[#F0F6FF]">
+                <tr key={c.id} className="bg-[#F0F6FF] dark:bg-[#3B8BFF]/10">
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <input
@@ -116,7 +116,7 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
                       className={inp}
                     />
                   </td>
-                  <td className="px-4 py-3 text-center text-xs text-[#6B7080]">—</td>
+                  <td className="px-4 py-3 text-center text-xs text-[#6B7080] dark:text-white/40">—</td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-3">
                       <button
@@ -127,7 +127,7 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="text-[#6B7080] text-xs hover:underline"
+                        className="text-[#6B7080] dark:text-white/50 text-xs hover:underline"
                       >
                         Cancelar
                       </button>
@@ -135,13 +135,13 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
                   </td>
                 </tr>
               ) : (
-                <tr key={c.id} className="hover:bg-[#F8F9FC] transition-colors">
-                  <td className="px-6 py-4 font-semibold text-[#0F0F0F]">{c.emoji} {c.name}</td>
-                  <td className="px-4 py-4 text-[#6B7080] font-mono text-xs">{c.slug}</td>
+                <tr key={c.id} className="hover:bg-[#F8F9FC] dark:hover:bg-white/5 transition-colors">
+                  <td className="px-6 py-4 font-semibold text-[#0F0F0F] dark:text-white">{c.emoji} {c.name}</td>
+                  <td className="px-4 py-4 text-[#6B7080] dark:text-white/50 font-mono text-xs">{c.slug}</td>
                   <td className="px-4 py-4 text-center">
                     <button
                       onClick={() => handleToggle(c.id, c.active)}
-                      className={`px-2 py-0.5 rounded-full text-xs font-semibold ${c.active ? "bg-[#3DDC84]/10 text-[#3DDC84]" : "bg-[#6B7080]/10 text-[#6B7080]"}`}
+                      className={`px-2 py-0.5 rounded-full text-xs font-semibold ${c.active ? "bg-[#3DDC84]/10 text-[#3DDC84]" : "bg-[#6B7080]/10 text-[#6B7080] dark:text-white/50"}`}
                     >
                       {c.active ? "Ativa" : "Inativa"}
                     </button>
@@ -170,8 +170,8 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
       </div>
 
       {creating ? (
-        <form onSubmit={handleCreate} className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4">
-          <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Nova categoria</h2>
+        <form onSubmit={handleCreate} className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex flex-col gap-4">
+          <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Nova categoria</h2>
           <div className="grid grid-cols-3 gap-3">
             <input
               value={createForm.name}
@@ -202,7 +202,7 @@ export default function CategoriasList({ initialCategories }: { initialCategorie
             <button
               type="button"
               onClick={() => setCreating(false)}
-              className="px-6 py-2.5 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm"
+              className="px-6 py-2.5 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 text-sm"
             >
               Cancelar
             </button>

@@ -11,7 +11,7 @@ function toSlug(str: string) {
   return str
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-")
@@ -158,7 +158,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
         >
           <input
             {...register("slug")}
-            className={`${input} bg-[#F8F9FC] text-[#6B7080]`}
+            className={`${input} bg-[#F8F9FC] dark:bg-white/5 text-[#6B7080] dark:text-white/50`}
             readOnly
             tabIndex={-1}
           />
@@ -197,7 +197,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
             <option value="Novidade">Novidade</option>
             <option value="Oferta">Oferta</option>
           </select>
-          <p className="text-xs text-[#6B7080] mt-1">O destaque aparece como etiqueta no card do produto.</p>
+          <p className="text-xs text-[#6B7080] dark:text-white/50 mt-1">O destaque aparece como etiqueta no card do produto.</p>
         </Field>
       </div>
 
@@ -224,8 +224,8 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
 
       {/* Shipping dimensions */}
       <div>
-        <p className="text-xs font-semibold text-[#0F0F0F] font-body mb-1">Dimensões para cálculo de frete</p>
-        <p className="text-xs text-[#6B7080] mb-3">Necessário para cotação via Melhor Envio / Correios. Deixe em branco para usar padrão global.</p>
+        <p className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body mb-1">Dimensões para cálculo de frete</p>
+        <p className="text-xs text-[#6B7080] dark:text-white/50 mb-3">Necessário para cotação via Melhor Envio / Correios. Deixe em branco para usar padrão global.</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <Field label="Peso (g)">
             <input {...register("weightGrams")} type="number" min="0" step="1" className={input} placeholder="Ex: 500" />
@@ -244,7 +244,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
 
       {/* Features */}
       <div>
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body block mb-2">Características</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body block mb-2">Características</label>
         <div className="flex flex-col gap-2">
           {fields.map((field, i) => (
             <div key={field.id} className="flex gap-2">
@@ -260,10 +260,10 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
 
       {/* Images */}
       <div>
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body block mb-2">Imagens</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body block mb-2">Imagens</label>
         <div className="flex flex-wrap gap-3 mb-3">
           {images.map((url, i) => (
-            <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-[#E2E6F0]">
+            <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-[#E2E6F0] dark:border-white/10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="w-full h-full object-cover" />
               <button
@@ -285,7 +285,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
       {/* Active toggle */}
       <label className="flex items-center gap-3 cursor-pointer">
         <input {...register("active")} type="checkbox" className="w-4 h-4 accent-[#3B8BFF]" />
-        <span className="text-sm font-body text-[#0F0F0F]">Produto ativo (visível na loja)</span>
+        <span className="text-sm font-body text-[#0F0F0F] dark:text-white">Produto ativo (visível na loja)</span>
       </label>
 
       <div className="flex gap-3 pt-2">
@@ -299,7 +299,7 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
         <button
           type="button"
           onClick={() => router.push("/admin/produtos")}
-          className="px-6 py-3 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm font-semibold hover:bg-[#F8F9FC] transition-colors"
+          className="px-6 py-3 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 text-sm font-semibold hover:bg-[#F8F9FC] dark:hover:bg-white/5 transition-colors"
         >
           Cancelar
         </button>
@@ -308,12 +308,12 @@ export default function ProductForm({ categories, defaultValues, mode }: Props) 
   );
 }
 
-const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors bg-white";
+const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] dark:border-white/10 text-sm font-body text-[#0F0F0F] dark:text-white outline-none focus:border-[#3B8BFF] transition-colors bg-white dark:bg-[#0A0A0F]";
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-[#0F0F0F] font-body">{label}</label>
+      <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body">{label}</label>
       {children}
       {error && <p className="text-xs text-[#FF3D5A]">{error}</p>}
     </div>

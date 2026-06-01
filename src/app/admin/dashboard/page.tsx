@@ -53,7 +53,7 @@ async function getKpis(since: Date) {
     lowStock,
     byStatus,
     revenueByDay: revenueByDay.map((r) => ({
-      day: String(r.day).slice(5, 10), // MM-DD
+      day: String(r.day).slice(5, 10),
       revenue: Number(r.revenue),
     })),
   };
@@ -70,8 +70,8 @@ export default async function DashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-xl font-display font-bold text-white tracking-tight">Dashboard</h1>
-        <p className="text-xs text-white/35 font-body mt-0.5">Últimos 30 dias</p>
+        <h1 className="text-xl font-display font-bold text-[#0F0F0F] dark:text-white tracking-tight">Dashboard</h1>
+        <p className="text-xs text-[#0F0F0F]/35 dark:text-white/35 font-body mt-0.5">Últimos 30 dias</p>
       </div>
 
       {/* KPI cards */}
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-2">
             {kpis.lowStock.map((p) => (
               <div key={p.id} className="flex items-center justify-between text-sm font-body">
-                <span className="text-white/70">{p.name}</span>
+                <span className="text-[#0F0F0F]/70 dark:text-white/70">{p.name}</span>
                 <span className="font-semibold tabular-nums text-[#FF3D5A]">{p.stock} un.</span>
               </div>
             ))}
@@ -118,19 +118,19 @@ export default async function DashboardPage() {
 
 function KpiCard({ label, value, sub, accent }: { label: string; value: string; sub: string; accent: string }) {
   return (
-    <div className="bg-white/5 rounded-2xl p-5 border border-white/8 relative overflow-hidden group hover:bg-white/8 transition-colors duration-200">
+    <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-5 border border-black/8 dark:border-white/8 relative overflow-hidden group hover:bg-black/8 dark:hover:bg-white/8 transition-colors duration-200">
       <div
         className="absolute top-0 left-0 w-full h-[2px]"
         style={{ background: accent }}
       />
-      <p className="text-[11px] text-white/40 font-body uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-[11px] text-[#0F0F0F]/40 dark:text-white/40 font-body uppercase tracking-wider mb-2">{label}</p>
       <p
         className="text-2xl font-display font-bold leading-none tabular-nums tracking-tight"
         style={{ color: accent }}
       >
         {value}
       </p>
-      <p className="text-[11px] text-white/30 font-body mt-2">{sub}</p>
+      <p className="text-[11px] text-[#0F0F0F]/30 dark:text-white/30 font-body mt-2">{sub}</p>
     </div>
   );
 }

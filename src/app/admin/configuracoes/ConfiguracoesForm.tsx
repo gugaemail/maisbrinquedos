@@ -53,41 +53,41 @@ export default function ConfiguracoesForm({
     toast.success("Configurações salvas!");
   }
 
-  const inp = "px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors w-32";
+  const inp = "px-4 py-3 rounded-xl border border-[#E2E6F0] dark:border-white/10 text-sm font-body text-[#0F0F0F] dark:text-white bg-white dark:bg-[#0A0A0F] outline-none focus:border-[#3B8BFF] transition-colors w-32";
 
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-8">
-      <section className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-6">
-        <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Pagamentos</h2>
+      <section className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex flex-col gap-6">
+        <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Pagamentos</h2>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#0F0F0F]">Desconto PIX (%)</p>
-            <p className="text-xs text-[#6B7080] font-body">Percentual de desconto para pagamentos via PIX</p>
+            <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white">Desconto PIX (%)</p>
+            <p className="text-xs text-[#6B7080] dark:text-white/50 font-body">Percentual de desconto para pagamentos via PIX</p>
           </div>
           <input type="number" min="0" max="50" value={pix} onChange={(e) => setPix(e.target.value)} className={inp} />
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#0F0F0F]">Máximo de parcelas</p>
-            <p className="text-xs text-[#6B7080] font-body">Número máximo de parcelas sem juros</p>
+            <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white">Máximo de parcelas</p>
+            <p className="text-xs text-[#6B7080] dark:text-white/50 font-body">Número máximo de parcelas sem juros</p>
           </div>
           <input type="number" min="1" max="24" value={installments} onChange={(e) => setInstallments(e.target.value)} className={inp} />
         </div>
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-[#0F0F0F]">Frete grátis a partir de (R$)</p>
-            <p className="text-xs text-[#6B7080] font-body">Valor mínimo para frete grátis</p>
+            <p className="text-sm font-semibold text-[#0F0F0F] dark:text-white">Frete grátis a partir de (R$)</p>
+            <p className="text-xs text-[#6B7080] dark:text-white/50 font-body">Valor mínimo para frete grátis</p>
           </div>
           <input type="number" min="0" value={shipping} onChange={(e) => setShipping(e.target.value)} className={inp} />
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl border border-[#E2E6F0] p-6 flex flex-col gap-4">
-        <h2 className="text-sm font-display font-bold text-[#0F0F0F]">Meios de pagamento</h2>
-        <p className="text-xs text-[#6B7080] font-body">Desmarque para desabilitar no checkout</p>
+      <section className="bg-white dark:bg-[#18181B] rounded-2xl border border-[#E2E6F0] dark:border-white/10 p-6 flex flex-col gap-4">
+        <h2 className="text-sm font-display font-bold text-[#0F0F0F] dark:text-white">Meios de pagamento</h2>
+        <p className="text-xs text-[#6B7080] dark:text-white/50 font-body">Desmarque para desabilitar no checkout</p>
         <div className="flex flex-col gap-3">
           {PAYMENT_OPTIONS.map((opt) => (
             <label key={opt.key} className="flex items-center gap-3 cursor-pointer">
@@ -97,7 +97,7 @@ export default function ConfiguracoesForm({
                 onChange={() => togglePayment(opt.key)}
                 className="w-4 h-4 accent-[#3B8BFF]"
               />
-              <span className="text-sm font-body text-[#0F0F0F]">{opt.label}</span>
+              <span className="text-sm font-body text-[#0F0F0F] dark:text-white">{opt.label}</span>
             </label>
           ))}
         </div>

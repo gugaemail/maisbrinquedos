@@ -7,7 +7,7 @@ export default async function ConfiguracoesPage() {
 
   return (
     <div className="p-8 max-w-2xl">
-      <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F] mb-8">Configurações</h1>
+      <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F] dark:text-white mb-8">Configurações</h1>
       <ConfiguracoesForm
         pixDiscountPercent={map.pix_discount_percent ?? "5"}
         maxInstallments={map.max_installments ?? "12"}

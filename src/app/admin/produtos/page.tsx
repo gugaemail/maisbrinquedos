@@ -23,8 +23,8 @@ export default async function AdminProdutosPage({
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-xl font-display font-bold text-white tracking-tight">Produtos</h1>
-            <p className="text-xs text-white/35 font-body mt-0.5">{products.length} cadastrados</p>
+            <h1 className="text-xl font-display font-bold text-[#0F0F0F] dark:text-white tracking-tight">Produtos</h1>
+            <p className="text-xs text-[#0F0F0F]/35 dark:text-white/35 font-body mt-0.5">{products.length} cadastrados</p>
           </div>
           <Suspense>
             <ProductSearch />
@@ -38,28 +38,28 @@ export default async function AdminProdutosPage({
         </Link>
       </div>
 
-      <div className="bg-white/5 rounded-2xl border border-white/8 overflow-hidden">
+      <div className="bg-black/5 dark:bg-white/5 rounded-2xl border border-black/8 dark:border-white/8 overflow-hidden">
         <table className="w-full text-sm font-body">
-          <thead className="border-b border-white/8">
+          <thead className="border-b border-black/8 dark:border-white/8">
             <tr>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/35 uppercase tracking-wider">Produto</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/35 uppercase tracking-wider">Categoria</th>
-              <th className="text-right px-4 py-3 text-[10px] font-semibold text-white/35 uppercase tracking-wider">Preço</th>
-              <th className="text-right px-4 py-3 text-[10px] font-semibold text-white/35 uppercase tracking-wider">Estoque</th>
-              <th className="text-center px-4 py-3 text-[10px] font-semibold text-white/35 uppercase tracking-wider">Status</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-[#0F0F0F]/35 dark:text-white/35 uppercase tracking-wider">Produto</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-[#0F0F0F]/35 dark:text-white/35 uppercase tracking-wider">Categoria</th>
+              <th className="text-right px-4 py-3 text-[10px] font-semibold text-[#0F0F0F]/35 dark:text-white/35 uppercase tracking-wider">Preço</th>
+              <th className="text-right px-4 py-3 text-[10px] font-semibold text-[#0F0F0F]/35 dark:text-white/35 uppercase tracking-wider">Estoque</th>
+              <th className="text-center px-4 py-3 text-[10px] font-semibold text-[#0F0F0F]/35 dark:text-white/35 uppercase tracking-wider">Status</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/6">
+          <tbody className="divide-y divide-black/6 dark:divide-white/6">
             {products.map((p) => (
-              <tr key={p.id} className="hover:bg-white/4 transition-colors duration-100">
-                <td className="px-6 py-4 font-semibold text-white/90">{p.name}</td>
-                <td className="px-4 py-4 text-white/40">{p.category.name}</td>
-                <td className="px-4 py-4 text-right text-white/70 tabular-nums">
+              <tr key={p.id} className="hover:bg-black/4 dark:hover:bg-white/4 transition-colors duration-100">
+                <td className="px-6 py-4 font-semibold text-[#0F0F0F]/90 dark:text-white/90">{p.name}</td>
+                <td className="px-4 py-4 text-[#0F0F0F]/40 dark:text-white/40">{p.category.name}</td>
+                <td className="px-4 py-4 text-right text-[#0F0F0F]/70 dark:text-white/70 tabular-nums">
                   R$ {Number(p.price).toFixed(2).replace(".", ",")}
                 </td>
                 <td className="px-4 py-4 text-right tabular-nums">
-                  <span className={p.stock <= 5 ? "text-[#FF3D5A] font-semibold" : "text-white/50"}>
+                  <span className={p.stock <= 5 ? "text-[#FF3D5A] font-semibold" : "text-[#0F0F0F]/50 dark:text-white/50"}>
                     {p.stock}
                   </span>
                 </td>
@@ -68,7 +68,7 @@ export default async function AdminProdutosPage({
                     className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
                       p.active
                         ? "bg-[#3DDC84]/12 text-[#3DDC84]"
-                        : "bg-white/8 text-white/30"
+                        : "bg-black/8 dark:bg-white/8 text-[#0F0F0F]/30 dark:text-white/30"
                     }`}
                   >
                     {p.active ? "Ativo" : "Inativo"}
@@ -86,7 +86,7 @@ export default async function AdminProdutosPage({
             ))}
             {products.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-16 text-center text-white/25 text-sm">
+                <td colSpan={6} className="px-6 py-16 text-center text-[#0F0F0F]/25 dark:text-white/25 text-sm">
                   Nenhum produto cadastrado ainda.
                 </td>
               </tr>

@@ -23,7 +23,7 @@ export default function ProductSearch() {
   return (
     <div className="relative">
       <svg
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-[#0F0F0F]/30 dark:text-white/30 pointer-events-none"
         width="14"
         height="14"
         viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ export default function ProductSearch() {
         defaultValue={searchParams.get("q") ?? ""}
         onChange={handleChange}
         placeholder="Buscar produto..."
-        className="pl-9 pr-4 py-2.5 rounded-full bg-white/6 border border-white/10 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#3B8BFF]/60 focus:bg-white/8 transition-all duration-200 w-72"
+        className="pl-9 pr-4 py-2.5 rounded-full bg-black/6 dark:bg-white/6 border border-black/10 dark:border-white/10 text-sm text-[#0F0F0F] dark:text-white placeholder:text-[#0F0F0F]/30 dark:placeholder:text-white/30 focus:outline-none focus:border-[#3B8BFF]/60 focus:bg-black/8 dark:focus:bg-white/8 transition-all duration-200 w-72"
       />
     </div>
   );
