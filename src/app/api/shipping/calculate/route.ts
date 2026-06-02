@@ -35,9 +35,20 @@ async function getMelhorEnvioOptions(
   items: { id: string; quantity: number }[]
 ): Promise<ShippingOption[]> {
   const token = process.env.MELHOR_ENVIO_TOKEN;
-  const fromCep = process.env.MELHOR_ENVIO_FROM_CEP;
+  if (!token) return [];
 
-  if (!token || !fromCep) return [];
+  const [fromCepSetting, servicesSetting, activeSetting] = await Promise.all([
+    db.setting.findUnique({ where: { key: "melhorenvio.fromCep" } }),
+    db.setting.findUnique({ where: { key: "melhorenvio.services" } }),
+    db.setting.findUnique({ where: { key: "melhorenvio.active" } }),
+  ]);
+
+  if (activeSetting?.value === "false") return [];
+
+  const fromCep = fromCepSetting?.value || process.env.MELHOR_ENVIO_FROM_CEP;
+  const services = servicesSetting?.value || "1,2";
+
+  if (!fromCep) return [];
 
   const productIds = items.map((i) => i.id);
   const products = await db.product.findMany({
@@ -89,8 +100,7 @@ async function getMelhorEnvioOptions(
           weight: weightKg,
         },
         options: { insurance_value: 0, receipt: false, own_hand: false },
-        // Correios PAC=1, SEDEX=2; Jadlog=3,4
-        services: "1,2",
+        services,
       }),
     });
 

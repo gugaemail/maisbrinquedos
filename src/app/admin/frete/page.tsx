@@ -3,6 +3,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 
+interface CorreiosConfig {
+  fromCep: string;
+  services: string;
+  active: boolean;
+  tokenConfigured: boolean;
+}
+
+const EMPTY_CORREIOS: CorreiosConfig = {
+  fromCep: "",
+  services: "1,2",
+  active: false,
+  tokenConfigured: false,
+};
+
 interface ShippingZone {
   id: string;
   name: string;
@@ -34,6 +48,53 @@ export default function FreteAdminPage() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const [correios, setCorreios] = useState<CorreiosConfig>(EMPTY_CORREIOS);
+  const [correiosSaving, setCorreiosSaving] = useState(false);
+
+  const fetchCorreios = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/frete/correios");
+      if (!res.ok) return;
+      const data = await res.json();
+      setCorreios(data);
+    } catch {
+      // non-critical
+    }
+  }, []);
+
+  useEffect(() => { fetchCorreios(); }, [fetchCorreios]);
+
+  async function handleSaveCorreios() {
+    const fromCepClean = correios.fromCep.replace(/\D/g, "");
+    if (fromCepClean.length !== 8) {
+      toast.error("CEP de origem deve ter 8 dígitos");
+      return;
+    }
+    const services = [
+      correios.services.includes("1") ? "1" : "",
+      correios.services.includes("2") ? "2" : "",
+    ].filter(Boolean).join(",");
+    if (!services) {
+      toast.error("Selecione ao menos um serviço (PAC ou SEDEX)");
+      return;
+    }
+    setCorreiosSaving(true);
+    try {
+      const res = await fetch("/api/admin/frete/correios", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fromCep: fromCepClean, services, active: correios.active }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Configuração salva");
+      await fetchCorreios();
+    } catch {
+      toast.error("Erro ao salvar configuração");
+    } finally {
+      setCorreiosSaving(false);
+    }
+  }
 
   const fetchZones = useCallback(async () => {
     setLoading(true);
@@ -337,6 +398,103 @@ export default function FreteAdminPage() {
             </table>
           </div>
         )}
+      </div>
+
+      {/* Melhor Envio / Correios config */}
+      <div className="mt-10">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Correios via Melhor Envio</h1>
+            <p className="text-sm text-gray-500 dark:text-white/50 mt-1">
+              Configure PAC e SEDEX para entregas em todo o Brasil.
+            </p>
+          </div>
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+            correios.tokenConfigured
+              ? "bg-green-100 text-green-700"
+              : "bg-amber-100 text-amber-700"
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${correios.tokenConfigured ? "bg-green-500" : "bg-amber-500"}`} />
+            {correios.tokenConfigured ? "Token configurado" : "Token não configurado"}
+          </span>
+        </div>
+
+        {!correios.tokenConfigured && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30 text-sm text-amber-800 dark:text-amber-300">
+            Configure a variável de ambiente <code className="font-mono font-bold">MELHOR_ENVIO_TOKEN</code> com seu token da API do Melhor Envio para ativar as cotações de frete.
+          </div>
+        )}
+
+        <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-gray-200 dark:border-white/10 p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-white/50 mb-1">CEP de origem</label>
+              <input
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 text-sm text-[#0F0F0F] dark:text-white bg-white dark:bg-[#0A0A0F] focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                placeholder="00000-000"
+                maxLength={9}
+                value={correios.fromCep.replace(/^(\d{5})(\d)/, "$1-$2")}
+                onChange={(e) => setCorreios({ ...correios, fromCep: e.target.value.replace(/\D/g, "") })}
+              />
+              <p className="text-xs text-gray-400 dark:text-white/30 mt-1">CEP do seu endereço de despacho</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-white/50 mb-2">Serviços ativos</label>
+              <div className="flex flex-col gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 accent-blue-600"
+                    checked={correios.services.includes("1")}
+                    onChange={(e) => {
+                      const parts = correios.services.split(",").filter(Boolean);
+                      const next = e.target.checked
+                        ? [...new Set([...parts, "1"])].sort().join(",")
+                        : parts.filter((s) => s !== "1").join(",");
+                      setCorreios({ ...correios, services: next });
+                    }}
+                  />
+                  <span className="text-sm text-gray-700 dark:text-white/70">PAC (econômico)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 accent-blue-600"
+                    checked={correios.services.includes("2")}
+                    onChange={(e) => {
+                      const parts = correios.services.split(",").filter(Boolean);
+                      const next = e.target.checked
+                        ? [...new Set([...parts, "2"])].sort().join(",")
+                        : parts.filter((s) => s !== "2").join(",");
+                      setCorreios({ ...correios, services: next });
+                    }}
+                  />
+                  <span className="text-sm text-gray-700 dark:text-white/70">SEDEX (expresso)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100 dark:border-white/8">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="w-4 h-4 accent-blue-600"
+                checked={correios.active}
+                onChange={(e) => setCorreios({ ...correios, active: e.target.checked })}
+              />
+              <span className="text-sm font-medium text-gray-700 dark:text-white/70">Ativar Correios no checkout</span>
+            </label>
+            <button
+              onClick={handleSaveCorreios}
+              disabled={correiosSaving}
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-colors"
+            >
+              {correiosSaving ? "Salvando…" : "Salvar configuração"}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Delete confirmation modal */}
