@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { getValidAccessToken, getMelhorEnvioBaseUrl } from "@/lib/melhorenvio";
 
 export interface ShippingOption {
   method: string;
@@ -34,15 +35,14 @@ async function getMelhorEnvioOptions(
   cep: string,
   items: { id: string; quantity: number }[]
 ): Promise<ShippingOption[]> {
-  const token = process.env.MELHOR_ENVIO_TOKEN;
-  if (!token) return [];
-
-  const [fromCepSetting, servicesSetting, activeSetting] = await Promise.all([
+  const [token, fromCepSetting, servicesSetting, activeSetting] = await Promise.all([
+    getValidAccessToken(),
     db.setting.findUnique({ where: { key: "melhorenvio.fromCep" } }),
     db.setting.findUnique({ where: { key: "melhorenvio.services" } }),
     db.setting.findUnique({ where: { key: "melhorenvio.active" } }),
   ]);
 
+  if (!token) return [];
   if (activeSetting?.value === "false") return [];
 
   const fromCep = fromCepSetting?.value || process.env.MELHOR_ENVIO_FROM_CEP;
@@ -76,10 +76,7 @@ async function getMelhorEnvioOptions(
   // Minimum 1kg for calculation
   const weightKg = Math.max(totalWeight / 1000, 0.3);
 
-  const sandbox = process.env.NODE_ENV !== "production";
-  const baseUrl = sandbox
-    ? "https://sandbox.melhorenvio.com.br"
-    : "https://melhorenvio.com.br";
+  const baseUrl = getMelhorEnvioBaseUrl();
 
   try {
     const res = await fetch(`${baseUrl}/api/v2/me/shipment/calculate`, {

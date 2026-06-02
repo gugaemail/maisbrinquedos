@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createSupabaseServerClient } from "@/lib/supabase";
+import { getConnectionStatus, deleteTokens } from "@/lib/melhorenvio";
 import { z } from "zod";
 
 const KEYS = {
@@ -24,9 +25,10 @@ export async function GET() {
   const user = await requireAdmin();
   if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const rows = await db.setting.findMany({
-    where: { key: { in: Object.values(KEYS) } },
-  });
+  const [rows, connection] = await Promise.all([
+    db.setting.findMany({ where: { key: { in: Object.values(KEYS) } } }),
+    getConnectionStatus(),
+  ]);
 
   const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
 
@@ -34,7 +36,9 @@ export async function GET() {
     fromCep: map[KEYS.fromCep] ?? "",
     services: map[KEYS.services] ?? "1,2",
     active: (map[KEYS.active] ?? "false") === "true",
-    tokenConfigured: !!process.env.MELHOR_ENVIO_TOKEN,
+    connected: connection.connected,
+    expiresAt: connection.expiresAt,
+    clientIdConfigured: !!process.env.MELHOR_ENVIO_CLIENT_ID,
   });
 }
 
@@ -79,5 +83,13 @@ export async function PATCH(request: NextRequest) {
     }),
   ]);
 
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE() {
+  const user = await requireAdmin();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  await deleteTokens();
   return NextResponse.json({ ok: true });
 }

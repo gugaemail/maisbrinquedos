@@ -3,18 +3,25 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+
 interface CorreiosConfig {
   fromCep: string;
   services: string;
   active: boolean;
-  tokenConfigured: boolean;
+  connected: boolean;
+  expiresAt: string | null;
+  clientIdConfigured: boolean;
 }
 
 const EMPTY_CORREIOS: CorreiosConfig = {
   fromCep: "",
   services: "1,2",
   active: false,
-  tokenConfigured: false,
+  connected: false,
+  expiresAt: null,
+  clientIdConfigured: false,
 };
 
 interface ShippingZone {
@@ -39,6 +46,20 @@ const EMPTY_FORM = {
 function formatCep(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 8);
   return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
+}
+
+function OAuthToastHandler() {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const result = searchParams.get("melhorenvio");
+    if (result === "success") toast.success("Melhor Envio conectado com sucesso!");
+    if (result === "error") {
+      const reason = searchParams.get("reason") ?? "erro desconhecido";
+      toast.error(`Erro ao conectar Melhor Envio: ${reason}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
 }
 
 export default function FreteAdminPage() {
@@ -205,6 +226,7 @@ export default function FreteAdminPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
+      <Suspense><OAuthToastHandler /></Suspense>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Zonas de Frete — Motoboy</h1>
@@ -410,18 +432,59 @@ export default function FreteAdminPage() {
             </p>
           </div>
           <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-            correios.tokenConfigured
+            correios.connected
               ? "bg-green-100 text-green-700"
               : "bg-amber-100 text-amber-700"
           }`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${correios.tokenConfigured ? "bg-green-500" : "bg-amber-500"}`} />
-            {correios.tokenConfigured ? "Token configurado" : "Token não configurado"}
+            <span className={`w-1.5 h-1.5 rounded-full ${correios.connected ? "bg-green-500" : "bg-amber-500"}`} />
+            {correios.connected ? "Conectado" : "Não conectado"}
           </span>
         </div>
 
-        {!correios.tokenConfigured && (
+        {/* Connection card */}
+        <div className="mb-4 bg-white dark:bg-[#18181B] rounded-2xl border border-gray-200 dark:border-white/10 p-5 flex items-center justify-between gap-4">
+          <div>
+            {correios.connected ? (
+              <>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">Conta Melhor Envio autorizada</p>
+                {correios.expiresAt && (
+                  <p className="text-xs text-gray-500 dark:text-white/40 mt-0.5">
+                    Token expira em {new Date(correios.expiresAt).toLocaleDateString("pt-BR")}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">Autorize sua conta Melhor Envio</p>
+                <p className="text-xs text-gray-500 dark:text-white/50 mt-0.5">Necessário para calcular PAC e SEDEX no checkout</p>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {correios.connected && (
+              <button
+                onClick={async () => {
+                  await fetch("/api/admin/frete/correios", { method: "DELETE" });
+                  toast.success("Conta desconectada");
+                  await fetchCorreios();
+                }}
+                className="px-4 py-2 border border-red-200 dark:border-red-500/30 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                Desconectar
+              </button>
+            )}
+            <a
+              href="/api/auth/melhorenvio/authorize"
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              {correios.connected ? "Reconectar" : "Conectar Melhor Envio"}
+            </a>
+          </div>
+        </div>
+
+        {!correios.clientIdConfigured && (
           <div className="mb-4 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30 text-sm text-amber-800 dark:text-amber-300">
-            Configure a variável de ambiente <code className="font-mono font-bold">MELHOR_ENVIO_TOKEN</code> com seu token da API do Melhor Envio para ativar as cotações de frete.
+            Configure as variáveis de ambiente <code className="font-mono font-bold">MELHOR_ENVIO_CLIENT_ID</code> e <code className="font-mono font-bold">MELHOR_ENVIO_CLIENT_SECRET</code> para habilitar a autorização OAuth.
           </div>
         )}
 
