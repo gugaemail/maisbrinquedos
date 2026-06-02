@@ -195,7 +195,9 @@ export default function AdminShell({ children, role, userName }: Props) {
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body transition-all duration-150 ${
                   active
                     ? "bg-black/8 dark:bg-white/8 text-[#0F0F0F] dark:text-white font-semibold"
-                    : "text-[#6B7080] dark:text-[#9CA3AF] hover:text-[#0F0F0F] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                    : theme === "dark"
+                      ? "text-[#9CA3AF] hover:text-white hover:bg-white/5"
+                      : "text-[#6B7080] hover:text-[#0F0F0F] hover:bg-black/5"
                 }`}
               >
                 {active && (
