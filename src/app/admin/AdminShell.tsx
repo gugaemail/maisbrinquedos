@@ -123,6 +123,10 @@ function IconMoon() {
   );
 }
 
+const NAV_ACTIVE = "bg-black/8 dark:bg-white/8 text-[#0F0F0F] dark:text-white font-semibold";
+const NAV_DARK   = "text-[#9CA3AF] hover:text-white hover:bg-white/5";
+const NAV_LIGHT  = "text-[#6B7080] hover:text-[#0F0F0F] hover:bg-black/5";
+
 const allNavItems = [
   { href: "/admin/dashboard",    label: "Dashboard",    Icon: IconDashboard,  roles: ["admin", "operator"] },
   { href: "/admin/produtos",     label: "Produtos",     Icon: IconProducts,   roles: ["admin", "operator"] },
@@ -193,11 +197,7 @@ export default function AdminShell({ children, role, userName }: Props) {
                 key={item.href}
                 href={item.href}
                 className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-body transition-all duration-150 ${
-                  active
-                    ? "bg-black/8 dark:bg-white/8 text-[#0F0F0F] dark:text-white font-semibold"
-                    : theme === "dark"
-                      ? "text-[#9CA3AF] hover:text-white hover:bg-white/5"
-                      : "text-[#6B7080] hover:text-[#0F0F0F] hover:bg-black/5"
+                  active ? NAV_ACTIVE : theme === "dark" ? NAV_DARK : NAV_LIGHT
                 }`}
               >
                 {active && (
