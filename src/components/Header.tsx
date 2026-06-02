@@ -77,18 +77,9 @@ export default function Header({ categories: _categories = [] }: { categories?: 
   }, [totalItems]);
 
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 50 }}>
-      <div
-        style={{
-          maxHeight: scrolled ? 0 : 80,
-          opacity: scrolled ? 0 : 1,
-          overflow: "hidden",
-          transition: "max-height 300ms ease, opacity 200ms ease",
-          pointerEvents: scrolled ? "none" : "auto",
-        }}
-      >
-        <PromoMarquee />
-      </div>
+    <>
+      <PromoMarquee />
+      <div style={{ position: "sticky", top: 0, zIndex: 50 }}>
       <header
         className={`site-header${scrolled ? " scrolled" : ""}`}
         style={{ position: "static" }}
@@ -312,7 +303,8 @@ export default function Header({ categories: _categories = [] }: { categories?: 
           </div>
         </nav>
       </header>
-    </div>
+      </div>
+    </>
   );
 }
 
