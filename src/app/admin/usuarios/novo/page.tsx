@@ -10,8 +10,8 @@ export default async function NovoUsuarioPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F]">Novo usuário</h1>
-        <p className="text-sm text-[#6B7080] font-body mt-1">Crie um acesso ao painel administrativo</p>
+        <h1 className="text-2xl font-display font-extrabold text-[#0F0F0F] dark:text-white">Novo usuário</h1>
+        <p className="text-sm text-[#6B7080] dark:text-white/50 font-body mt-1">Crie um acesso ao painel administrativo</p>
       </div>
       <NovoUsuarioForm />
     </div>

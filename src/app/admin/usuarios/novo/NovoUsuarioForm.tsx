@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] text-sm font-body text-[#0F0F0F] outline-none focus:border-[#3B8BFF] transition-colors bg-white";
+const input = "w-full px-4 py-3 rounded-xl border border-[#E2E6F0] dark:border-white/10 text-sm font-body text-[#0F0F0F] dark:text-white outline-none focus:border-[#3B8BFF] transition-colors bg-white dark:bg-[#0A0A0F]";
 
 export default function NovoUsuarioForm() {
   const router = useRouter();
@@ -45,7 +45,7 @@ export default function NovoUsuarioForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-w-lg">
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Nome completo</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body">Nome completo</label>
         <input
           className={input}
           placeholder="Ex: Maria Silva"
@@ -56,7 +56,7 @@ export default function NovoUsuarioForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body">E-mail</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body">E-mail</label>
         <input
           type="email"
           className={input}
@@ -68,7 +68,7 @@ export default function NovoUsuarioForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Senha temporária</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body">Senha temporária</label>
         <input
           type="password"
           className={input}
@@ -77,11 +77,11 @@ export default function NovoUsuarioForm() {
           onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
         />
         {errors.password && <p className="text-xs text-[#FF3D5A]">{errors.password}</p>}
-        <p className="text-xs text-[#6B7080]">O usuário poderá alterar a senha após o primeiro acesso.</p>
+        <p className="text-xs text-[#6B7080] dark:text-white/50">O usuário poderá alterar a senha após o primeiro acesso.</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-semibold text-[#0F0F0F] font-body">Papel</label>
+        <label className="text-xs font-semibold text-[#0F0F0F] dark:text-white font-body">Papel</label>
         <select
           className={input}
           value={form.role}
@@ -103,7 +103,7 @@ export default function NovoUsuarioForm() {
         <button
           type="button"
           onClick={() => router.push("/admin/usuarios")}
-          className="px-6 py-3 rounded-full border border-[#E2E6F0] text-[#6B7080] text-sm font-semibold hover:bg-[#F8F9FC] transition-colors"
+          className="px-6 py-3 rounded-full border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 text-sm font-semibold hover:bg-[#F8F9FC] dark:hover:bg-white/5 transition-colors"
         >
           Cancelar
         </button>

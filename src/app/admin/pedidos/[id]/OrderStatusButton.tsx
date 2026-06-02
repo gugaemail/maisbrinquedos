@@ -27,7 +27,7 @@ export default function OrderStatusButton({ orderId, currentStatus }: { orderId:
 
   return (
     <div>
-      <p className="text-xs font-semibold text-[#6B7080] font-body mb-3">Alterar status manualmente</p>
+      <p className="text-xs font-semibold text-[#6B7080] dark:text-white/50 font-body mb-3">Alterar status manualmente</p>
       <div className="flex flex-wrap gap-2">
         {STATUSES.map(({ value, label }) => (
           <button
@@ -37,7 +37,7 @@ export default function OrderStatusButton({ orderId, currentStatus }: { orderId:
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
               value === currentStatus
                 ? "bg-[#3B8BFF] text-white cursor-default"
-                : "border border-[#E2E6F0] text-[#6B7080] hover:bg-[#F8F9FC]"
+                : "border border-[#E2E6F0] dark:border-white/10 text-[#6B7080] dark:text-white/50 hover:bg-[#F8F9FC] dark:hover:bg-white/5"
             }`}
           >
             {label}
